@@ -17,24 +17,28 @@
             color: #444;
         }
         table {
-            width: 100%;
-            max-width: 800px;
-            margin: 20px auto;
-            border-collapse: collapse;
-            border-spacing: 0;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-            font-size: 14px;
-        }
-        th {
-            background-color: #f4f4f4;
-            position: sticky; /* Fixiert die Überschriftenzeile */
-            top: 0; /* Fixierung am oberen Rand */
-            z-index: 1; /* Damit die Überschrift über den Zellen bleibt */
-        }
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+    position: relative;
+}
+th {
+    background-color: #f4f4f4;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+}
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
