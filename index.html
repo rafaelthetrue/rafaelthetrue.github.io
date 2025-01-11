@@ -17,16 +17,16 @@
             color: #444;
         }
         table {
-            width: 100%; /* Tabelle füllt die gesamte Breite */
-            max-width: 800px; /* Maximale Breite für größere Geräte */
-            margin: 20px auto; /* Zentrierung */
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
             border-collapse: collapse;
         }
         th, td {
             border: 1px solid #ddd;
             padding: 10px;
             text-align: left;
-            font-size: 14px; /* Schriftgröße für bessere Skalierung */
+            font-size: 14px;
         }
         th {
             background-color: #f4f4f4;
@@ -34,7 +34,10 @@
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        /* Schriftgröße auf kleinen Geräten reduzieren */
+        tr.past-event td {
+            text-decoration: line-through; /* Durchgestrichener Text */
+            color: #888; /* Blassere Farbe */
+        }
         @media (max-width: 600px) {
             th, td {
                 font-size: 12px;
@@ -45,7 +48,7 @@
 </head>
 <body>
     <h1>Rave Kalender 2025</h1>
-    <table>
+    <table id="eventTable">
         <thead>
             <tr>
                 <th>Datum</th>
@@ -55,26 +58,39 @@
             </tr>
         </thead>
         <tbody>
-            <tr><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
-            <tr><td>11.01</td><td>Knusper, Venom 666, MRCL</td><td>Projekt X</td><td>Bochum</td></tr>
-            <tr><td>11.01</td><td>Athéna</td><td>Stahlwerk</td><td>Düsseldorf</td></tr>
-            <tr><td>11.01</td><td>Tekk war nie weg</td><td>Mikroport</td><td>Krefeld</td></tr>
-            <tr><td>18.01</td><td>Technoheads</td><td>Matrix</td><td>Bochum</td></tr>
-            <tr><td>18.01</td><td>Kontrollverlust</td><td>Druckluft</td><td>Oberhausen</td></tr>
-            <tr><td>25.01</td><td>Trinity Rave</td><td>Matrix</td><td>Bochum</td></tr>
-            <tr><td>25.01</td><td>Bochum Is Calling</td><td>Projekt X</td><td>Bochum</td></tr>
-            <tr><td>31.01</td><td>X-BASS</td><td>viersieben</td><td>Duisburg</td></tr>
-            <tr><td>01.02</td><td>X-BASS</td><td>viersieben</td><td>Duisburg</td></tr>
-            <tr><td>08.02</td><td>Ravemania</td><td>Schlachthof</td><td>Düsseldorf</td></tr>
-            <tr><td>01.03</td><td>Ravemania (Karneval Special)</td><td>Schlachthof</td><td>Düsseldorf</td></tr>
-            <tr><td>07.03</td><td>Dopamyn Indoor Festival</td><td>Delta-Musik-Park</td><td>Essen</td></tr>
-            <tr><td>15.03</td><td>verknipt</td><td>Turbinenhalle</td><td>Oberhausen</td></tr>
-            <tr><td>31.05</td><td>Rave im Stadtgarten (15-22h)</td><td>Stadtgarten</td><td>Gelsenkirchen</td></tr>
-            <tr><td>05.07</td><td>Ruhr In Love</td><td>Olgapark</td><td>Oberhausen</td></tr>
-            <tr><td>11.07</td><td>Stone Techno Festival</td><td>Zeche Zollverein</td><td>Essen</td></tr>
-            <tr><td>12.07</td><td>Stone Techno Festival</td><td>Zeche Zollverein</td><td>Essen</td></tr>
-            <tr><td>13.07</td><td>Stone Techno Festival</td><td>Zeche Zollverein</td><td>Essen</td></tr>
+            <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
+            <tr data-date="2025-01-11"><td>11.01</td><td>Knusper, Venom 666, MRCL</td><td>Projekt X</td><td>Bochum</td></tr>
+            <tr data-date="2025-01-11"><td>11.01</td><td>Athéna</td><td>Stahlwerk</td><td>Düsseldorf</td></tr>
+            <tr data-date="2025-01-11"><td>11.01</td><td>Tekk war nie weg</td><td>Mikroport</td><td>Krefeld</td></tr>
+            <tr data-date="2025-01-18"><td>18.01</td><td>Technoheads</td><td>Matrix</td><td>Bochum</td></tr>
+            <tr data-date="2025-01-18"><td>18.01</td><td>Kontrollverlust</td><td>Druckluft</td><td>Oberhausen</td></tr>
+            <tr data-date="2025-01-25"><td>25.01</td><td>Trinity Rave</td><td>Matrix</td><td>Bochum</td></tr>
+            <tr data-date="2025-01-25"><td>25.01</td><td>Bochum Is Calling</td><td>Projekt X</td><td>Bochum</td></tr>
+            <tr data-date="2025-01-31"><td>31.01</td><td>X-BASS</td><td>viersieben</td><td>Duisburg</td></tr>
+            <tr data-date="2025-02-01"><td>01.02</td><td>X-BASS</td><td>viersieben</td><td>Duisburg</td></tr>
+            <tr data-date="2025-02-08"><td>08.02</td><td>Ravemania</td><td>Schlachthof</td><td>Düsseldorf</td></tr>
+            <tr data-date="2025-03-01"><td>01.03</td><td>Ravemania (Karneval Special)</td><td>Schlachthof</td><td>Düsseldorf</td></tr>
+            <tr data-date="2025-03-07"><td>07.03</td><td>Dopamyn Indoor Festival</td><td>Delta-Musik-Park</td><td>Essen</td></tr>
+            <tr data-date="2025-03-15"><td>15.03</td><td>verknipt</td><td>Turbinenhalle</td><td>Oberhausen</td></tr>
+            <tr data-date="2025-05-31"><td>31.05</td><td>Rave im Stadtgarten (15-22h)</td><td>Stadtgarten</td><td>Gelsenkirchen</td></tr>
+            <tr data-date="2025-07-05"><td>05.07</td><td>Ruhr In Love</td><td>Olgapark</td><td>Oberhausen</td></tr>
+            <tr data-date="2025-07-11"><td>11.07</td><td>Stone Techno Festival</td><td>Zeche Zollverein</td><td>Essen</td></tr>
+            <tr data-date="2025-07-12"><td>12.07</td><td>Stone Techno Festival</td><td>Zeche Zollverein</td><td>Essen</td></tr>
+            <tr data-date="2025-07-13"><td>13.07</td><td>Stone Techno Festival</td><td>Zeche Zollverein</td><td>Essen</td></tr>
         </tbody>
     </table>
+    <script>
+        // Markiere vergangene Events
+        document.addEventListener("DOMContentLoaded", function() {
+            const today = new Date().toISOString().split("T")[0]; // Aktuelles Datum im Format YYYY-MM-DD
+            const rows = document.querySelectorAll("table#eventTable tbody tr");
+            rows.forEach(row => {
+                const eventDate = row.getAttribute("data-date");
+                if (eventDate < today) {
+                    row.classList.add("past-event"); // Klasse für vergangene Events hinzufügen
+                }
+            });
+        });
+    </script>
 </body>
 </html>
