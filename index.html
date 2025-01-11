@@ -16,29 +16,29 @@
         h1 {
             color: #444;
         }
+        .table-container {
+            max-width: 800px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            overflow-y: auto; /* Ermöglicht vertikales Scrollen */
+            max-height: 400px; /* Begrenzte Höhe der Tabelle */
+        }
         table {
-    width: 100%;
-    max-width: 800px;
-    margin: 20px auto;
-    border-collapse: collapse;
-    border-spacing: 0;
-    position: relative;
-}
-th {
-    background-color: #f4f4f4;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-}
-td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-    font-size: 14px;
-}
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+        }
+        th {
+            background-color: #f4f4f4;
+            position: sticky; /* Fixiert die Kopfzeile */
+            top: 0;
+            z-index: 2;
+        }
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
@@ -46,47 +46,43 @@ td {
             text-decoration: line-through;
             color: #888;
         }
-        @media (max-width: 600px) {
-            th, td {
-                font-size: 12px;
-                padding: 8px;
-            }
-        }
     </style>
 </head>
 <body>
     <h1>Rave Kalender 2025</h1>
-    <table id="eventTable">
-        <thead>
-            <tr>
-                <th>Datum</th>
-                <th>Event</th>
-                <th>Location</th>
-                <th>Stadt</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
-            <tr data-date="2025-01-11"><td>11.01</td><td>Knusper, Venom 666, MRCL</td><td>Projekt X</td><td>Bochum</td></tr>
-            <tr data-date="2025-01-11"><td>11.01</td><td>Athéna</td><td>Stahlwerk</td><td>Düsseldorf</td></tr>
-            <tr data-date="2025-01-11"><td>11.01</td><td>Tekk war nie weg</td><td>Mikroport</td><td>Krefeld</td></tr>
-            <tr data-date="2025-01-18"><td>18.01</td><td>Technoheads</td><td>Matrix</td><td>Bochum</td></tr>
-            <tr data-date="2025-01-18"><td>18.01</td><td>Kontrollverlust</td><td>Druckluft</td><td>Oberhausen</td></tr>
-            <tr data-date="2025-01-25"><td>25.01</td><td>Trinity Rave</td><td>Matrix</td><td>Bochum</td></tr>
-            <tr data-date="2025-01-25"><td>25.01</td><td>Bochum Is Calling</td><td>Projekt X</td><td>Bochum</td></tr>
-            <tr data-date="2025-01-31"><td>31.01</td><td>X-BASS</td><td>viersieben</td><td>Duisburg</td></tr>
-            <tr data-date="2025-02-01"><td>01.02</td><td>X-BASS</td><td>viersieben</td><td>Duisburg</td></tr>
-            <tr data-date="2025-02-08"><td>08.02</td><td>Ravemania</td><td>Schlachthof</td><td>Düsseldorf</td></tr>
-            <tr data-date="2025-03-01"><td>01.03</td><td>Ravemania (Karneval Special)</td><td>Schlachthof</td><td>Düsseldorf</td></tr>
-            <tr data-date="2025-03-07"><td>07.03</td><td>Dopamyn Indoor Festival</td><td>Delta-Musik-Park</td><td>Essen</td></tr>
-            <tr data-date="2025-03-15"><td>15.03</td><td>verknipt</td><td>Turbinenhalle</td><td>Oberhausen</td></tr>
-            <tr data-date="2025-05-31"><td>31.05</td><td>Rave im Stadtgarten (15-22h)</td><td>Stadtgarten</td><td>Gelsenkirchen</td></tr>
-            <tr data-date="2025-07-05"><td>05.07</td><td>Ruhr In Love</td><td>Olgapark</td><td>Oberhausen</td></tr>
-            <tr data-date="2025-07-11"><td>11.07</td><td>Stone Techno Festival</td><td>Zeche Zollverein</td><td>Essen</td></tr>
-            <tr data-date="2025-07-12"><td>12.07</td><td>Stone Techno Festival</td><td>Zeche Zollverein</td><td>Essen</td></tr>
-            <tr data-date="2025-07-13"><td>13.07</td><td>Stone Techno Festival</td><td>Zeche Zollverein</td><td>Essen</td></tr>
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table id="eventTable">
+            <thead>
+                <tr>
+                    <th>Datum</th>
+                    <th>Event</th>
+                    <th>Location</th>
+                    <th>Stadt</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
+                <tr data-date="2025-01-11"><td>11.01</td><td>Knusper, Venom 666, MRCL</td><td>Projekt X</td><td>Bochum</td></tr>
+                <tr data-date="2025-01-11"><td>11.01</td><td>Athéna</td><td>Stahlwerk</td><td>Düsseldorf</td></tr>
+                <tr data-date="2025-01-11"><td>11.01</td><td>Tekk war nie weg</td><td>Mikroport</td><td>Krefeld</td></tr>
+                <tr data-date="2025-01-18"><td>18.01</td><td>Technoheads</td><td>Matrix</td><td>Bochum</td></tr>
+                <tr data-date="2025-01-18"><td>Kontrollverlust</td><td>Druckluft</td><td>Oberhausen</td></tr>
+                <tr data-date="2025-01-25"><td>25.01</td><td>Trinity Rave</td><td>Matrix</td><td>Bochum</td></tr>
+                <tr data-date="2025-01-25"><td>Bochum Is Calling</td><td>Projekt X</td><td>Bochum</td></tr>
+                <tr data-date="2025-01-31"><td>31.01</td><td>X-BASS</td><td>viersieben</td><td>Duisburg</td></tr>
+                <tr data-date="2025-02-01"><td>01.02</td><td>X-BASS</td><td>viersieben</td><td>Duisburg</td></tr>
+                <tr data-date="2025-02-08"><td>08.02</td><td>Ravemania</td><td>Schlachthof</td><td>Düsseldorf</td></tr>
+                <tr data-date="2025-03-01"><td>01.03</td><td>Ravemania (Karneval Special)</td><td>Schlachthof</td><td>Düsseldorf</td></tr>
+                <tr data-date="2025-03-07"><td>07.03</td><td>Dopamyn Indoor Festival</td><td>Delta-Musik-Park</td><td>Essen</td></tr>
+                <tr data-date="2025-03-15"><td>15.03</td><td>verknipt</td><td>Turbinenhalle</td><td>Oberhausen</td></tr>
+                <tr data-date="2025-05-31"><td>31.05</td><td>Rave im Stadtgarten (15-22h)</td><td>Stadtgarten</td><td>Gelsenkirchen</td></tr>
+                <tr data-date="2025-07-05"><td>05.07</td><td>Ruhr In Love</td><td>Olgapark</td><td>Oberhausen</td></tr>
+                <tr data-date="2025-07-11"><td>11.07</td><td>Stone Techno Festival</td><td>Zeche Zollverein</td><td>Essen</td></tr>
+                <tr data-date="2025-07-12"><td>12.07</td><td>Stone Techno Festival</td><td>Zeche Zollverein</td><td>Essen</td></tr>
+                <tr data-date="2025-07-13"><td>13.07</td><td>Stone Techno Festival</td><td>Zeche Zollverein</td><td>Essen</td></tr>
+            </tbody>
+        </table>
+    </div>
     <script>
         // Markiere vergangene Events
         document.addEventListener("DOMContentLoaded", function() {
