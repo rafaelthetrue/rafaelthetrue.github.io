@@ -21,10 +21,10 @@
             margin: 20px auto;
             border: 1px solid #ddd;
             overflow-y: auto; /* Ermöglicht vertikales Scrollen */
-            max-height: 400px; /* Begrenzte Höhe der Tabelle */
+            max-height: 1200px; /* Begrenzte Höhe des Containers */
         }
         table {
-            width: 100%;
+            width: 100%; /* Tabelle füllt die gesamte Breite */
             border-collapse: collapse;
         }
         th, td {
@@ -46,6 +46,17 @@
             text-decoration: line-through;
             color: #888;
         }
+        @media (max-width: 600px) {
+            .table-container {
+                max-width: 100%; /* Container passt sich der Bildschirmbreite an */
+            }
+            table {
+                width: 100%; /* Tabelle bleibt auf Mobilgeräten 100% breit */
+            }
+            th, td {
+                font-size: 12px; /* Schriftgröße für kleinere Bildschirme reduzieren */
+            }
+        }
     </style>
 </head>
 <body>
@@ -66,9 +77,9 @@
                 <tr data-date="2025-01-11"><td>11.01</td><td>Athéna</td><td>Stahlwerk</td><td>Düsseldorf</td></tr>
                 <tr data-date="2025-01-11"><td>11.01</td><td>Tekk war nie weg</td><td>Mikroport</td><td>Krefeld</td></tr>
                 <tr data-date="2025-01-18"><td>18.01</td><td>Technoheads</td><td>Matrix</td><td>Bochum</td></tr>
-                <tr data-date="2025-01-18"><td>Kontrollverlust</td><td>Druckluft</td><td>Oberhausen</td></tr>
+                <tr data-date="2025-01-18"><td>18.01</td><td>Kontrollverlust</td><td>Druckluft</td><td>Oberhausen</td></tr>
                 <tr data-date="2025-01-25"><td>25.01</td><td>Trinity Rave</td><td>Matrix</td><td>Bochum</td></tr>
-                <tr data-date="2025-01-25"><td>Bochum Is Calling</td><td>Projekt X</td><td>Bochum</td></tr>
+                <tr data-date="2025-01-25"><td>25.01</td><td>Bochum Is Calling</td><td>Projekt X</td><td>Bochum</td></tr>
                 <tr data-date="2025-01-31"><td>31.01</td><td>X-BASS</td><td>viersieben</td><td>Duisburg</td></tr>
                 <tr data-date="2025-02-01"><td>01.02</td><td>X-BASS</td><td>viersieben</td><td>Duisburg</td></tr>
                 <tr data-date="2025-02-08"><td>08.02</td><td>Ravemania</td><td>Schlachthof</td><td>Düsseldorf</td></tr>
