@@ -23,19 +23,28 @@
             margin-bottom: 0px;
             text-align: center;
             flex-shrink: 0;
+            position: relative; /* Position für das Menü-Icon */
         }
         .menu-icon {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 0;
+            right: 0;
             font-size: 24px;
             cursor: pointer;
             user-select: none;
         }
+        .table-container {
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            max-width: 800px;
+            margin: 0 auto;
+            height: 93%;
+            position: relative; /* Positioniert Tabelle zentral und erlaubt Anpassungen */
+        }
         .menu {
             position: absolute;
             top: 40px;
-            right: 10px;
+            right: 0;
             background-color: white;
             border: 1px solid #ddd;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -68,13 +77,6 @@
             font-size: 16px;
             box-sizing: border-box;
         }
-        .table-container {
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            max-width: 800px;
-            margin: 0 auto;
-            height: 93%;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -106,8 +108,9 @@
     </style>
 </head>
 <body>
-    <h1>Raves 2025</h1>
-    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    <h1>Raves 2025
+        <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    </h1>
     <div class="menu" id="menu">
         <a href="impressum.html">Impressum</a>
         <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
