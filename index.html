@@ -41,7 +41,7 @@
             border: 1px solid #ddd;
             max-width: 800px;
             margin: 0 auto;
-            height: 94%; /* Standardhöhe von 94%, wird durch JS überschrieben */
+            height: 93.5%; /* Standardhöhe von 93,5%, wird durch JS überschrieben */
         }
         table {
             width: 100%;
@@ -134,15 +134,15 @@
         </table>
     </div>
     <script>
-        // Dynamische Anpassung der Tabelle an die sichtbare Höhe (94%)
+        // Dynamische Anpassung der Tabelle an die sichtbare Höhe (93,5%)
         function adjustTableHeight() {
             const headerHeight = document.querySelector("h1").offsetHeight;
             const searchHeight = document.querySelector(".search-container").offsetHeight;
             const viewportHeight = window.innerHeight;
 
-            // Berechne die verfügbare Höhe und setze sie auf 94% des sichtbaren Bereichs
+            // Berechne die verfügbare Höhe und setze sie auf 93,5% des sichtbaren Bereichs
             const tableContainer = document.getElementById("tableContainer");
-            tableContainer.style.height = `${0.94 * (viewportHeight - headerHeight - searchHeight)}px`;
+            tableContainer.style.height = `${0.935 * (viewportHeight - headerHeight - searchHeight)}px`;
         }
 
         // Anpassung bei Laden und Größenänderung
