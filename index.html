@@ -14,20 +14,52 @@
             color: #333;
             display: flex;
             flex-direction: column;
-            height: 100vh; /* Gesamte Höhe des Viewports */
-            overflow: hidden; /* Verhindert Scrollen der gesamten Seite */
+            height: 100vh;
+            overflow: hidden;
         }
         h1 {
             color: #444;
             margin-top: 20px;
             margin-bottom: 0px;
             text-align: center;
-            flex-shrink: 0; /* Header bleibt fixiert */
+            flex-shrink: 0;
+        }
+        .menu-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .menu {
+            position: absolute;
+            top: 40px;
+            right: 10px;
+            background-color: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 10;
+        }
+        .menu a {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        .menu a:hover {
+            background-color: #f4f4f4;
+        }
+        .menu a:last-child {
+            border-bottom: none;
         }
         .search-container {
             margin: 10px 0;
             text-align: center;
-            flex-shrink: 0; /* Suchfeld bleibt fixiert */
+            flex-shrink: 0;
         }
         .search-container input {
             width: 80%;
@@ -37,11 +69,11 @@
             box-sizing: border-box;
         }
         .table-container {
-            overflow-y: auto; /* Ermöglicht Scrollen innerhalb des Containers */
+            overflow-y: auto;
             border: 1px solid #ddd;
             max-width: 800px;
             margin: 0 auto;
-            height: 93%; /* Standardhöhe von 93%, wird durch JS überschrieben */
+            height: 93%;
         }
         table {
             width: 100%;
@@ -55,7 +87,7 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky; /* Fixierte Kopfzeile */
+            position: sticky;
             top: 0;
             z-index: 2;
         }
@@ -75,6 +107,11 @@
 </head>
 <body>
     <h1>Raves 2025</h1>
+    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    <div class="menu" id="menu">
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+    </div>
     <div class="search-container">
         <input 
             type="text" 
@@ -175,54 +212,47 @@
         </table>
     </div>
     <script>
-        // Dynamische Anpassung der Tabelle an die sichtbare Höhe (93%)
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        }
+
         function adjustTableHeight() {
             const headerHeight = document.querySelector("h1").offsetHeight;
             const searchHeight = document.querySelector(".search-container").offsetHeight;
             const viewportHeight = window.innerHeight;
-
-            // Berechne die verfügbare Höhe und setze sie auf 93% des sichtbaren Bereichs
             const tableContainer = document.getElementById("tableContainer");
             tableContainer.style.height = `${0.93 * (viewportHeight - headerHeight - searchHeight)}px`;
         }
 
-        // Anpassung bei Laden und Größenänderung
         window.addEventListener("DOMContentLoaded", adjustTableHeight);
         window.addEventListener("resize", adjustTableHeight);
 
-        // Suchfunktion
         function searchTable() {
             const query = document.getElementById("search").value.toLowerCase();
             const rows = document.querySelectorAll("#eventTable tbody tr");
-
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
                 row.style.display = text.includes(query) ? "table-row" : "none";
             });
         }
 
-        // Markiere vergangene Events, füge Wochentage hinzu und scrolle zu nächstem Event
         document.addEventListener("DOMContentLoaded", function() {
             const today = new Date().toISOString().split("T")[0];
             const rows = document.querySelectorAll("#eventTable tbody tr");
             let scrolled = false;
-
             rows.forEach(row => {
                 const eventDate = row.getAttribute("data-date");
                 const dateObj = new Date(eventDate);
-
-                // Wochentag berechnen
                 const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
                 const weekday = weekdays[dateObj.getDay()];
                 const dateCell = row.querySelector("td:first-child");
                 dateCell.textContent += ` (${weekday})`;
 
-                // Vergangene Events durchstreichen
                 if (eventDate < today) {
                     row.classList.add("past-event");
                 }
 
-                // Scrolle zum ersten zukünftigen Event
                 if (!scrolled && eventDate >= today) {
                     const headerHeight = document.querySelector("th").offsetHeight;
                     const scrollOffset = row.offsetTop - headerHeight;
