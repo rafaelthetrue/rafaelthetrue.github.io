@@ -14,19 +14,19 @@
             color: #333;
             display: flex;
             flex-direction: column;
-            height: 100vh; /* Gesamter sichtbarer Bereich */
-            overflow: hidden; /* Kein Scrollen der gesamten Seite */
+            height: 100vh; /* Gesamte Höhe des Viewports */
+            overflow: hidden; /* Verhindert Scrollen der gesamten Seite */
         }
         h1 {
             color: #444;
             margin: 20px 0;
             text-align: center;
-            flex-shrink: 0;
+            flex-shrink: 0; /* Header bleibt fixiert */
         }
         .search-container {
             margin: 10px 0;
             text-align: center;
-            flex-shrink: 0;
+            flex-shrink: 0; /* Suchfeld bleibt fixiert */
         }
         .search-container input {
             width: 80%;
@@ -36,12 +36,11 @@
             box-sizing: border-box;
         }
         .table-container {
-            flex: 1;
-            overflow-y: auto;
+            overflow-y: auto; /* Ermöglicht Scrollen innerhalb des Containers */
             border: 1px solid #ddd;
             max-width: 800px;
             margin: 0 auto;
-            height: 80%; /* Höhe auf 95% des verfügbaren Platzes begrenzen */
+            height: 95%; /* Standardhöhe von 95%, wird durch JS überschrieben */
         }
         table {
             width: 100%;
@@ -55,7 +54,7 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky;
+            position: sticky; /* Fixierte Kopfzeile */
             top: 0;
             z-index: 2;
         }
@@ -134,7 +133,7 @@
         </table>
     </div>
     <script>
-        // Dynamische Anpassung der Tabelle an die sichtbare Höhe
+        // Dynamische Anpassung der Tabelle an die sichtbare Höhe (95%)
         function adjustTableHeight() {
             const headerHeight = document.querySelector("h1").offsetHeight;
             const searchHeight = document.querySelector(".search-container").offsetHeight;
