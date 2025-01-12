@@ -46,15 +46,16 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky;
+            position: sticky; /* Fixiert die Kopfzeile */
             top: 0;
             z-index: 2;
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        tr.past-event {
-            display: none;
+        tr.past-event td {
+            text-decoration: line-through;
+            color: #888;
         }
         @media (max-width: 600px) {
             .table-container {
@@ -157,11 +158,13 @@
                 const dateCell = row.querySelector("td:first-child");
                 dateCell.textContent += ` (${weekday})`;
 
-                // Vergangene Events ausblenden
+                // Vergangene Events durchstreichen
                 if (eventDate < today) {
                     row.classList.add("past-event");
-                } else if (!scrolled) {
-                    // Scrolle zum ersten zukünftigen Event
+                }
+
+                // Scrolle zum ersten zukünftigen Event
+                if (!scrolled && eventDate >= today) {
                     row.scrollIntoView({ behavior: "smooth", block: "start" });
                     scrolled = true;
                 }
