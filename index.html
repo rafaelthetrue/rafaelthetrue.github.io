@@ -24,18 +24,18 @@
             width: 100%;
             max-width: 400px;
             padding: 10px;
-            font-size: 12px; /* Schriftgröße angepasst */
-            box-sizing: border-box; /* Bezieht Padding in die Breite ein */
+            font-size: 12px;
+            box-sizing: border-box;
         }
         .table-container {
             max-width: 800px;
             margin: 0px auto;
             border: 1px solid #ddd;
-            overflow-y: auto; /* Ermöglicht vertikales Scrollen */
-            max-height: 550px; /* Begrenzte Höhe des Containers */
+            overflow-y: auto;
+            max-height: 550px;
         }
         table {
-            width: 100%; /* Tabelle füllt die gesamte Breite */
+            width: 100%;
             border-collapse: collapse;
         }
         th, td {
@@ -46,26 +46,25 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky; /* Fixiert die Kopfzeile */
+            position: sticky;
             top: 0;
             z-index: 2;
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        tr.past-event td {
-            text-decoration: line-through;
-            color: #888;
+        tr.past-event {
+            display: none;
         }
         @media (max-width: 600px) {
             .table-container {
-                max-width: 100%; /* Container passt sich der Bildschirmbreite an */
+                max-width: 100%;
             }
             table {
-                width: 100%; /* Tabelle bleibt auf Mobilgeräten 100% breit */
+                width: 100%;
             }
             th, td {
-                font-size: 12px; /* Schriftgröße für kleinere Bildschirme reduzieren */
+                font-size: 12px;
             }
         }
     </style>
@@ -80,7 +79,7 @@
             onkeyup="searchTable()"
         >
     </div>
-    <div class="table-container">
+    <div class="table-container" id="tableContainer">
         <table id="eventTable">
             <thead>
                 <tr>
@@ -92,37 +91,49 @@
             </thead>
             <tbody>
                 <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
-                <tr data-date="2025-01-11"><td>11.01</td><td>Cyber Netic</td><td>PM93</td><td>Essen</td></tr>
-                <tr data-date="2025-01-11"><td>11.01</td><td>Knusper, Venom 666, MRCL</td><td>Projekt X</td><td>Bochum</td></tr>
-                <tr data-date="2025-01-11"><td>11.01</td><td>Athéna</td><td>Stahlwerk</td><td>Düsseldorf</td></tr>
-                <tr data-date="2025-01-18"><td>18.01</td><td>TECHNOHEADZ</td><td>Matrix</td><td>Bochum</td></tr>
-                <tr data-date="2025-01-18"><td>18.01</td><td>Kontrollverlust</td><td>Druckluft</td><td>Oberhausen</td></tr>
-                <tr data-date="2025-01-25"><td>25.01</td><td>Trinity Rave</td><td>Matrix</td><td>Bochum</td></tr>
-                <tr data-date="2025-01-31"><td>31.01</td><td>X-BASS</td><td>viersieben</td><td>Duisburg</td></tr>
                 <tr data-date="2025-02-08"><td>08.02</td><td>Ravemania</td><td>Schlachthof</td><td>Düsseldorf</td></tr>
+                <tr data-date="2025-03-15"><td>15.03</td><td>VERKNIPT</td><td>Turbinenhalle</td><td>Oberhausen</td></tr>
+                <tr data-date="2025-05-31"><td>31.05</td><td>Rave im Stadtgarten</td><td>Stadtgarten</td><td>Gelsenkirchen</td></tr>
+                <tr data-date="2025-07-05"><td>05.07</td><td>Ruhr In Love</td><td>Olgapark</td><td>Oberhausen</td></tr>
+                <tr data-date="2025-10-31"><td>31.10</td><td>Hasenbau Halloween Special</td><td>Druckluft</td><td>Oberhausen</td></tr>
             </tbody>
         </table>
     </div>
     <script>
         // Suchfunktion
         function searchTable() {
-            const query = document.getElementById("search").value.toLowerCase(); // Suchbegriff
+            const query = document.getElementById("search").value.toLowerCase();
             const rows = document.querySelectorAll("#eventTable tbody tr");
 
             rows.forEach(row => {
-                const text = row.textContent.toLowerCase(); // Gesamttext der Zeile
-                row.style.display = text.includes(query) ? "table-row" : "none"; // Zeile anzeigen/verstecken
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? "table-row" : "none";
             });
         }
 
-        // Markiere vergangene Events
+        // Markiere vergangene Events, füge Wochentage hinzu und scrolle zu nächstem Event
         document.addEventListener("DOMContentLoaded", function() {
-            const today = new Date().toISOString().split("T")[0]; // Aktuelles Datum im Format YYYY-MM-DD
-            const rows = document.querySelectorAll("table#eventTable tbody tr");
+            const today = new Date().toISOString().split("T")[0];
+            const rows = document.querySelectorAll("#eventTable tbody tr");
+            let scrolled = false;
+
             rows.forEach(row => {
                 const eventDate = row.getAttribute("data-date");
+                const dateObj = new Date(eventDate);
+
+                // Wochentag berechnen
+                const weekdays = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+                const weekday = weekdays[dateObj.getDay()];
+                const dateCell = row.querySelector("td:first-child");
+                dateCell.textContent += ` (${weekday})`;
+
+                // Vergangene Events ausblenden
                 if (eventDate < today) {
-                    row.classList.add("past-event"); // Klasse für vergangene Events hinzufügen
+                    row.classList.add("past-event");
+                } else if (!scrolled) {
+                    // Scrolle zum ersten zukünftigen Event
+                    row.scrollIntoView({ behavior: "smooth", block: "start" });
+                    scrolled = true;
                 }
             });
         });
