@@ -12,31 +12,33 @@
             margin: 0;
             background-color: #f8f9fa;
             color: #333;
-            text-align: center;
             display: flex;
             flex-direction: column;
-            height: 100%;
+            height: 100vh; /* Höhe des Viewports */
         }
         h1 {
             color: #444;
             margin: 20px 0;
+            text-align: center;
         }
         .search-container {
             margin: 10px 0;
+            text-align: center;
         }
         .search-container input {
             width: 80%;
             max-width: 400px;
             padding: 10px;
-            font-size: 16px; /* Schriftgröße auf 16px, um Zoomen zu verhindern */
+            font-size: 16px;
             box-sizing: border-box;
         }
         .table-container {
             flex: 1;
-            overflow-y: auto;
+            overflow-y: auto; /* Ermöglicht vertikales Scrollen innerhalb des Containers */
             border: 1px solid #ddd;
             margin: 0 auto;
             max-width: 800px;
+            height: calc(100vh - 120px); /* Dynamische Höhe: passt sich an Bildschirmgröße an */
         }
         table {
             width: 100%;
@@ -50,7 +52,7 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky;
+            position: sticky; /* Fixiert die Kopfzeile */
             top: 0;
             z-index: 2;
         }
@@ -133,7 +135,7 @@
         function adjustTableHeight() {
             const headerHeight = document.querySelector("h1").offsetHeight;
             const searchHeight = document.querySelector(".search-container").offsetHeight;
-            const viewportHeight = window.visualViewport.height;
+            const viewportHeight = window.innerHeight;
 
             // Berechne die verfügbare Höhe für die Tabelle
             const tableContainer = document.getElementById("tableContainer");
