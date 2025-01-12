@@ -40,7 +40,7 @@
             border: 1px solid #ddd;
             max-width: 800px;
             margin: 0 auto;
-            height: 95%; /* Standardhöhe von 95%, wird durch JS überschrieben */
+            height: 90%; /* Standardhöhe von 95%, wird durch JS überschrieben */
         }
         table {
             width: 100%;
@@ -141,7 +141,7 @@
 
             // Berechne die verfügbare Höhe und setze sie auf 95% des sichtbaren Bereichs
             const tableContainer = document.getElementById("tableContainer");
-            tableContainer.style.height = `${0.95 * (viewportHeight - headerHeight - searchHeight)}px`;
+            tableContainer.style.height = `${0.90 * (viewportHeight - headerHeight - searchHeight)}px`;
         }
 
         // Anpassung bei Laden und Größenänderung
