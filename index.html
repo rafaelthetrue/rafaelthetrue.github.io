@@ -23,11 +23,12 @@
             margin-bottom: 0px;
             text-align: center;
             flex-shrink: 0;
-            position: relative; /* Position für das Menü-Icon */
+            position: relative; /* Relative Positionierung für das Menü-Icon */
         }
         .menu-icon {
             position: absolute;
             top: 0;
+            transform: translateY(-50%);
             right: 0;
             font-size: 24px;
             cursor: pointer;
@@ -36,10 +37,10 @@
         .table-container {
             overflow-y: auto;
             border: 1px solid #ddd;
-            max-width: 800px;
+            max-width: 800px; /* Maximale Breite der Tabelle */
             margin: 0 auto;
             height: 93%;
-            position: relative; /* Positioniert Tabelle zentral und erlaubt Anpassungen */
+            position: relative;
         }
         .menu {
             position: absolute;
