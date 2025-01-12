@@ -153,7 +153,7 @@
                 const dateObj = new Date(eventDate);
 
                 // Wochentag berechnen
-                const weekdays = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+                const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
                 const weekday = weekdays[dateObj.getDay()];
                 const dateCell = row.querySelector("td:first-child");
                 dateCell.textContent += ` (${weekday})`;
@@ -165,7 +165,12 @@
 
                 // Scrolle zum ersten zukünftigen Event
                 if (!scrolled && eventDate >= today) {
-                    row.scrollIntoView({ behavior: "smooth", block: "start" });
+                    const headerHeight = document.querySelector("th").offsetHeight; // Höhe der Kopfzeile
+                    const scrollOffset = row.offsetTop - headerHeight; // Offset für die Kopfzeile berechnen
+                    document.getElementById("tableContainer").scrollTo({
+                        top: scrollOffset,
+                        behavior: "smooth",
+                    });
                     scrolled = true;
                 }
             });
