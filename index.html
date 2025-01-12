@@ -41,7 +41,7 @@
             border: 1px solid #ddd;
             max-width: 800px;
             margin: 0 auto;
-            height: 95%; /* Standardhöhe von 95%, wird durch JS überschrieben */
+            height: 93%; /* Standardhöhe von 93%, wird durch JS überschrieben */
         }
         table {
             width: 100%;
@@ -140,9 +140,9 @@
             const searchHeight = document.querySelector(".search-container").offsetHeight;
             const viewportHeight = window.innerHeight;
 
-            // Berechne die verfügbare Höhe und setze sie auf 95% des sichtbaren Bereichs
+            // Berechne die verfügbare Höhe und setze sie auf 93% des sichtbaren Bereichs
             const tableContainer = document.getElementById("tableContainer");
-            tableContainer.style.height = `${0.95 * (viewportHeight - headerHeight - searchHeight)}px`;
+            tableContainer.style.height = `${0.93 * (viewportHeight - headerHeight - searchHeight)}px`;
         }
 
         // Anpassung bei Laden und Größenänderung
