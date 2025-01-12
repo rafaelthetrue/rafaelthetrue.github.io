@@ -8,22 +8,25 @@
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            padding: 0px;
+            padding: 0;
             margin: 0;
             background-color: #f8f9fa;
             color: #333;
             display: flex;
             flex-direction: column;
-            height: 100%; /* Volle Höhe des Dokuments */
+            height: 100vh; /* Höhe des gesamten Viewports */
+            overflow: hidden; /* Verhindert Scrollen der gesamten Seite */
         }
         h1 {
             color: #444;
             margin: 20px 0;
             text-align: center;
+            flex-shrink: 0; /* Header bleibt fixiert */
         }
         .search-container {
             margin: 10px 0;
             text-align: center;
+            flex-shrink: 0; /* Suchfeld bleibt fixiert */
         }
         .search-container input {
             width: 80%;
@@ -33,12 +36,11 @@
             box-sizing: border-box;
         }
         .table-container {
-            flex: 1;
-            overflow-y: auto; /* Ermöglicht Scrollen innerhalb des Containers */
+            flex: 1; /* Nimmt die verbleibende Höhe ein */
+            overflow-y: auto; /* Scrollen innerhalb des Containers */
             border: 1px solid #ddd;
-            margin: 0 auto;
             max-width: 800px;
-            height: calc(100vh - 120px); /* Sicherstellung der dynamischen Höhe */
+            margin: 0 auto;
         }
         table {
             width: 100%;
@@ -135,16 +137,16 @@
         function adjustTableHeight() {
             const headerHeight = document.querySelector("h1").offsetHeight;
             const searchHeight = document.querySelector(".search-container").offsetHeight;
-            const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+            const viewportHeight = window.innerHeight; // Sichtbare Höhe des Viewports
 
             // Berechne die verfügbare Höhe für die Tabelle
             const tableContainer = document.getElementById("tableContainer");
-            tableContainer.style.height = `${viewportHeight - headerHeight - searchHeight - 20}px`;
+            tableContainer.style.height = `${viewportHeight - headerHeight - searchHeight}px`;
         }
 
         // Anpassung bei Laden und Größenänderung
         window.addEventListener("DOMContentLoaded", adjustTableHeight);
-        window.visualViewport.addEventListener("resize", adjustTableHeight);
+        window.addEventListener("resize", adjustTableHeight);
 
         // Suchfunktion
         function searchTable() {
