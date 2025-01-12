@@ -20,16 +20,16 @@
         h1 {
             color: #444;
             margin-top: 20px;
-            margin-bottom: 0px;
+            margin-bottom: 0;
             text-align: center;
             flex-shrink: 0;
-            position: relative; /* Relative Positionierung für das Menü-Icon */
+            position: relative; /* Positionierung für das Icon */
         }
         .menu-icon {
             position: absolute;
-            top: 0;
-            transform: translateY(-50%);
-            right: 0;
+            top: 50%; /* Vertikal zentriert relativ zur H1 */
+            right: calc((100% - 800px) / 2); /* Rechtsbündig mit der Tabelle */
+            transform: translateY(-50%); /* Exakte vertikale Zentrierung */
             font-size: 24px;
             cursor: pointer;
             user-select: none;
@@ -44,8 +44,8 @@
         }
         .menu {
             position: absolute;
-            top: 40px;
-            right: 0;
+            top: calc(20px + 1em); /* Gleiche Höhe wie das Icon */
+            right: calc((100% - 800px) / 2);
             background-color: white;
             border: 1px solid #ddd;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
