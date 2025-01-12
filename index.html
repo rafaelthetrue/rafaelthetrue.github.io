@@ -14,19 +14,19 @@
             color: #333;
             display: flex;
             flex-direction: column;
-            height: 100vh; /* Höhe des gesamten Viewports */
-            overflow: hidden; /* Verhindert Scrollen der gesamten Seite */
+            height: 100vh; /* Gesamter sichtbarer Bereich */
+            overflow: hidden; /* Kein Scrollen der gesamten Seite */
         }
         h1 {
             color: #444;
             margin: 20px 0;
             text-align: center;
-            flex-shrink: 0; /* Header bleibt fixiert */
+            flex-shrink: 0;
         }
         .search-container {
             margin: 10px 0;
             text-align: center;
-            flex-shrink: 0; /* Suchfeld bleibt fixiert */
+            flex-shrink: 0;
         }
         .search-container input {
             width: 80%;
@@ -36,11 +36,12 @@
             box-sizing: border-box;
         }
         .table-container {
-            flex: 1; /* Nimmt die verbleibende Höhe ein */
-            overflow-y: auto; /* Scrollen innerhalb des Containers */
+            flex: 1;
+            overflow-y: auto;
             border: 1px solid #ddd;
             max-width: 800px;
             margin: 0 auto;
+            height: 95%; /* Höhe auf 95% des verfügbaren Platzes begrenzen */
         }
         table {
             width: 100%;
@@ -54,7 +55,7 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky; /* Fixierte Kopfzeile */
+            position: sticky;
             top: 0;
             z-index: 2;
         }
@@ -137,11 +138,11 @@
         function adjustTableHeight() {
             const headerHeight = document.querySelector("h1").offsetHeight;
             const searchHeight = document.querySelector(".search-container").offsetHeight;
-            const viewportHeight = window.innerHeight; // Sichtbare Höhe des Viewports
+            const viewportHeight = window.innerHeight;
 
-            // Berechne die verfügbare Höhe für die Tabelle
+            // Berechne die verfügbare Höhe und setze sie auf 95% des sichtbaren Bereichs
             const tableContainer = document.getElementById("tableContainer");
-            tableContainer.style.height = `${viewportHeight - headerHeight - searchHeight}px`;
+            tableContainer.style.height = `${0.95 * (viewportHeight - headerHeight - searchHeight)}px`;
         }
 
         // Anpassung bei Laden und Größenänderung
