@@ -19,7 +19,7 @@
         }
         h1 {
             color: #444;
-            margin: 20px 0;
+            margin: 10px 0;
             text-align: center;
             flex-shrink: 0; /* Header bleibt fixiert */
         }
@@ -40,7 +40,7 @@
             border: 1px solid #ddd;
             max-width: 800px;
             margin: 0 auto;
-            height: 90%; /* Standardhöhe von 95%, wird durch JS überschrieben */
+            height: 90%; /* Standardhöhe von 90%, wird durch JS überschrieben */
         }
         table {
             width: 100%;
@@ -78,7 +78,7 @@
         <input 
             type="text" 
             id="search" 
-            placeholder="Suchen nach Datum, Event, Location oder Stadt..."
+            placeholder="Suche Datum, Event, Location oder Stadt..."
             onkeyup="searchTable()"
         >
     </div>
@@ -133,7 +133,7 @@
         </table>
     </div>
     <script>
-        // Dynamische Anpassung der Tabelle an die sichtbare Höhe (95%)
+        // Dynamische Anpassung der Tabelle an die sichtbare Höhe (90%)
         function adjustTableHeight() {
             const headerHeight = document.querySelector("h1").offsetHeight;
             const searchHeight = document.querySelector(".search-container").offsetHeight;
@@ -170,7 +170,7 @@
                 const dateObj = new Date(eventDate);
 
                 // Wochentag berechnen
-                const weekdays = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+                const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
                 const weekday = weekdays[dateObj.getDay()];
                 const dateCell = row.querySelector("td:first-child");
                 dateCell.textContent += ` (${weekday})`;
