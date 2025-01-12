@@ -217,6 +217,15 @@
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
 
+        // Schließe das Menü, wenn außerhalb geklickt wird
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('menu');
+            const menuIcon = document.querySelector('.menu-icon');
+            if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+                menu.style.display = 'none';
+            }
+        });
+
         function adjustTableHeight() {
             const headerHeight = document.querySelector("h1").offsetHeight;
             const searchHeight = document.querySelector(".search-container").offsetHeight;
