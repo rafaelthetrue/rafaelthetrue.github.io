@@ -32,11 +32,12 @@
             box-sizing: border-box;
         }
         .table-container {
-            flex: 1; /* Nimmt die verbleibende Höhe ein */
-            overflow-y: auto; /* Ermöglicht vertikales Scrollen */
+            flex: 1;
+            overflow-y: auto;
             border: 1px solid #ddd;
             margin: 0 auto;
             max-width: 800px;
+            height: calc(100vh - 100px); /* Dynamische Höhe basierend auf der Bildschirmhöhe */
         }
         table {
             width: 100%;
@@ -50,7 +51,7 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky;
+            position: sticky; /* Fixiert die Kopfzeile */
             top: 0;
             z-index: 2;
         }
@@ -129,6 +130,21 @@
         </table>
     </div>
     <script>
+        // Dynamische Anpassung der Tabelle an die sichtbare Höhe
+        function adjustTableHeight() {
+            const headerHeight = document.querySelector("h1").offsetHeight;
+            const searchHeight = document.querySelector(".search-container").offsetHeight;
+            const viewportHeight = window.innerHeight;
+
+            // Berechne die verfügbare Höhe für die Tabelle
+            const tableContainer = document.getElementById("tableContainer");
+            tableContainer.style.height = `${viewportHeight - headerHeight - searchHeight - 20}px`;
+        }
+
+        // Anpassung bei Laden und Größenänderung
+        window.addEventListener("DOMContentLoaded", adjustTableHeight);
+        window.addEventListener("resize", adjustTableHeight);
+
         // Suchfunktion
         function searchTable() {
             const query = document.getElementById("search").value.toLowerCase();
