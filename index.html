@@ -9,30 +9,34 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             padding: 0px;
+            margin: 0;
             background-color: #f8f9fa;
             color: #333;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Gesamthöhe des Viewports */
         }
         h1 {
             color: #444;
+            margin: 20px 0;
         }
         .search-container {
-            margin: 20px auto;
-            text-align: center;
+            margin: 10px 0;
         }
         .search-container input {
-            width: 100%;
+            width: 80%;
             max-width: 400px;
             padding: 10px;
             font-size: 12px;
             box-sizing: border-box;
         }
         .table-container {
-            max-width: 800px;
-            margin: 0px auto;
+            flex: 1; /* Nimmt die verbleibende Höhe ein */
+            overflow-y: auto; /* Ermöglicht vertikales Scrollen */
             border: 1px solid #ddd;
-            overflow-y: auto;
-            max-height: 550px;
+            margin: 0 auto;
+            max-width: 800px;
         }
         table {
             width: 100%;
@@ -46,7 +50,7 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky; /* Fixiert die Kopfzeile */
+            position: sticky;
             top: 0;
             z-index: 2;
         }
@@ -58,12 +62,6 @@
             color: #888;
         }
         @media (max-width: 600px) {
-            .table-container {
-                max-width: 100%;
-            }
-            table {
-                width: 100%;
-            }
             th, td {
                 font-size: 12px;
             }
@@ -105,7 +103,7 @@
                 <tr data-date="2025-02-02"><td>02.02</td><td>OFF-SEASON Special (14 Uhr)</td><td>hafen7</td><td>Neuss</td></tr>
                 <tr data-date="2025-02-08"><td>08.02</td><td>Ravemania</td><td>Schlachthof</td><td>Düsseldorf</td></tr>
                 <tr data-date="2025-03-01"><td>01.03</td><td>Ravemania (Karneval Special)</td><td>Schlachthof</td><td>Düsseldorf</td></tr>
-                <tr data-date="2025-03-07"><td>07.03</td><td>Dopamyn Indoor Festival</td><td>Delta-Musik-Park</td><td>Essen</td></tr>
+                <tr data-date="2025-03-07"><td>07.03</td><td>DOPAMYN Indoor Festival</td><td>Delta</td><td>Essen</td></tr>
                 <tr data-date="2025-03-15"><td>15.03</td><td>VERKNIPT</td><td>Turbinenhalle</td><td>Oberhausen</td></tr>
                 <tr data-date="2025-04-26"><td>26.04</td><td>PollerWiesen Opening 2025</td><td>Jugendpark</td><td>Köln</td></tr>
                 <tr data-date="2025-05-31"><td>31.05</td><td>Heaven & Hill</td><td>Halde Norddeutschland</td><td>Neukirchen-Vluyn</td></tr>
@@ -153,7 +151,7 @@
                 const dateObj = new Date(eventDate);
 
                 // Wochentag berechnen
-                const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
+                const weekdays = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
                 const weekday = weekdays[dateObj.getDay()];
                 const dateCell = row.querySelector("td:first-child");
                 dateCell.textContent += ` (${weekday})`;
@@ -165,8 +163,8 @@
 
                 // Scrolle zum ersten zukünftigen Event
                 if (!scrolled && eventDate >= today) {
-                    const headerHeight = document.querySelector("th").offsetHeight; // Höhe der Kopfzeile
-                    const scrollOffset = row.offsetTop - headerHeight; // Offset für die Kopfzeile berechnen
+                    const headerHeight = document.querySelector("th").offsetHeight;
+                    const scrollOffset = row.offsetTop - headerHeight;
                     document.getElementById("tableContainer").scrollTo({
                         top: scrollOffset,
                         behavior: "smooth",
