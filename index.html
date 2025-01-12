@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rave Kalender 2025</title>
     <style>
         body {
@@ -15,7 +15,7 @@
             text-align: center;
             display: flex;
             flex-direction: column;
-            height: 100vh; /* Gesamthöhe des Viewports */
+            height: 100%;
         }
         h1 {
             color: #444;
@@ -28,7 +28,7 @@
             width: 80%;
             max-width: 400px;
             padding: 10px;
-            font-size: 12px;
+            font-size: 16px; /* Schriftgröße auf 16px, um Zoomen zu verhindern */
             box-sizing: border-box;
         }
         .table-container {
@@ -37,7 +37,6 @@
             border: 1px solid #ddd;
             margin: 0 auto;
             max-width: 800px;
-            height: calc(100vh - 100px); /* Dynamische Höhe basierend auf der Bildschirmhöhe */
         }
         table {
             width: 100%;
@@ -51,7 +50,7 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky; /* Fixiert die Kopfzeile */
+            position: sticky;
             top: 0;
             z-index: 2;
         }
@@ -134,7 +133,7 @@
         function adjustTableHeight() {
             const headerHeight = document.querySelector("h1").offsetHeight;
             const searchHeight = document.querySelector(".search-container").offsetHeight;
-            const viewportHeight = window.innerHeight;
+            const viewportHeight = window.visualViewport.height;
 
             // Berechne die verfügbare Höhe für die Tabelle
             const tableContainer = document.getElementById("tableContainer");
