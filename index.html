@@ -18,12 +18,12 @@
             overflow: hidden;
         }
         .header {
-            position: relative;
-            max-width: 800px;
-            margin: 20px auto; /* Zentriert den Header */
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between; /* Abstand zwischen Titel und Icon */
+            max-width: 800px; /* Gleiche Breite wie die Tabelle */
+            margin: 20px auto; /* Zentriert den Header */
+            position: relative;
         }
         h1 {
             color: #444;
@@ -34,8 +34,10 @@
             font-size: 24px;
             cursor: pointer;
             position: absolute;
-            top: 0;
-            transform: translateY(-50%);
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%); /* Vertikale Zentrierung */
+            user-select: none;
         }
         .menu {
             position: absolute;
@@ -93,7 +95,7 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky;
+            position: sticky; /* Fixiert Kopfzeile */
             top: 0;
             z-index: 2;
         }
@@ -142,7 +144,7 @@
                 </tr>
             </thead>
             <tbody>
-                  <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
+                <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
 
                 <tr data-date="2025-01-11"><td>11.01</td><td>Cyber Netic</td><td>PM93</td><td>Essen</td></tr>
 
@@ -235,12 +237,15 @@
             }
         });
 
-        // Positioniere das Menü-Icon dynamisch
+        // Dynamische Positionierung des Icons
         function positionMenuIcon() {
             const tableContainer = document.querySelector('.table-container');
             const menuIcon = document.getElementById('menuIcon');
             const containerRightEdge = tableContainer.getBoundingClientRect().right;
-            menuIcon.style.left = `${containerRightEdge}px`; // Positioniere das Icon
+            const headerRightEdge = tableContainer.getBoundingClientRect().left + tableContainer.offsetWidth;
+
+            // Positioniere das Icon an der rechten Kante der Tabelle
+            menuIcon.style.right = `${window.innerWidth - headerRightEdge}px`;
         }
 
         window.addEventListener('DOMContentLoaded', positionMenuIcon);
