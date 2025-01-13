@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Raves 2025 - ravebro.de</title>
+    <title>Raves 2025 - Debugging</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 0;
             margin: 0;
+            padding: 0;
             background-color: #f8f9fa;
             color: #333;
             display: flex;
@@ -29,10 +28,11 @@
             font-size: 24px;
         }
         .menu-icon-container {
-            margin: 0; /* Keine zusätzlichen Abstände */
+            margin: 0;
             padding: 0;
-            width: 100%; /* Dynamische Breite basierend auf Tabelle */
-            text-align: center; /* Zentriert das Icon innerhalb des Containers */
+            width: 100%; /* Dynamische Breite */
+            text-align: center; /* Zentriert das Icon */
+            background-color: lightblue; /* Debugging: Sichtbarer Hintergrund */
         }
         .menu-icon {
             font-size: 24px;
@@ -60,9 +60,6 @@
         .menu a:hover {
             background-color: #f4f4f4;
         }
-        .menu a:last-child {
-            border-bottom: none;
-        }
         .search-container {
             margin: 10px 0;
             text-align: center;
@@ -72,7 +69,6 @@
             max-width: 400px;
             padding: 10px;
             font-size: 16px;
-            box-sizing: border-box;
         }
         .table-container {
             overflow-y: auto;
@@ -80,7 +76,6 @@
             max-width: 800px;
             margin: 0 auto;
             height: 93%;
-            position: relative;
         }
         table {
             width: 100%;
@@ -94,16 +89,12 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky; /* Fixiert Kopfzeile */
+            position: sticky;
             top: 0;
             z-index: 2;
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
-        }
-        tr.past-event td {
-            text-decoration: line-through;
-            color: #888;
         }
     </style>
 </head>
@@ -119,12 +110,7 @@
         <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
     </div>
     <div class="search-container">
-        <input 
-            type="text" 
-            id="search" 
-            placeholder="Suche Datum, Event, Location oder Stadt..."
-            onkeyup="searchTable()"
-        >
+        <input type="text" id="search" placeholder="Suche Datum, Event, Location oder Stadt...">
     </div>
     <div class="table-container" id="tableContainer">
         <table id="eventTable">
@@ -221,25 +207,18 @@
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        // Dynamische Anpassung der Breite des Icon-Containers
         function adjustIconContainerWidth() {
             const tableContainer = document.getElementById('tableContainer');
             const menuIconContainer = document.getElementById('menuIconContainer');
-            menuIconContainer.style.width = `${tableContainer.offsetWidth}px`;
+            const tableWidth = tableContainer.offsetWidth;
+
+            console.log(`Table width: ${tableWidth}px`); // Debugging: Breite der Tabelle
+            menuIconContainer.style.width = `${tableWidth}px`;
         }
 
-        // Aufrufen bei Laden und Resizing der Seite
+        // Initial und bei Fensteränderung aufrufen
         window.addEventListener('DOMContentLoaded', adjustIconContainerWidth);
         window.addEventListener('resize', adjustIconContainerWidth);
-
-        function searchTable() {
-            const query = document.getElementById("search").value.toLowerCase();
-            const rows = document.querySelectorAll("#eventTable tbody tr");
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(query) ? "table-row" : "none";
-            });
-        }
     </script>
 </body>
 </html>
