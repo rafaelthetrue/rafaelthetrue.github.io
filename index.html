@@ -18,12 +18,12 @@
             overflow: hidden;
         }
         .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between; /* Abstand zwischen Titel und Icon */
-            max-width: 800px; /* Gleiche Breite wie die Tabelle */
-            margin: 20px auto; /* Zentriert den Header über der Tabelle */
             position: relative;
+            max-width: 800px;
+            margin: 20px auto; /* Zentriert den Header */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         h1 {
             color: #444;
@@ -33,7 +33,9 @@
         .menu-icon {
             font-size: 24px;
             cursor: pointer;
-            user-select: none;
+            position: absolute;
+            top: 0;
+            transform: translateY(-50%);
         }
         .menu {
             position: absolute;
@@ -91,7 +93,7 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky; /* Fixiert Kopfzeile */
+            position: sticky;
             top: 0;
             z-index: 2;
         }
@@ -115,7 +117,7 @@
 <body>
     <div class="header">
         <h1>Raves 2025</h1>
-        <div class="menu-icon" onclick="toggleMenu()">☰</div>
+        <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
     </div>
     <div class="menu" id="menu">
         <a href="impressum.html">Impressum</a>
@@ -140,7 +142,7 @@
                 </tr>
             </thead>
             <tbody>
-                 <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
+                  <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
 
                 <tr data-date="2025-01-11"><td>11.01</td><td>Cyber Netic</td><td>PM93</td><td>Essen</td></tr>
 
@@ -227,11 +229,22 @@
         // Schließe das Menü, wenn außerhalb geklickt wird
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('menu');
-            const menuIcon = document.querySelector('.menu-icon');
+            const menuIcon = document.getElementById('menuIcon');
             if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
                 menu.style.display = 'none';
             }
         });
+
+        // Positioniere das Menü-Icon dynamisch
+        function positionMenuIcon() {
+            const tableContainer = document.querySelector('.table-container');
+            const menuIcon = document.getElementById('menuIcon');
+            const containerRightEdge = tableContainer.getBoundingClientRect().right;
+            menuIcon.style.left = `${containerRightEdge}px`; // Positioniere das Icon
+        }
+
+        window.addEventListener('DOMContentLoaded', positionMenuIcon);
+        window.addEventListener('resize', positionMenuIcon);
 
         function searchTable() {
             const query = document.getElementById("search").value.toLowerCase();
