@@ -29,10 +29,10 @@
             font-size: 24px;
         }
         .menu-icon-container {
-            margin: 0; /* Keine Abstände */
+            margin: 0; /* Keine zusätzlichen Abstände */
             padding: 0;
-            width: 100%; /* Initiale Breite, wird dynamisch angepasst */
-            text-align: center;
+            width: 100%; /* Dynamische Breite basierend auf Tabelle */
+            text-align: center; /* Zentriert das Icon innerhalb des Containers */
         }
         .menu-icon {
             font-size: 24px;
@@ -220,15 +220,6 @@
             const menu = document.getElementById('menu');
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
-
-        // Schließe das Menü, wenn außerhalb geklickt wird
-        document.addEventListener('click', function(event) {
-            const menu = document.getElementById('menu');
-            const menuIcon = document.getElementById('menuIcon');
-            if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
-                menu.style.display = 'none';
-            }
-        });
 
         // Dynamische Anpassung der Breite des Icon-Containers
         function adjustIconContainerWidth() {
