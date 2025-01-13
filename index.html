@@ -39,6 +39,7 @@
             font-size: 24px;
             cursor: pointer;
             display: inline-block;
+            text-align: right;
         }
         .menu {
             position: absolute;
@@ -108,9 +109,9 @@
         .date-cell {
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Vertikal zentrieren */
-            align-items: center; /* Horizontal zentrieren */
-            height: 100%; /* Höhe der Zelle */
+            justify-content: center;
+            align-items: center;
+            height: 100%;
             text-align: center;
         }
         .date-cell span {
@@ -149,7 +150,7 @@
                 </tr>
             </thead>
             <tbody>
-    <tr data-date="2025-01-10">
+                    <tr data-date="2025-01-10">
         <td class="date-cell">10.01<br><span></span></td>
         <td>Karamustan All Night Long</td>
         <td>Matrix</td>
@@ -440,7 +441,6 @@
 
         function searchTable() {
             const query = document.getElementById("search").value.toLowerCase();
-            const rows = document.querySelectorAll("#
             const rows = document.querySelectorAll("#eventTable tbody tr");
 
             rows.forEach(row => {
