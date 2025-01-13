@@ -33,7 +33,7 @@
             text-align: right;
             position: relative;
             width: auto;
-            max-width: 800px; /* Dynamisch an Tabelle gekoppelt */
+            max-width: 800px;
         }
         .menu-icon {
             font-size: 24px;
@@ -380,13 +380,11 @@
         </table>
     </div>
     <script>
-        // Menü-Logik
         function toggleMenu() {
             const menu = document.getElementById('menu');
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        // Menü schließen bei Klick außerhalb
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('menu');
             const menuIcon = document.getElementById('menuIcon');
@@ -395,7 +393,6 @@
             }
         });
 
-        // Dynamische Breite des Icon-Containers
         function adjustIconContainerWidth() {
             const tableContainer = document.getElementById('tableContainer');
             const menuIconContainer = document.getElementById('menuIconContainer');
@@ -405,10 +402,10 @@
         window.addEventListener('DOMContentLoaded', adjustIconContainerWidth);
         window.addEventListener('resize', adjustIconContainerWidth);
 
-        // Vergangene Events und Wochentage
         document.addEventListener("DOMContentLoaded", function () {
             const today = new Date().toISOString().split("T")[0];
             const rows = document.querySelectorAll("#eventTable tbody tr");
+            let scrolled = false;
 
             rows.forEach(row => {
                 const eventDate = row.getAttribute("data-date");
@@ -423,13 +420,26 @@
                     if (eventDate < today) {
                         row.classList.add("past-event");
                     }
+
+                    if (!scrolled && eventDate >= today) {
+                        const tableContainer = document.getElementById("tableContainer");
+                        const headerHeight = document.querySelector("th").offsetHeight;
+                        const rowOffset = row.offsetTop - headerHeight;
+
+                        tableContainer.scrollTo({
+                            top: rowOffset,
+                            behavior: "smooth"
+                        });
+
+                        scrolled = true;
+                    }
                 }
             });
         });
 
-        // Suchfunktion
         function searchTable() {
             const query = document.getElementById("search").value.toLowerCase();
+            const rows = document.querySelectorAll("#
             const rows = document.querySelectorAll("#eventTable tbody tr");
 
             rows.forEach(row => {
