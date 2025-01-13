@@ -27,9 +27,8 @@
         }
         .menu-icon {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            right: 10px; /* Dynamisch an die Tabelle angepasst */
+            top: 0;
+            transform: translateY(0); /* Vertikale Anpassung */
             font-size: 24px;
             cursor: pointer;
             user-select: none;
@@ -37,7 +36,6 @@
         .menu {
             position: absolute;
             top: 40px;
-            right: 10px;
             background-color: white;
             border: 1px solid #ddd;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -113,7 +111,7 @@
 </head>
 <body>
     <h1>Raves 2025
-        <div class="menu-icon" onclick="toggleMenu()">☰</div>
+        <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
     </h1>
     <div class="menu" id="menu">
         <a href="impressum.html">Impressum</a>
@@ -225,22 +223,24 @@
         // Schließe das Menü, wenn außerhalb geklickt wird
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('menu');
-            const menuIcon = document.querySelector('.menu-icon');
+            const menuIcon = document.getElementById('menuIcon');
             if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
                 menu.style.display = 'none';
             }
         });
 
-        function adjustTableHeight() {
-            const headerHeight = document.querySelector("h1").offsetHeight;
-            const searchHeight = document.querySelector(".search-container").offsetHeight;
-            const viewportHeight = window.innerHeight;
-            const tableContainer = document.getElementById("tableContainer");
-            tableContainer.style.height = `${0.93 * (viewportHeight - headerHeight - searchHeight)}px`;
+        // Dynamische Positionierung des Icons
+        function positionMenuIcon() {
+            const tableContainer = document.querySelector('.table-container');
+            const menuIcon = document.getElementById('menuIcon');
+            const containerRightEdge = tableContainer.getBoundingClientRect().right;
+            const offset = window.innerWidth - containerRightEdge;
+            menuIcon.style.right = `${offset}px`;
+            menuIcon.style.top = `${tableContainer.getBoundingClientRect().top - 20}px`;
         }
 
-        window.addEventListener("DOMContentLoaded", adjustTableHeight);
-        window.addEventListener("resize", adjustTableHeight);
+        window.addEventListener('DOMContentLoaded', positionMenuIcon);
+        window.addEventListener('resize', positionMenuIcon);
 
         function searchTable() {
             const query = document.getElementById("search").value.toLowerCase();
