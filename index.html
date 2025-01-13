@@ -75,12 +75,12 @@
             font-size: 16px;
         }
         .table-container {
-            overflow-x: auto;
             overflow-y: auto;
             border: 1px solid #ddd;
             max-width: 100%;
             margin: 0 auto;
             height: 93%;
+            position: relative;
         }
         table {
             width: 100%;
@@ -407,6 +407,17 @@
                 menu.style.display = 'none';
             }
         });
+
+        function adjustTableHeight() {
+            const headerHeight = document.querySelector("h1").offsetHeight;
+            const searchHeight = document.querySelector(".search-container").offsetHeight;
+            const viewportHeight = window.innerHeight;
+            const tableContainer = document.getElementById("tableContainer");
+            tableContainer.style.height = `${0.93 * (viewportHeight - headerHeight - searchHeight)}px`;
+        }
+
+        window.addEventListener("DOMContentLoaded", adjustTableHeight);
+        window.addEventListener("resize", adjustTableHeight);
 
         function searchTable() {
             const query = document.getElementById("search").value.toLowerCase();
