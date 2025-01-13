@@ -125,9 +125,6 @@
             display: block;
             margin-top: 0px;
         }
-        tr.past-event td .date-cell span {
-            color: #888 !important; /* Gleiche graue Farbe wie der Rest des Textes */
-        }
         @media (max-width: 600px) {
         body {
             font-size: 14px; /* Kleinere Schrift für mobile Endgeräte */
@@ -467,6 +464,20 @@
                             top: rowOffset,
                             behavior: "smooth"
                         });
+                        
+    document.addEventListener("DOMContentLoaded", function () {
+    const today = new Date().toISOString().split("T")[0];
+    const rows = document.querySelectorAll("#eventTable tbody tr");
+
+    rows.forEach(row => {
+        const eventDate = row.getAttribute("data-date");
+        const dateCellSpan = row.querySelector(".date-cell span");
+
+        if (eventDate < today && dateCellSpan) {
+            dateCellSpan.style.color = "#888"; // Setze die graue Farbe
+        }
+    });
+});
 
                         scrolled = true;
                     }
