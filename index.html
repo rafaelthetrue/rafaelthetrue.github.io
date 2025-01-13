@@ -400,6 +400,27 @@
                 row.style.display = text.includes(query) ? "table-row" : "none";
             });
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const today = new Date().toISOString().split("T")[0];
+            const rows = document.querySelectorAll("#eventTable tbody tr");
+
+            rows.forEach(row => {
+                const eventDate = row.getAttribute("data-date");
+                const dateObj = new Date(eventDate);
+
+                if (!isNaN(dateObj)) {
+                    const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
+                    const weekday = weekdays[dateObj.getDay()];
+                    const dateCell = row.querySelector(".date-cell span");
+                    dateCell.textContent = weekday;
+
+                    if (eventDate < today) {
+                        row.classList.add("past-event");
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
