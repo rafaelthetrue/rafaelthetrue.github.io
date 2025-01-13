@@ -18,16 +18,16 @@
             overflow: hidden;
         }
         .header {
+            position: relative;
+            max-width: 800px;
+            margin: 20px auto; /* Zentriert den Header */
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Abstand zwischen Titel und Icon */
-            max-width: 800px; /* Gleiche Breite wie die Tabelle */
-            margin: 20px auto; /* Zentriert den Header */
-            position: relative;
+            justify-content: space-between;
         }
         h1 {
             color: #444;
-            margin: 0;
+            margin: 0; /* Keine zusätzliche Margin */
             font-size: 24px;
         }
         .menu-icon {
@@ -35,8 +35,8 @@
             cursor: pointer;
             position: absolute;
             right: 0;
-            top: 50%;
-            transform: translateY(-50%); /* Vertikale Zentrierung */
+            top: 0;
+            transform: translateY(-50%);
             user-select: none;
         }
         .menu {
@@ -64,7 +64,7 @@
             border-bottom: none;
         }
         .search-container {
-            margin: 10px 0;
+            margin: 10px 0; /* Ursprünglicher Abstand wiederhergestellt */
             text-align: center;
             flex-shrink: 0;
         }
@@ -242,10 +242,12 @@
             const tableContainer = document.querySelector('.table-container');
             const menuIcon = document.getElementById('menuIcon');
             const containerRightEdge = tableContainer.getBoundingClientRect().right;
-            const headerRightEdge = tableContainer.getBoundingClientRect().left + tableContainer.offsetWidth;
 
-            // Positioniere das Icon an der rechten Kante der Tabelle
-            menuIcon.style.right = `${window.innerWidth - headerRightEdge}px`;
+            // Setze das Icon rechtsbündig an die Tabelle
+            const viewportWidth = window.innerWidth;
+            const iconOffset = viewportWidth - containerRightEdge;
+            menuIcon.style.right = `${iconOffset}px`;
+            menuIcon.style.top = `20px`; // Gleiche Höhe wie der Titel
         }
 
         window.addEventListener('DOMContentLoaded', positionMenuIcon);
