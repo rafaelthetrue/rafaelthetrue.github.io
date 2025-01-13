@@ -86,7 +86,7 @@
             border-collapse: collapse;
         }
         th, td {
-            border: 1px solid #ddd; /* Standardmäßiger Rahmen */
+            border: 1px solid #ddd;
             padding: 10px;
             text-align: left;
             font-size: 14px;
@@ -404,6 +404,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const today = new Date().toISOString().split("T")[0];
             const rows = document.querySelectorAll("#eventTable tbody tr");
+            let scrolled = false;
 
             rows.forEach(row => {
                 const eventDate = row.getAttribute("data-date");
@@ -417,6 +418,19 @@
 
                     if (eventDate < today) {
                         row.classList.add("past-event");
+                    }
+
+                    if (!scrolled && eventDate >= today) {
+                        const tableContainer = document.getElementById("tableContainer");
+                        const headerHeight = document.querySelector("th").offsetHeight;
+                        const rowOffset = row.offsetTop - headerHeight;
+
+                        tableContainer.scrollTo({
+                            top: rowOffset,
+                            behavior: "smooth"
+                        });
+
+                        scrolled = true;
                     }
                 }
             });
