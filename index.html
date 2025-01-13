@@ -32,6 +32,7 @@
             margin: 0 auto;
             width: 100%;
             text-align: right;
+            position: relative;
         }
         .menu-icon {
             font-size: 24px;
@@ -41,7 +42,7 @@
         }
         .menu {
             position: absolute;
-            top: calc(100% + 5px);
+            top: 40px; /* Dynamisch angepasst */
             right: 10px;
             background-color: white;
             border: 1px solid #ddd;
@@ -225,6 +226,10 @@
     <script>
         function toggleMenu() {
             const menu = document.getElementById('menu');
+            const icon = document.getElementById('menuIcon');
+            const iconRect = icon.getBoundingClientRect();
+            menu.style.top = `${iconRect.bottom}px`;
+            menu.style.right = `${window.innerWidth - iconRect.right}px`;
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
 
@@ -237,16 +242,13 @@
             }
         });
 
-        // Dynamische Anpassung der Breite des Icon-Containers
+        // Dynamische Breite des Icon-Containers
         function adjustIconContainerWidth() {
             const tableContainer = document.getElementById('tableContainer');
             const menuIconContainer = document.getElementById('menuIconContainer');
-            const tableWidth = tableContainer.offsetWidth;
-
-            menuIconContainer.style.width = `${tableWidth}px`;
+            menuIconContainer.style.width = `${tableContainer.offsetWidth}px`;
         }
 
-        // Automatische Anpassung bei Laden und Größenänderung
         window.addEventListener('DOMContentLoaded', adjustIconContainerWidth);
         window.addEventListener('resize', adjustIconContainerWidth);
 
