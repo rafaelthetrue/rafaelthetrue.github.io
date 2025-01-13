@@ -42,6 +42,8 @@
         }
         .menu {
             position: absolute;
+            top: 100%; /* Direkt unterhalb des Icons */
+            right: 0; /* Rechtsbündig zum Icon */
             background-color: white;
             border: 1px solid #ddd;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -117,7 +119,7 @@
     <div class="header">
         <h1>Raves 2025</h1>
     </div>
-    <div class="menu-icon-container" id="menuIconContainer">
+    <div class="menu-icon-container">
         <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
         <div class="menu" id="menu">
             <a href="impressum.html">Impressum</a>
@@ -152,12 +154,6 @@
     <script>
         function toggleMenu() {
             const menu = document.getElementById('menu');
-            const icon = document.getElementById('menuIcon');
-            const iconRect = icon.getBoundingClientRect();
-
-            // Menü exakt nach links und unten positionieren
-            menu.style.top = `${iconRect.bottom + window.scrollY}px`;
-            menu.style.left = `${iconRect.right - menu.offsetWidth + window.scrollX}px`;
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
 
