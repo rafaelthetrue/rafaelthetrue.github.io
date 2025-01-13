@@ -86,7 +86,7 @@
             border-collapse: collapse;
         }
         th, td {
-            border: 1px solid #ddd; /* Äußerer Rahmen bleibt erhalten */
+            border: 1px solid #ddd; /* Standardmäßiger Rahmen */
             padding: 10px;
             text-align: left;
             font-size: 14px;
@@ -106,21 +106,13 @@
             color: #888;
         }
         .date-cell {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            padding: 0;
-            box-sizing: border-box;
-            border: none;
-            background-color: transparent;
-            width: 100%;
             text-align: center;
         }
         .date-cell span {
             font-size: 12px;
             color: #555;
+            display: block;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -397,50 +389,6 @@
             if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
                 menu.style.display = 'none';
             }
-        });
-
-        function adjustIconContainerWidth() {
-            const tableContainer = document.getElementById('tableContainer');
-            const menuIconContainer = document.getElementById('menuIconContainer');
-            menuIconContainer.style.width = `${tableContainer.offsetWidth}px`;
-        }
-
-        window.addEventListener('DOMContentLoaded', adjustIconContainerWidth);
-        window.addEventListener('resize', adjustIconContainerWidth);
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const today = new Date().toISOString().split("T")[0];
-            const rows = document.querySelectorAll("#eventTable tbody tr");
-            let scrolled = false;
-
-            rows.forEach(row => {
-                const eventDate = row.getAttribute("data-date");
-                const dateObj = new Date(eventDate);
-
-                if (!isNaN(dateObj)) {
-                    const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
-                    const weekday = weekdays[dateObj.getDay()];
-                    const dateCell = row.querySelector(".date-cell");
-                    dateCell.innerHTML = `${eventDate.slice(8, 10)}.${eventDate.slice(5, 7)}<br><span>${weekday}</span>`;
-
-                    if (eventDate < today) {
-                        row.classList.add("past-event");
-                    }
-
-                    if (!scrolled && eventDate >= today) {
-                        const tableContainer = document.getElementById("tableContainer");
-                        const headerHeight = document.querySelector("th").offsetHeight;
-                        const rowOffset = row.offsetTop - headerHeight;
-
-                        tableContainer.scrollTo({
-                            top: rowOffset,
-                            behavior: "smooth"
-                        });
-
-                        scrolled = true;
-                    }
-                }
-            });
         });
 
         function searchTable() {
