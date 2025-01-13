@@ -20,21 +20,21 @@
         .header {
             position: relative;
             max-width: 800px;
-            margin: 20px auto; /* Zentriert den Header */
+            margin: 0 auto; /* Zentriert den Header */
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
         h1 {
             color: #444;
-            margin-top: 20px; /* Ursprünglicher Abstand */
-            margin-bottom: 15px; /* Abstand zum Suchfeld */
+            margin: 20px 0 10px; /* Exakter Abstand: 20px oben, 10px unten */
             font-size: 24px;
         }
         .menu-icon {
             font-size: 24px;
             cursor: pointer;
             position: absolute;
+            right: 0;
             top: 50%;
             transform: translateY(-50%);
             user-select: none;
@@ -64,7 +64,7 @@
             border-bottom: none;
         }
         .search-container {
-            margin: 10px 0; /* Ursprünglicher Abstand */
+            margin: 10px 0; /* Ursprünglicher Abstand zwischen H1 und Suchfeld */
             text-align: center;
             flex-shrink: 0;
         }
@@ -145,7 +145,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
+                 <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
 
                 <tr data-date="2025-01-11"><td>11.01</td><td>Cyber Netic</td><td>PM93</td><td>Essen</td></tr>
 
