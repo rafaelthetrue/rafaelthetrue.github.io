@@ -18,25 +18,21 @@
             overflow: hidden;
         }
         .header {
-            position: relative;
             max-width: 800px;
             margin: 0 auto;
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
+            text-align: center;
         }
         h1 {
             color: #444;
-            margin: 20px 0 10px;
+            margin-top: 20px;
+            margin-bottom: 10px;
             font-size: 24px;
-            line-height: 1.2;
         }
         .menu-icon {
             font-size: 24px;
             cursor: pointer;
-            position: absolute;
-            top: 0;
-            user-select: none;
+            margin: 10px auto; /* Zentriert das Icon */
+            display: inline-block;
         }
         .menu {
             position: absolute;
@@ -93,7 +89,7 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky;
+            position: sticky; /* Fixiert Kopfzeile */
             top: 0;
             z-index: 2;
         }
@@ -134,7 +130,7 @@
                 </tr>
             </thead>
             <tbody>
-                 <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
+                <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
 
                 <tr data-date="2025-01-11"><td>11.01</td><td>Cyber Netic</td><td>PM93</td><td>Essen</td></tr>
 
@@ -218,21 +214,14 @@
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        // Dynamische Positionierung des Icons
-        function positionMenuIcon() {
-            const tableContainer = document.querySelector('.table-container');
+        // Schließe das Menü, wenn außerhalb geklickt wird
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('menu');
             const menuIcon = document.getElementById('menuIcon');
-            const tableRightEdge = tableContainer.getBoundingClientRect().right;
-            const headerTop = document.querySelector("h1").getBoundingClientRect().top;
-
-            // Positioniere das Icon rechtsbündig mit der Tabelle
-            menuIcon.style.left = `${tableRightEdge - menuIcon.offsetWidth}px`;
-            // Vertikale Positionierung bündig mit der H1-Oberkante
-            menuIcon.style.top = `${headerTop}px`;
-        }
-
-        window.addEventListener('DOMContentLoaded', positionMenuIcon);
-        window.addEventListener('resize', positionMenuIcon);
+            if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+                menu.style.display = 'none';
+            }
+        });
 
         function searchTable() {
             const query = document.getElementById("search").value.toLowerCase();
