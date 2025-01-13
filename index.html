@@ -20,23 +20,22 @@
         .header {
             position: relative;
             max-width: 800px;
-            margin: 0 auto; /* Zentriert den Header */
+            margin: 0 auto;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
         }
         h1 {
             color: #444;
-            margin: 20px 0 10px; /* Exakter Abstand: 20px oben, 10px unten */
+            margin: 20px 0 10px;
             font-size: 24px;
+            line-height: 1.2;
         }
         .menu-icon {
             font-size: 24px;
             cursor: pointer;
             position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 0;
             user-select: none;
         }
         .menu {
@@ -64,9 +63,8 @@
             border-bottom: none;
         }
         .search-container {
-            margin: 10px 0; /* Ursprünglicher Abstand zwischen H1 und Suchfeld */
+            margin: 10px 0;
             text-align: center;
-            flex-shrink: 0;
         }
         .search-container input {
             width: 80%;
@@ -95,7 +93,7 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky; /* Fixiert Kopfzeile */
+            position: sticky;
             top: 0;
             z-index: 2;
         }
@@ -105,15 +103,6 @@
         tr.past-event td {
             text-decoration: line-through;
             color: #888;
-        }
-        @media (max-width: 800px) {
-            .menu-icon {
-                font-size: 20px;
-                right: 10px; /* Für Mobilansicht rechtsbündig zur Seite */
-            }
-            th, td {
-                font-size: 12px;
-            }
         }
     </style>
 </head>
@@ -229,28 +218,17 @@
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        // Schließe das Menü, wenn außerhalb geklickt wird
-        document.addEventListener('click', function(event) {
-            const menu = document.getElementById('menu');
-            const menuIcon = document.getElementById('menuIcon');
-            if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
-                menu.style.display = 'none';
-            }
-        });
-
         // Dynamische Positionierung des Icons
         function positionMenuIcon() {
             const tableContainer = document.querySelector('.table-container');
             const menuIcon = document.getElementById('menuIcon');
-            const containerRightEdge = tableContainer.getBoundingClientRect().right;
+            const tableRightEdge = tableContainer.getBoundingClientRect().right;
+            const headerTop = document.querySelector("h1").getBoundingClientRect().top;
 
-            // Setze das Icon rechtsbündig an die Tabelle (Desktop)
-            menuIcon.style.left = `${containerRightEdge - menuIcon.offsetWidth}px`;
-
-            // Für Mobilansicht (Maximalabstand sicherstellen)
-            if (window.innerWidth <= 800) {
-                menuIcon.style.left = `calc(100% - 40px)`; /* Rechtsbündig mit Seitenrand */
-            }
+            // Positioniere das Icon rechtsbündig mit der Tabelle
+            menuIcon.style.left = `${tableRightEdge - menuIcon.offsetWidth}px`;
+            // Vertikale Positionierung bündig mit der H1-Oberkante
+            menuIcon.style.top = `${headerTop}px`;
         }
 
         window.addEventListener('DOMContentLoaded', positionMenuIcon);
@@ -264,34 +242,6 @@
                 row.style.display = text.includes(query) ? "table-row" : "none";
             });
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const today = new Date().toISOString().split("T")[0];
-            const rows = document.querySelectorAll("#eventTable tbody tr");
-            let scrolled = false;
-            rows.forEach(row => {
-                const eventDate = row.getAttribute("data-date");
-                const dateObj = new Date(eventDate);
-                const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
-                const weekday = weekdays[dateObj.getDay()];
-                const dateCell = row.querySelector("td:first-child");
-                dateCell.textContent += ` (${weekday})`;
-
-                if (eventDate < today) {
-                    row.classList.add("past-event");
-                }
-
-                if (!scrolled && eventDate >= today) {
-                    const headerHeight = document.querySelector("th").offsetHeight;
-                    const scrollOffset = row.offsetTop - headerHeight;
-                    document.getElementById("tableContainer").scrollTo({
-                        top: scrollOffset,
-                        behavior: "smooth",
-                    });
-                    scrolled = true;
-                }
-            });
-        });
     </script>
 </body>
 </html>
