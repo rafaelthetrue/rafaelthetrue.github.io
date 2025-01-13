@@ -42,8 +42,8 @@
         }
         .menu {
             position: absolute;
-            top: 40px; /* Dynamisch angepasst */
-            right: 10px;
+            top: 0;
+            left: 0;
             background-color: white;
             border: 1px solid #ddd;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -228,8 +228,10 @@
             const menu = document.getElementById('menu');
             const icon = document.getElementById('menuIcon');
             const iconRect = icon.getBoundingClientRect();
-            menu.style.top = `${iconRect.bottom}px`;
-            menu.style.right = `${window.innerWidth - iconRect.right}px`;
+
+            // Positioniere das Menü direkt unter dem Icon
+            menu.style.top = `${window.scrollY + iconRect.bottom}px`;
+            menu.style.left = `${window.scrollX + iconRect.left}px`;
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
 
