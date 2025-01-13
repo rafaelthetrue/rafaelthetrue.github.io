@@ -33,17 +33,12 @@
             text-align: right;
             position: relative;
             width: auto;
+            max-width: 800px; /* Gleiche Breite wie Tabelle */
         }
         .menu-icon {
             font-size: 24px;
             cursor: pointer;
             display: inline-block;
-            margin-right: 10px;
-        }
-        @media (max-width: 600px) {
-            .menu-icon {
-                font-size: 20px; /* Größe für mobile Ansicht */
-            }
         }
         .menu {
             position: absolute;
@@ -113,13 +108,13 @@
         .date-cell {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%; /* Gesamte Höhe */
+            justify-content: center; /* Vertikal zentrieren */
+            align-items: center; /* Horizontal zentrieren */
+            height: 100%; /* Höhe der Zelle */
             text-align: center;
         }
         .date-cell span {
-            font-size: 12px; /* Kleiner für Wochentag */
+            font-size: 12px;
             color: #555;
         }
     </style>
@@ -390,16 +385,6 @@
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        // Schließe das Menü bei Klick außerhalb
-        document.addEventListener('click', function(event) {
-            const menu = document.getElementById('menu');
-            const menuIcon = document.getElementById('menuIcon');
-            if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
-                menu.style.display = 'none';
-            }
-        });
-
-        // Markiere vergangene Events und füge Wochentage hinzu
         document.addEventListener("DOMContentLoaded", function () {
             const today = new Date().toISOString().split("T")[0];
             const rows = document.querySelectorAll("#eventTable tbody tr");
@@ -409,29 +394,17 @@
                 const dateObj = new Date(eventDate);
 
                 if (!isNaN(dateObj)) {
-                    // Wochentag hinzufügen
                     const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
                     const weekday = weekdays[dateObj.getDay()];
                     const dateCell = row.querySelector(".date-cell");
                     dateCell.innerHTML = `${eventDate.slice(8, 10)}.${eventDate.slice(5, 7)}<br><span>${weekday}</span>`;
 
-                    // Vergangene Events durchstreichen
                     if (eventDate < today) {
                         row.classList.add("past-event");
                     }
                 }
             });
         });
-
-        function searchTable() {
-            const query = document.getElementById("search").value.toLowerCase();
-            const rows = document.querySelectorAll("#eventTable tbody tr");
-
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(query) ? "table-row" : "none";
-            });
-        }
     </script>
 </body>
 </html>
