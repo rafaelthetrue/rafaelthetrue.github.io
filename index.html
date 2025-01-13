@@ -29,10 +29,10 @@
             font-size: 24px;
         }
         .menu-icon-container {
-            margin: 0 auto; /* Zentriert den Container auf der Seite */
-            text-align: right; /* Icon im Container rechtsbündig */
-            position: relative; /* Grundlage für absolutes Menü */
-            width: auto; /* Dynamische Breite durch JS */
+            margin: 0 auto;
+            text-align: right;
+            position: relative;
+            width: auto;
         }
         .menu-icon {
             font-size: 24px;
@@ -40,16 +40,21 @@
             display: inline-block;
             margin-right: 10px;
         }
+        @media (max-width: 600px) {
+            .menu-icon {
+                font-size: 20px; /* Größe für mobile Ansicht */
+            }
+        }
         .menu {
             position: absolute;
-            top: 100%; /* Direkt unterhalb des Icons */
-            right: 0; /* Rechtsbündig zum Icon */
+            top: 100%;
+            right: 0;
             background-color: white;
             border: 1px solid #ddd;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: none;
             flex-direction: column;
-            z-index: 1000; /* Im Vordergrund */
+            z-index: 1000;
         }
         .menu a {
             padding: 10px 20px;
@@ -108,9 +113,13 @@
         .date-cell {
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%; /* Gesamte Höhe */
+            text-align: center;
         }
-        .weekday {
-            font-size: 12px;
+        .date-cell span {
+            font-size: 12px; /* Kleiner für Wochentag */
             color: #555;
         }
     </style>
@@ -145,7 +154,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-date="2025-01-10">
+                	    <tr data-date="2025-01-10">
                 <td class="date-cell">10.01<span class="weekday"></span></td>
                 <td>Karamustan All Night Long</td>
                 <td>Matrix</td>
@@ -390,18 +399,8 @@
             }
         });
 
-        // Dynamische Breite des Icon-Containers
-        function adjustIconContainerWidth() {
-            const tableContainer = document.getElementById('tableContainer');
-            const menuIconContainer = document.getElementById('menuIconContainer');
-            menuIconContainer.style.width = `${tableContainer.offsetWidth}px`; // Breite an Tabelle anpassen
-        }
-
-        window.addEventListener('DOMContentLoaded', adjustIconContainerWidth);
-        window.addEventListener('resize', adjustIconContainerWidth);
-
-        // Wochentage und vergangene Events
-        document.addEventListener("DOMContentLoaded", function() {
+        // Markiere vergangene Events und füge Wochentage hinzu
+        document.addEventListener("DOMContentLoaded", function () {
             const today = new Date().toISOString().split("T")[0];
             const rows = document.querySelectorAll("#eventTable tbody tr");
 
@@ -409,14 +408,17 @@
                 const eventDate = row.getAttribute("data-date");
                 const dateObj = new Date(eventDate);
 
-                // Wochentag hinzufügen
-                const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
-                const weekday = weekdays[dateObj.getDay()];
-                row.querySelector(".weekday").textContent = weekday;
+                if (!isNaN(dateObj)) {
+                    // Wochentag hinzufügen
+                    const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
+                    const weekday = weekdays[dateObj.getDay()];
+                    const dateCell = row.querySelector(".date-cell");
+                    dateCell.innerHTML = `${eventDate.slice(8, 10)}.${eventDate.slice(5, 7)}<br><span>${weekday}</span>`;
 
-                // Vergangene Events durchstreichen
-                if (eventDate < today) {
-                    row.classList.add("past-event");
+                    // Vergangene Events durchstreichen
+                    if (eventDate < today) {
+                        row.classList.add("past-event");
+                    }
                 }
             });
         });
