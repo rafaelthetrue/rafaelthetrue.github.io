@@ -17,18 +17,20 @@
             height: 100vh;
             overflow: hidden;
         }
-        h1 {
-            color: #444;
-            margin-top: 20px;
-            margin-bottom: 0;
-            text-align: center;
-            flex-shrink: 0;
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Abstand zwischen Titel und Icon */
+            max-width: 800px;
+            margin: 20px auto 0; /* Zentriert den gesamten Header */
             position: relative;
         }
+        h1 {
+            color: #444;
+            margin: 0;
+            font-size: 24px;
+        }
         .menu-icon {
-            position: absolute;
-            top: 0;
-            transform: translateY(0); /* Vertikale Anpassung */
             font-size: 24px;
             cursor: pointer;
             user-select: none;
@@ -36,6 +38,7 @@
         .menu {
             position: absolute;
             top: 40px;
+            right: 0;
             background-color: white;
             border: 1px solid #ddd;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -101,7 +104,7 @@
         }
         @media (max-width: 800px) {
             .menu-icon {
-                right: 10px;
+                font-size: 20px;
             }
             th, td {
                 font-size: 12px;
@@ -110,9 +113,10 @@
     </style>
 </head>
 <body>
-    <h1>Raves 2025
-        <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
-    </h1>
+    <div class="header">
+        <h1>Raves 2025</h1>
+        <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    </div>
     <div class="menu" id="menu">
         <a href="impressum.html">Impressum</a>
         <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
@@ -136,7 +140,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
+                 <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
 
                 <tr data-date="2025-01-11"><td>11.01</td><td>Cyber Netic</td><td>PM93</td><td>Essen</td></tr>
 
@@ -223,24 +227,11 @@
         // Schließe das Menü, wenn außerhalb geklickt wird
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('menu');
-            const menuIcon = document.getElementById('menuIcon');
+            const menuIcon = document.querySelector('.menu-icon');
             if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
                 menu.style.display = 'none';
             }
         });
-
-        // Dynamische Positionierung des Icons
-        function positionMenuIcon() {
-            const tableContainer = document.querySelector('.table-container');
-            const menuIcon = document.getElementById('menuIcon');
-            const containerRightEdge = tableContainer.getBoundingClientRect().right;
-            const offset = window.innerWidth - containerRightEdge;
-            menuIcon.style.right = `${offset}px`;
-            menuIcon.style.top = `${tableContainer.getBoundingClientRect().top - 20}px`;
-        }
-
-        window.addEventListener('DOMContentLoaded', positionMenuIcon);
-        window.addEventListener('resize', positionMenuIcon);
 
         function searchTable() {
             const query = document.getElementById("search").value.toLowerCase();
