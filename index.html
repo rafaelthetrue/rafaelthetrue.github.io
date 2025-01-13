@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Raves 2025 - Debugging</title>
+    <title>Raves 2025 - ravebro.de</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
+            line-height: 1.6;
             padding: 0;
+            margin: 0;
             background-color: #f8f9fa;
             color: #333;
             display: flex;
@@ -28,11 +29,9 @@
             font-size: 24px;
         }
         .menu-icon-container {
-            margin: 0;
-            padding: 0;
-            width: 100%; /* Dynamische Breite */
+            margin: 0 auto; /* Zentriert den Container */
+            width: 100%; /* Dynamische Breite basierend auf Tabelle */
             text-align: center; /* Zentriert das Icon */
-            background-color: lightblue; /* Debugging: Sichtbarer Hintergrund */
         }
         .menu-icon {
             font-size: 24px;
@@ -96,6 +95,10 @@
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
+        tr.past-event td {
+            text-decoration: line-through;
+            color: #888;
+        }
     </style>
 </head>
 <body>
@@ -110,7 +113,12 @@
         <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
     </div>
     <div class="search-container">
-        <input type="text" id="search" placeholder="Suche Datum, Event, Location oder Stadt...">
+        <input 
+            type="text" 
+            id="search" 
+            placeholder="Suche Datum, Event, Location oder Stadt..."
+            onkeyup="searchTable()"
+        >
     </div>
     <div class="table-container" id="tableContainer">
         <table id="eventTable">
@@ -207,18 +215,63 @@
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
 
+        // Dynamische Anpassung der Breite des Icon-Containers
         function adjustIconContainerWidth() {
             const tableContainer = document.getElementById('tableContainer');
             const menuIconContainer = document.getElementById('menuIconContainer');
             const tableWidth = tableContainer.offsetWidth;
 
-            console.log(`Table width: ${tableWidth}px`); // Debugging: Breite der Tabelle
+            // Breite des Containers anpassen
             menuIconContainer.style.width = `${tableWidth}px`;
         }
 
-        // Initial und bei Fensteränderung aufrufen
+        // Automatische Anpassung bei Laden und Größenänderung
         window.addEventListener('DOMContentLoaded', adjustIconContainerWidth);
         window.addEventListener('resize', adjustIconContainerWidth);
+
+        // Wochentage und vergangene Events
+        document.addEventListener("DOMContentLoaded", function() {
+            const today = new Date().toISOString().split("T")[0];
+            const rows = document.querySelectorAll("#eventTable tbody tr");
+            let scrolled = false;
+
+            rows.forEach(row => {
+                const eventDate = row.getAttribute("data-date");
+                const dateObj = new Date(eventDate);
+
+                // Wochentag ermitteln
+                const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
+                const weekday = weekdays[dateObj.getDay()];
+                const dateCell = row.querySelector("td:first-child");
+                dateCell.textContent += ` (${weekday})`;
+
+                // Vergangene Events durchstreichen
+                if (eventDate < today) {
+                    row.classList.add("past-event");
+                }
+
+                // Scrollen zum nächsten Event
+                if (!scrolled && eventDate >= today) {
+                    const headerHeight = document.querySelector("th").offsetHeight;
+                    const scrollOffset = row.offsetTop - headerHeight;
+                    document.getElementById("tableContainer").scrollTo({
+                        top: scrollOffset,
+                        behavior: "smooth",
+                    });
+                    scrolled = true;
+                }
+            });
+        });
+
+        function searchTable() {
+            const query = document.getElementById("search").value.toLowerCase();
+            const rows = document.querySelectorAll("#eventTable tbody tr");
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? "table-row" : "none";
+            });
+        }
     </script>
 </body>
 </html>
