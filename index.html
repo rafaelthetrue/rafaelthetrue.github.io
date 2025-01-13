@@ -85,7 +85,7 @@
             border: 1px solid #ddd;
             max-width: 100%;
             margin: 0 auto;
-            height: 87%;
+            height: 85%;
             position: relative;
         }
         table {
@@ -420,7 +420,7 @@
             const searchHeight = document.querySelector(".search-container").offsetHeight;
             const viewportHeight = window.innerHeight;
             const tableContainer = document.getElementById("tableContainer");
-            tableContainer.style.height = `${0.87 * (viewportHeight - headerHeight - searchHeight)}px`;
+            tableContainer.style.height = `${0.85 * (viewportHeight - headerHeight - searchHeight)}px`;
         }
 
         window.addEventListener("DOMContentLoaded", adjustTableHeight);
