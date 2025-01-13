@@ -75,15 +75,17 @@
             font-size: 16px;
         }
         .table-container {
+            overflow-x: auto; /* Ermöglicht horizontales Scrollen */
             overflow-y: auto;
             border: 1px solid #ddd;
-            max-width: 800px;
+            max-width: 100%; /* Passt sich der Bildschirmbreite an */
             margin: 0 auto;
             height: 93%;
         }
         table {
-            width: 100%;
+            width: 100%; /* Passt die Tabelle an den Container an */
             border-collapse: collapse;
+            table-layout: fixed; /* Gleichmäßige Spaltenbreiten */
         }
         th, td {
             border: 1px solid #ddd;
@@ -91,6 +93,8 @@
             text-align: left;
             font-size: 14px;
             vertical-align: top;
+            word-wrap: break-word; /* Lässt lange Wörter umbrechen */
+            white-space: normal; /* Verhindert Textüberlauf */
         }
         th {
             background-color: #f4f4f4;
@@ -113,9 +117,6 @@
             color: #555;
             display: block;
             margin-top: 5px;
-        }
-        td {
-            word-wrap: break-word;
         }
     </style>
 </head>
