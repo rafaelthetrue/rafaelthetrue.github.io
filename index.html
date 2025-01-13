@@ -29,27 +29,24 @@
             font-size: 24px;
         }
         .menu-icon-container {
-            margin: 0 auto;
-            width: 100%;
+            position: relative; /* Relativ zur Positionierung des Dropdown-Menüs */
             text-align: right;
-            position: relative;
+            margin-right: 20px;
         }
         .menu-icon {
             font-size: 24px;
             cursor: pointer;
-            display: inline-block;
-            margin-right: 10px;
         }
         .menu {
             position: absolute;
-            top: 100%; /* Direkt unterhalb des Icons */
-            right: 0; /* Rechtsbündig zum Icon */
+            top: 100%; /* Direkt unter dem Icon */
+            right: 0; /* Rechtsbündig am Container */
             background-color: white;
             border: 1px solid #ddd;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: none;
+            display: none; /* Initial versteckt */
             flex-direction: column;
-            z-index: 1000;
+            z-index: 1000; /* Freischwebend */
         }
         .menu a {
             padding: 10px 20px;
@@ -120,7 +117,7 @@
         <h1>Raves 2025</h1>
     </div>
     <div class="menu-icon-container">
-        <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
+        <div class="menu-icon" id="menuIcon">☰</div>
         <div class="menu" id="menu">
             <a href="impressum.html">Impressum</a>
             <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
@@ -152,29 +149,20 @@
         </table>
     </div>
     <script>
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-        }
+        const menuIcon = document.getElementById('menuIcon');
+        const menu = document.getElementById('menu');
 
-        // Schließe das Menü bei Klick außerhalb
-        document.addEventListener('click', function(event) {
-            const menu = document.getElementById('menu');
-            const menuIcon = document.getElementById('menuIcon');
+        // Öffnen/Schließen des Menüs
+        menuIcon.addEventListener('click', () => {
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Schließe das Menü, wenn außerhalb geklickt wird
+        document.addEventListener('click', (event) => {
             if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
                 menu.style.display = 'none';
             }
         });
-
-        // Dynamische Breite des Icon-Containers
-        function adjustIconContainerWidth() {
-            const tableContainer = document.getElementById('tableContainer');
-            const menuIconContainer = document.getElementById('menuIconContainer');
-            menuIconContainer.style.width = `${tableContainer.offsetWidth}px`;
-        }
-
-        window.addEventListener('DOMContentLoaded', adjustIconContainerWidth);
-        window.addEventListener('resize', adjustIconContainerWidth);
 
         // Wochentage und vergangene Events
         document.addEventListener("DOMContentLoaded", function() {
