@@ -23,29 +23,21 @@
             margin-bottom: 0;
             text-align: center;
             flex-shrink: 0;
-            position: relative; /* Positionierung für das Icon */
+            position: relative;
         }
         .menu-icon {
             position: absolute;
-            top: 50%; /* Vertikal zentriert relativ zur H1 */
-            right: calc((100% - 800px) / 2); /* Rechtsbündig mit der Tabelle */
-            transform: translateY(-50%); /* Exakte vertikale Zentrierung */
+            top: 50%;
+            transform: translateY(-50%);
+            right: 10px; /* Dynamisch an die Tabelle angepasst */
             font-size: 24px;
             cursor: pointer;
             user-select: none;
         }
-        .table-container {
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            max-width: 800px; /* Maximale Breite der Tabelle */
-            margin: 0 auto;
-            height: 93%;
-            position: relative;
-        }
         .menu {
             position: absolute;
-            top: calc(20px + 1em); /* Gleiche Höhe wie das Icon */
-            right: calc((100% - 800px) / 2);
+            top: 40px;
+            right: 10px;
             background-color: white;
             border: 1px solid #ddd;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -78,6 +70,14 @@
             font-size: 16px;
             box-sizing: border-box;
         }
+        .table-container {
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            max-width: 800px;
+            margin: 0 auto;
+            height: 93%;
+            position: relative;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -90,7 +90,7 @@
         }
         th {
             background-color: #f4f4f4;
-            position: sticky;
+            position: sticky; /* Fixiert Kopfzeile */
             top: 0;
             z-index: 2;
         }
@@ -101,7 +101,10 @@
             text-decoration: line-through;
             color: #888;
         }
-        @media (max-width: 600px) {
+        @media (max-width: 800px) {
+            .menu-icon {
+                right: 10px;
+            }
             th, td {
                 font-size: 12px;
             }
@@ -135,7 +138,6 @@
                 </tr>
             </thead>
             <tbody>
-
                 <tr data-date="2025-01-10"><td>10.01</td><td>Karamustan All Night Long</td><td>Matrix</td><td>Bochum</td></tr>
 
                 <tr data-date="2025-01-11"><td>11.01</td><td>Cyber Netic</td><td>PM93</td><td>Essen</td></tr>
@@ -211,7 +213,6 @@
                 <tr data-date="2025-08-24"><td>24.08</td><td>Nibirii</td><td>Dürener Badesee</td><td>Düren</td></tr>
 
                 <tr data-date="2025-10-31"><td>31.10</td><td>Hasenbau Halloween Special</td><td>Druckluft</td><td>Oberhausen</td></tr>
-
             </tbody>
         </table>
     </div>
