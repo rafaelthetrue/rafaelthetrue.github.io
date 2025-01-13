@@ -27,15 +27,14 @@
         }
         h1 {
             color: #444;
-            margin-top: 20px; /* Ursprünglicher Abstand wiederhergestellt */
-            margin-bottom: 5px; /* Abstand zum Suchfeld */
+            margin-top: 20px; /* Ursprünglicher Abstand */
+            margin-bottom: 15px; /* Abstand zum Suchfeld */
             font-size: 24px;
         }
         .menu-icon {
             font-size: 24px;
             cursor: pointer;
             position: absolute;
-            right: 0;
             top: 50%;
             transform: translateY(-50%);
             user-select: none;
@@ -65,8 +64,7 @@
             border-bottom: none;
         }
         .search-container {
-            margin-top: 10px;
-            margin-bottom: 10px;
+            margin: 10px 0; /* Ursprünglicher Abstand */
             text-align: center;
             flex-shrink: 0;
         }
@@ -111,7 +109,7 @@
         @media (max-width: 800px) {
             .menu-icon {
                 font-size: 20px;
-                right: 10px; /* Rechtsbündig mit der Seite auf Mobilgeräten */
+                right: 10px; /* Für Mobilansicht rechtsbündig zur Seite */
             }
             th, td {
                 font-size: 12px;
@@ -247,13 +245,11 @@
             const containerRightEdge = tableContainer.getBoundingClientRect().right;
 
             // Setze das Icon rechtsbündig an die Tabelle (Desktop)
-            const viewportWidth = window.innerWidth;
-            const iconOffset = viewportWidth - containerRightEdge;
-            menuIcon.style.right = `${iconOffset}px`;
+            menuIcon.style.left = `${containerRightEdge - menuIcon.offsetWidth}px`;
 
             // Für Mobilansicht (Maximalabstand sicherstellen)
-            if (viewportWidth < 800) {
-                menuIcon.style.right = `10px`;
+            if (window.innerWidth <= 800) {
+                menuIcon.style.left = `calc(100% - 40px)`; /* Rechtsbündig mit Seitenrand */
             }
         }
 
