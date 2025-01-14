@@ -114,6 +114,18 @@
             border-left: 1px solid #ddd; /* Rahmen links */
             border-right: 1px solid #ddd; /* Rahmen rechts */
             margin: 0; /* Wichtig: Entfernt eventuell bestehende Außenabstände */
+            }
+            thead th {
+        background-color: #f4f4f4; /* Hintergrundfarbe */
+        position: sticky; /* Fixierung beim Scrollen */
+        top: 0; /* Obere Position */
+        z-index: 2; /* Über anderen Inhalten */
+        border-top: 2px solid #333; /* Rahmen oben */
+        border-bottom: 2px solid #333; /* Rahmen unten */
+        }
+        thead {
+        border-top: 2px solid #333; /* Rahmen oben für gesamten Kopfbereich */
+        border-bottom: 2px solid #333; /* Rahmen unten für gesamten Kopfbereich */
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
