@@ -85,6 +85,8 @@
             border: 1px solid #ddd;
             max-width: 100%;
             margin: 0 auto;
+            border-collapse: collapse; /* Sorgt dafür, dass alle Zellen ohne Lücke dargestellt werden */
+            padding: 0; /* Entfernt mögliche Innenabstände */
             height: 85%;
             position: relative;
         }
@@ -107,6 +109,7 @@
             position: sticky;
             top: 0;
             z-index: 2;
+            margin: 0; /* Wichtig: Entfernt eventuell bestehende Außenabstände */
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
