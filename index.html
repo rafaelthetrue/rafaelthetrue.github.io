@@ -503,10 +503,11 @@
             }
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const menu = document.getElementById('menu');
-        menu.style.display = 'none'; // Menü beim Laden der Seite ausblenden
-        });
+        document.querySelectorAll('.menu a').forEach(link => {
+        link.addEventListener('click', function () {
+        const menu = document.getElementById('menu');
+        menu.style.display = 'none'; // Menü schließen
+         });
 
         function adjustTableHeight() {
             const headerHeight = document.querySelector("h1").offsetHeight;
