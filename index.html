@@ -490,6 +490,9 @@
         </table>
     </div>
     <script>
+            document.addEventListener('contextmenu', function(e) {
+        e.preventDefault(); // Verhindert das Öffnen des Kontextmenüs
+    });
             document.addEventListener('gesturestart', function (e) {
         e.preventDefault(); // Verhindert Pinch-to-Zoom
     });
