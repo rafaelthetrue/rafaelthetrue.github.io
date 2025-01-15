@@ -503,6 +503,11 @@
             }
         });
 
+        document.addEventListener("DOMContentLoaded", function () {
+            const menu = document.getElementById('menu');
+        menu.style.display = 'none'; // Menü beim Laden der Seite ausblenden
+        });
+
         function adjustTableHeight() {
             const headerHeight = document.querySelector("h1").offsetHeight;
             const searchHeight = document.querySelector(".search-container").offsetHeight;
