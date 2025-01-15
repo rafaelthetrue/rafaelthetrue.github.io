@@ -490,9 +490,9 @@
         </table>
     </div>
     <script>
-        // Beim Laden der Seite Zoom auf 100% zurücksetzen
         document.addEventListener("DOMContentLoaded", function () {
-            document.body.style.zoom = "100%";
+            document.body.style.transform = "scale(1)";
+            document.body.style.transformOrigin = "0 0"; // Startpunkt der Skalierung
         });
         function toggleMenu() {
             const menu = document.getElementById('menu');
