@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Techno Raves 2025 (Termine, Events & Locations) - ravebro.de</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            color: #444;
+            margin-top: 15px;
+            font-size: 24px;
+        }
+        h2 {
+            color: #444;
+            margin-top: 0;
+            font-size: 10px;
+        }
+        .menu-icon-container {
+            margin: 0 auto;
+            text-align: right;
+            position: relative;
+            max-width: 800px;
+        }
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+        .menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        .menu a {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+        }
+        .menu a:hover {
+            background-color: #f4f4f4;
+        }
+        .search-container {
+            margin: 10px 0;
+            text-align: center;
+        }
+        .search-container input {
+            width: 80%;
+            max-width: 400px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .table-container {
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            max-width: 100%;
+            margin: 0 auto;
+            height: 85%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: auto;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        th {
+            background-color: #f4f4f4;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr.past-event td {
+            text-decoration: line-through;
+            color: #888;
+        }
+        .date-cell {
+            text-align: center;
+            white-space: nowrap;
+        }
+        .date-cell span {
+            font-size: 12px;
+            color: #333;
+            margin-top: 0;
+        }
+        @media (max-width: 600px) {
+            body {
+                font-size: 14px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            th, td {
+                font-size: 12px;
+                padding: 8px;
+            }
+        }
+    </style>
+    <script>
+        async function loadCSV() {
+            const response = await fetch('events.csv');
+            const data = await response.text();
+            const rows = data.split('\n').slice(1);
+            const tableBody = document.querySelector('#eventTable tbody');
+
+            const today = new Date().toISOString().split('T')[0];
+            let nextEventRow = null;
+
+            rows.forEach(row => {
+                const columns = row.split(',');
+                if (columns.length === 4) {
+                    const eventDate = columns[0].trim();
+                    const tr = document.createElement('tr');
+                    tr.setAttribute('data-date', eventDate);
+
+                    if (eventDate < today) {
+                        tr.classList.add('past-event');
+                    } else if (!nextEventRow && eventDate >= today) {
+                        nextEventRow = tr;
+                    }
+
+                    columns.forEach((col, index) => {
+                        const td = document.createElement('td');
+                        td.className = index === 0 ? 'date-cell' : '';
+                        td.textContent = col.trim();
+                        tr.appendChild(td);
+                    });
+
+                    tableBody.appendChild(tr);
+                }
+            });
+
+            if (nextEventRow) {
+                nextEventRow.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCSV();
+
+            document.addEventListener('click', event => {
+                const menu = document.getElementById('menu');
+                const menuIcon = document.getElementById('menuIcon');
+                if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+                    menu.style.display = 'none';
+                }
+            });
+
+            document.querySelectorAll('.menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    document.getElementById('menu').style.display = 'none';
+                });
+            });
+        });
+
+        function adjustTableHeight() {
+            const headerHeight = document.querySelector('h1').offsetHeight;
+            const searchHeight = document.querySelector('.search-container').offsetHeight;
+            const viewportHeight = window.innerHeight;
+            const tableContainer = document.getElementById('tableContainer');
+            tableContainer.style.height = `${0.85 * (viewportHeight - headerHeight - searchHeight)}px`;
+        }
+
+        window.addEventListener('resize', adjustTableHeight);
+        window.addEventListener('DOMContentLoaded', adjustTableHeight);
+
+        function searchTable() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const rows = document.querySelectorAll('#eventTable tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? 'table-row' : 'none';
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h1>Techno Raves 2025</h1>
+        <h2>Termine, Events & Locations in NRW</h2>
+    </div>
+    <div class="menu-icon-container">
+        <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
+        <div class="menu" id="menu">
+            <a href="impressum.html">Impressum</a>
+            <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+        </div>
+    </div>
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Suche Datum, Event, Location oder Stadt..." onkeyup="searchTable()">
+    </div>
+    <div class="table-container" id="tableContainer">
+        <table id="eventTable">
+            <thead>
+                <tr>
+                    <th>Datum</th>
+                    <th>Event</th>
+                    <th>Location</th>
+                    <th>Stadt</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Events werden dynamisch geladen -->
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
