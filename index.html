@@ -490,6 +490,10 @@
         </table>
     </div>
     <script>
+        // Beim Laden der Seite Zoom auf 100% zurücksetzen
+        document.addEventListener("DOMContentLoaded", function () {
+            document.body.style.zoom = "100%";
+        });
         function toggleMenu() {
             const menu = document.getElementById('menu');
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
