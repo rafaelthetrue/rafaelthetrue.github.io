@@ -491,9 +491,17 @@
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            document.body.style.transform = "scale(1)";
-            document.body.style.transformOrigin = "0 0"; // Startpunkt der Skalierung
-        });
+    const searchField = document.getElementById("search");
+
+    // Suchfeld auswählen
+    searchField.focus();
+
+    // Kurz warten und dann abwählen
+    setTimeout(() => {
+        searchField.blur();
+    }, 500); // 500 Millisekunden warten, bevor das Feld abgewählt wird
+});
+
         function toggleMenu() {
             const menu = document.getElementById('menu');
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
