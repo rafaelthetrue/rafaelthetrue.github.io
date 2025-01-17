@@ -16,7 +16,7 @@
             color: #333;
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100);
             overflow: hidden;
             user-select: none; /* Verhindert Textauswahl */
             -webkit-user-select: none;
@@ -645,6 +645,23 @@
         adjustTableHeight();
         window.addEventListener('resize', adjustTableHeight);
     });
+    
+    
+    function adjustViewportHeight() {
+    const vh = window.innerHeight * 0.01; // 1% der tatsächlichen Fensterhöhe
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+// Bei Laden der Seite und bei Fenstergrößenänderungen die Höhe anpassen
+window.addEventListener('load', adjustViewportHeight);
+window.addEventListener('resize', adjustViewportHeight);
+    
+    
+    
+    
+    
+    
+    
         function searchTable() {
     const input = document.getElementById('search');
     const filter = input.value.toLowerCase();
