@@ -617,6 +617,14 @@
             }
         });
 
+        // Menü schließen, wenn ein Link angeklickt wird
+        const menuLinks = document.querySelectorAll('.menu a');
+        menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+        menu.style.display = 'none';
+            });
+        });
+
         // Dynamische Anpassung der Tabellenhöhe
         function adjustTableHeight() {
             const headerHeight = document.querySelector(".header").offsetHeight;
