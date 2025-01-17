@@ -93,7 +93,7 @@
             margin: 0 auto;
             border-collapse: collapse; /* Sorgt dafür, dass alle Zellen ohne Lücke dargestellt werden */
             padding: 0; /* Entfernt mögliche Innenabstände */
-            height: 85%;
+            height: 90%;
             position: relative;
         }
         table {
@@ -123,6 +123,9 @@
         tr.past-event td {
             text-decoration: line-through;
             color: #888;
+        }
+        tr.past-event .date-cell span {
+        color: #888; /* Wochentag ebenfalls ausgrauen */
         }
         .date-cell {
             text-align: center;
@@ -186,6 +189,15 @@
                 </tr>
             </thead>
             <tbody>
+
+
+    <tr data-date="2025-07-12">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/smagsundance?igsh=MTNtN3hnMDgxb3BpYw==" target="_blank">SMAG Sundance Festival</a></td>
+        <td>Seaside Beach Baldeneysee</td>
+        <td>Essen</td>
+    </tr>             
+                        
     <tr data-date="2025-01-10">
         <td class="date-cell">10.01<br><span></span></td>
         <td>Karamustan All Night Long</td>
@@ -215,10 +227,10 @@
         <td>Tekk war nie weg</td>
         <td>Mikroport</td>
         <td>Krefeld</td>
-    </tr>
+    </tr>       
         <tr data-date="2025-01-17">
         <td class="date-cell">17.01<br><span></span></td>
-        <td><a href="https://www.instagram.com/stories/3am.jhd/3546867603755182280?utm_source=ig_story_item_share&igsh=b3VyaW91NHc4OHlv" target="_blank">Samy's Techno Bar</a></td>
+        <td><a href="https://www.instagram.com/samys.club?igsh=eGIweng0bmtrMTN5" target="_blank">Samy's Techno Bar</a></td>
         <td>Samy's Club</td>
         <td>Düsseldorf</td>
     </tr>
@@ -259,7 +271,7 @@
     </tr>
     <tr data-date="2025-01-18">
         <td class="date-cell">18.01<br><span></span></td>
-        <td><a href="https://www.instagram.com/stories/3am.jhd/3546867796122679564?utm_source=ig_story_item_share&igsh=MWlmdmxoM3doeGhlaw==" target="_blank">Samy's Techno Bar</a></td>
+        <td><a href="https://www.instagram.com/samys.club?igsh=eGIweng0bmtrMTN5" target="_blank">Samy's Techno Bar</a></td>
         <td>Samy's Club</td>
         <td>Düsseldorf</td>
     </tr>
@@ -346,24 +358,24 @@
         <td><a href="https://www.instagram.com/reel/DD47S10OIWg/?igsh=bWhvaXZxeXA0d2lp" target="_blank">Snowdance Church Rave</a></td>
         <td>Marktkirche</td>
         <td>Essen</td>
+    </tr> 
     <tr data-date="2025-02-01">
         <td class="date-cell">01.02<br><span></span></td>
         <td>SECRETRAVES</td>
         <td><a href="https://chat.whatsapp.com/FubaTyqDC6pABbqGORPBO2" target="_blank">check WhatsApp</a></td>
         <td>Düsseldorf</td>
+    </tr> 
     <tr data-date="2025-02-01">
         <td class="date-cell">01.02<br><span></span></td>
         <td><a href="https://www.instagram.com/reel/DEsGT-zMzNs/?igsh=MTQ1aDg4OGpncGU4Yg==" target="_blank">BANANA RAVE</a></td>
         <td>Samy's Club</td>
         <td>Düsseldorf</td>
     </tr>
-    </tr>
     <tr data-date="2025-02-02">
         <td class="date-cell">02.02<br><span></span></td>
         <td><a href="https://www.instagram.com/reel/DEXu4beta1g/?igsh=N3lxOGt0MzlxcGIx" target="_blank">OFF-SEASON Special (14 Uhr)</a></td>
         <td>hafen7</td>
         <td>Neuss</td>
-    </tr>
     </tr>
     <tr data-date="2025-02-08">
         <td class="date-cell">08.02<br><span></span></td>
@@ -537,110 +549,108 @@
         </table>
     </div>
     <script>
- document.addEventListener('contextmenu', function(e) {
-        e.preventDefault(); // Verhindert das Öffnen des Kontextmenüs
-    });
-            document.addEventListener('gesturestart', function (e) {
-        e.preventDefault(); // Verhindert Pinch-to-Zoom
-    });
+    document.addEventListener('DOMContentLoaded', function () {
+        const today = new Date().toISOString().split('T')[0];
+        const rows = document.querySelectorAll('#eventTable tbody tr');
 
-    document.addEventListener('gesturechange', function (e) {
-        e.preventDefault(); // Verhindert Änderungen während Pinch-to-Zoom
-    });
+        // Automatisches Setzen von Datum und Wochentag
+      rows.forEach(row => {
+    const dataDate = row.getAttribute('data-date');
+    const dateObj = new Date(dataDate);
+    const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+    const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
 
-    document.addEventListener('gestureend', function (e) {
-        e.preventDefault(); // Verhindert das Beenden des Zooms
-    });
-        
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
+    const dateCell = row.querySelector('.date-cell');
+    if (dateCell) {
+        dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+    }
+
+    if (dataDate < today) {
+        row.classList.add('past-event');
+    }
+});
+
+        // Sortieren der Tabelle
+        const tableBody = document.querySelector('#eventTable tbody');
+        const sortedRows = Array.from(rows).sort((a, b) => {
+            const dateA = new Date(a.getAttribute('data-date'));
+            const dateB = new Date(b.getAttribute('data-date'));
+            const cityA = a.cells[3].textContent.toLowerCase();
+            const cityB = b.cells[3].textContent.toLowerCase();
+            const eventA = a.cells[1].textContent.toLowerCase();
+            const eventB = b.cells[1].textContent.toLowerCase();
+
+            if (dateA - dateB !== 0) return dateA - dateB;
+            if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB);
+            return eventA.localeCompare(eventB);
+        });
+        sortedRows.forEach(row => tableBody.appendChild(row));
+
+        // Scrollen zum nächsten Event
+        let scrolled = false;
+        sortedRows.forEach(row => {
+            const eventDate = row.getAttribute('data-date');
+            if (!scrolled && eventDate >= today) {
+                const offset = row.offsetTop - document.querySelector('th').offsetHeight;
+                document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
+                scrolled = true;
+            }
+        });
+
+        // Kontextmenü und Textauswahl verhindern
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('selectstart', e => e.preventDefault());
+
+        // Zoom deaktivieren
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        document.addEventListener('gesturechange', e => e.preventDefault());
+        document.addEventListener('gestureend', e => e.preventDefault());
+
+        // Menü-Toggle
+        const menu = document.getElementById('menu');
+        const menuIcon = document.getElementById('menuIcon');
+        menuIcon.addEventListener('click', () => {
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        document.addEventListener('click', function(event) {
-            const menu = document.getElementById('menu');
-            const menuIcon = document.getElementById('menuIcon');
-            if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+        });
+        document.addEventListener('click', e => {
+            if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
                 menu.style.display = 'none';
             }
         });
 
-        document.querySelectorAll('.menu a').forEach(link => {
-        link.addEventListener('click', function () {
-        const menu = document.getElementById('menu');
-        menu.style.display = 'none'; // Menü schließen
-         });
+        // Menü schließen, wenn ein Link angeklickt wird
+        const menuLinks = document.querySelectorAll('.menu a');
+        menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+        menu.style.display = 'none';
+            });
         });
 
+        // Dynamische Anpassung der Tabellenhöhe
         function adjustTableHeight() {
-            const headerHeight = document.querySelector("h1").offsetHeight;
+            const headerHeight = document.querySelector(".header").offsetHeight;
             const searchHeight = document.querySelector(".search-container").offsetHeight;
             const viewportHeight = window.innerHeight;
             const tableContainer = document.getElementById("tableContainer");
-            tableContainer.style.height = `${0.85 * (viewportHeight - headerHeight - searchHeight)}px`;
+            tableContainer.style.height = `${0.90 * (viewportHeight - headerHeight - searchHeight)}px`;
         }
 
-        window.addEventListener("DOMContentLoaded", adjustTableHeight);
-        window.addEventListener("resize", adjustTableHeight);
-
+        // Höhe der Tabelle anpassen und bei Fenstergrößenänderungen neu berechnen
+        adjustTableHeight();
+        window.addEventListener('resize', adjustTableHeight);
+    });
         function searchTable() {
-            const query = document.getElementById("search").value.toLowerCase();
-            const rows = document.querySelectorAll("#eventTable tbody tr");
-
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(query) ? "table-row" : "none";
-            });
-        }
-
-            document.addEventListener("DOMContentLoaded", function () {
-    const today = new Date().toISOString().split("T")[0];
-    const rows = document.querySelectorAll("#eventTable tbody tr");
+    const input = document.getElementById('search');
+    const filter = input.value.toLowerCase();
+    const rows = document.querySelectorAll('#eventTable tbody tr');
 
     rows.forEach(row => {
-        const eventDate = row.getAttribute("data-date");
-        const dateCellSpan = row.querySelector(".date-cell span");
-
-        if (eventDate < today && dateCellSpan) {
-            dateCellSpan.style.color = "#888"; // Setze die graue Farbe
-        }
+        const cells = Array.from(row.getElementsByTagName('td'));
+        const match = cells.some(cell => cell.textContent.toLowerCase().includes(filter));
+        row.style.display = match ? '' : 'none';
     });
-});
+}
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const today = new Date().toISOString().split("T")[0];
-            const rows = document.querySelectorAll("#eventTable tbody tr");
-            let scrolled = false;
-
-            rows.forEach(row => {
-                const eventDate = row.getAttribute("data-date");
-                const dateObj = new Date(eventDate);
-
-                if (!isNaN(dateObj)) {
-                    const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
-                    const weekday = weekdays[dateObj.getDay()];
-                    const dateCell = row.querySelector(".date-cell span");
-                    dateCell.textContent = weekday;
-
-                    if (eventDate < today) {
-                        row.classList.add("past-event");
-                    }
-
-                    if (!scrolled && eventDate >= today) {
-                        const tableContainer = document.getElementById("tableContainer");
-                        const headerHeight = document.querySelector("th").offsetHeight;
-                        const rowOffset = row.offsetTop - headerHeight;
-
-                        tableContainer.scrollTo({
-                            top: rowOffset,
-                            behavior: "smooth"
-                        });
-
-                        scrolled = true;
-                    }
-                }
-            });
-        });
     </script>
 </body>
 </html>
