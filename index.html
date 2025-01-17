@@ -571,9 +571,26 @@
         dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
     }
 
-    if (dataDate < today) {
-        row.classList.add('past-event');
-    }
+
+    // Vergangene Events am Folgetag um 06:00 Uhr morgens kennzeichnen 
+    document.addEventListener('DOMContentLoaded', function () {
+    const now = new Date(); // Aktuelle Zeit
+    const rows = document.querySelectorAll('#eventTable tbody tr');
+
+    rows.forEach(row => {
+        const dataDate = row.getAttribute('data-date');
+        const eventDate = new Date(dataDate); // Datum des Events
+
+        // Setze das Event-Datum auf den nächsten Tag um 06:00 Uhr
+        eventDate.setDate(eventDate.getDate() + 1); // Gehe auf den Folgetag
+        eventDate.setHours(6, 0, 0, 0); // Setze die Uhrzeit auf 06:00 Uhr
+
+        // Wenn die aktuelle Zeit später als das Eventdatum + 6 Stunden ist, markieren
+        if (now > eventDate) {
+            row.classList.add('past-event');
+        }
+    });
+});
 });
 
         // Sortieren der Tabelle
