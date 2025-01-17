@@ -537,6 +537,31 @@
         </table>
     </div>
     <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const tableBody = document.querySelector("#eventTable tbody");
+        const rows = Array.from(tableBody.querySelectorAll("tr"));
+
+        // Sortierlogik: Zuerst nach Datum, dann nach Eventname
+        rows.sort((a, b) => {
+            const dateA = new Date(a.getAttribute("data-date"));
+            const dateB = new Date(b.getAttribute("data-date"));
+            const eventA = a.cells[1].textContent.trim().toLowerCase();
+            const eventB = b.cells[1].textContent.trim().toLowerCase();
+
+            if (dateA < dateB) return -1;
+            if (dateA > dateB) return 1;
+            if (eventA < eventB) return -1;
+            if (eventA > eventB) return 1;
+            return 0;
+        });
+
+        // Reihenfolge im DOM aktualisieren
+        rows.forEach(row => tableBody.appendChild(row));
+
+
+
+        
             document.addEventListener('contextmenu', function(e) {
         e.preventDefault(); // Verhindert das Öffnen des Kontextmenüs
     });
