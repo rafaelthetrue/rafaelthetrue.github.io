@@ -552,10 +552,10 @@
         const rows = document.querySelectorAll('#eventTable tbody tr');
 
         // Automatisches Setzen von Datum und Wochentag
-       rows.forEach(row => {
+      rows.forEach(row => {
     const dataDate = row.getAttribute('data-date');
     const dateObj = new Date(dataDate);
-    const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+    const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
     const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
 
     const dateCell = row.querySelector('.date-cell');
