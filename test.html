@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Entdecke in unserer Übersicht die nächsten Techno Raves und anstehende Events in NRW, egal ob Techno Raves heute, morgen oder am Wochenende im Ruhrgebiet und Umgebung.">
+    <link rel="canonical" href="https://www.ravebro.de" />
+    <title>Techno Raves 2025 (Termine, Events & Locations) - ravebro.de</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none; /* Verhindert Textauswahl */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        .header {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            color: #444;
+            margin-top: 15px;
+            margin-bottom: 0px;
+            font-size: 24px;
+        }
+        h2 {
+            color: #444;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-size: 10px;
+        }
+        .menu-icon-container {
+            margin: 0 auto;
+            text-align: right;
+            position: relative;
+            max-width: 800px;
+        }
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+            display: inline-block;
+            color: #333;
+        }
+        .menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        .menu a {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        .menu a:last-child {
+            border-bottom: none;
+        }
+        .menu a:hover {
+            background-color: #f4f4f4;
+        }
+        .search-container {
+            margin: 10px 0;
+            text-align: center;
+        }
+        .search-container input {
+            width: 80%;
+            max-width: 400px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .table-container {
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            max-width: 100%;
+            margin: 0 auto;
+            border-collapse: collapse; /* Sorgt dafür, dass alle Zellen ohne Lücke dargestellt werden */
+            padding: 0; /* Entfernt mögliche Innenabstände */
+            height: 85%;
+            position: relative;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: auto; /* Dynamische Spaltenbreite */
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+            vertical-align: top;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        th {
+            background-color: #f4f4f4;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            margin: 0; /* Wichtig: Entfernt eventuell bestehende Außenabstände */
+            }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr.past-event td {
+            text-decoration: line-through;
+            color: #888;
+        }
+        .date-cell {
+            text-align: center;
+            white-space: nowrap; /* Verhindert Zeilenumbruch */
+        }
+        .date-cell span {
+            font-size: 12px;
+            color: #333;
+            font-family: Arial, sans-serif; /* Gleiche Schriftart wie der Rest der Tabelle */
+            display: block;
+            margin-top: 0px;
+        }
+        table a:link, 
+        table a:visited, 
+        table a:hover, 
+        table a:active {
+            color: black; /* Textfarbe immer schwarz */
+        }
+        @media (max-width: 600px) {
+        body {
+            font-size: 14px; /* Kleinere Schrift für mobile Endgeräte */
+        }
+        h1 {
+            font-size: 22px; /* Kleinere Überschrift */
+        }
+        th, td {
+            font-size: 12px; /* Kleinere Schrift in der Tabelle */
+            padding: 8px; /* Weniger Padding in den Zellen */
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Techno Raves 2025</h1>
+        <h2>Termine, Events & Locations in NRW</h2>
+    </div>
+    <div class="menu-icon-container" id="menuIconContainer">
+        <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
+        <div class="menu" id="menu">
+            <a href="impressum.html">Impressum</a>
+            <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+        </div>
+    </div>
+    <div class="search-container">
+        <input 
+            type="text" 
+            id="search" 
+            placeholder="Suche Datum, Event, Location oder Stadt..."
+            onkeyup="searchTable()"
+        >
+    </div>
+    <div class="table-container" id="tableContainer">
+        <table id="eventTable">
+            <thead>
+                <tr>
+                    <th>Datum</th>
+                    <th>Event</th>
+                    <th>Location</th>
+                    <th>Stadt</th>
+                </tr>
+            </thead>
+            <tbody>
+    <tr data-date="2025-01-10">
+        <td class="date-cell">10.01<br><span></span></td>
+        <td>Karamustan All Night Long</td>
+        <td>Matrix</td>
+        <td>Bochum</td>
+    </tr>
+    <tr data-date="2025-01-11">
+        <td class="date-cell">11.01<br><span></span></td>
+        <td>CYBER NETIC</td>
+        <td>PM93</td>
+        <td>Essen</td>
+    </tr>
+    <tr data-date="2025-01-11">
+        <td class="date-cell">11.01<br><span></span></td>
+        <td>Knusper, Venom 666, MRCL</td>
+        <td>Projekt X</td>
+        <td>Bochum</td>
+    </tr>
+    <tr data-date="2025-01-11">
+        <td class="date-cell">11.01<br><span></span></td>
+        <td>Athéna</td>
+        <td>Stahlwerk</td>
+        <td>Düsseldorf</td>
+    </tr>
+    <tr data-date="2025-01-11">
+        <td class="date-cell">11.01<br><span></span></td>
+        <td>Tekk war nie weg</td>
+        <td>Mikroport</td>
+        <td>Krefeld</td>
+    </tr>
+        <tr data-date="2025-01-17">
+        <td class="date-cell">17.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/stories/3am.jhd/3546867603755182280?utm_source=ig_story_item_share&igsh=b3VyaW91NHc4OHlv" target="_blank">Samy's Techno Bar</a></td>
+        <td>Samy's Club</td>
+        <td>Düsseldorf</td>
+    </tr>
+        <tr data-date="2025-01-17">
+        <td class="date-cell">17.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEwh_T8yCfx/?igsh=ZjBzbXVhMDM2M3gx" target="_blank">EhrenKlub im Schrotty #6 - mit Hades, Isabelle Beaucamp, JOWI, Nyctonian UVM</a></td>
+        <td>Schrotty</td>
+        <td>Köln</td>
+    <tr data-date="2025-01-18">
+        <td class="date-cell">18.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DExcVklMbXR/?igsh=QkFFanlod1JGTA%3D%3D" target="_blank">BLACKOUT</a></td>
+        <td>PM93</td>
+        <td>Essen</td>
+    </tr>
+     <tr data-date="2025-01-18">
+        <td class="date-cell">18.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEVMRGviBYx/?igsh=QkFKSUxTWjhkeg%3D%3D" target="_blank">BUBBLE BOUNCE (12-22 Uhr)</a></td>
+        <td>Trip Studios (hafen7)</td>
+        <td>Neuss</td>
+    </tr>        
+    <tr data-date="2025-01-18">
+        <td class="date-cell">18.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/p/DEfo6Y9sInE/?igsh=XzFQT1RLTHl3&img_index=1" target="_blank">TECHNOHEADZ</a></td>
+        <td>Matrix</td>
+        <td>Bochum</td>
+    </tr>
+    <tr data-date="2025-01-18">
+        <td class="date-cell">18.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEqW1etMgg-/?igsh=X2o4SWFad01M" target="_blank">KONTROLLVERLUST IX (Jahresauftakt)</a></td>
+        <td>Druckluft</td>
+        <td>Oberhausen</td>
+    </tr>
+    <tr data-date="2025-01-18">
+        <td class="date-cell">18.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/p/DEw6uKEg9NG/?igsh=QkFKYUhxNFI5bg%3D%3D" target="_blank">HEXAGON RAVES: Welcome to 2025</a></td>
+        <td>Mikroport</td>
+        <td>Krefeld</td>
+    </tr>
+    <tr data-date="2025-01-18">
+        <td class="date-cell">18.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/stories/3am.jhd/3546867796122679564?utm_source=ig_story_item_share&igsh=MWlmdmxoM3doeGhlaw==" target="_blank">Samy's Techno Bar</a></td>
+        <td>Samy's Club</td>
+        <td>Düsseldorf</td>
+    </tr>
+    <tr data-date="2025-01-24">
+        <td class="date-cell">24.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEqBSgOo3uA/?igsh=X3dLX0JUNC1T" target="_blank">FROSTY NIGHTS</a></td>
+        <td>AREA 15</td>
+        <td>Bochum</td>
+    </tr>
+    <tr data-date="2025-01-25">
+        <td class="date-cell">25.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DE2DnvZMV55/?igsh=X3VGTU5xcDJq" target="_blank">FREQUENCY CLASH</a></td>
+        <td>PM93</td>
+        <td>Essen</td>
+    </tr>
+    <tr data-date="2025-01-25">
+        <td class="date-cell">25.01<br><span></span></td>
+        <td>SECRETRAVES x BAD PORTIER</td>
+        <td><a href="https://chat.whatsapp.com/FubaTyqDC6pABbqGORPBO2" target="_blank">check WhatsApp</a></td>
+        <td>Köln</td>
+    </tr>
+    <tr data-date="2025-01-25">
+        <td class="date-cell">25.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEcraQKIteX/?igsh=QkFJakF2OTlrRg%3D%3D" target="_blank">TRINITY RAVE</a></td>
+        <td>Matrix</td>
+        <td>Bochum</td>
+    </tr>
+    <tr data-date="2025-01-25">
+        <td class="date-cell">25.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/share/_qA-q9r5p" target="_blank">ZAHNI'S FUCKING FRIDAY TOUR STOP pres. by CODE RED</a></td>
+        <td>Mikroport</td>
+        <td>Krefeld</td>
+    </tr>
+    <tr data-date="2025-01-25">
+        <td class="date-cell">25.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEnL-qXsFvS/?igsh=QkFJVTlmUno1TQ%3D%3D" target="_blank">Bochum Is Calling</a></td>
+        <td>Projekt X</td>
+        <td>Bochum</td>
+    </tr>
+    <tr data-date="2025-01-26">
+        <td class="date-cell">26.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/share/BAFtxDysIb" target="_blank">Mandy Rays Dirty Thirty AFTERHOUR (8-12 Uhr)</a></td>
+        <td>Projekt X</td>
+        <td>Bochum</td>
+    </tr>
+        <tr data-date="2025-01-31">
+        <td class="date-cell">31.01<br><span></span></td>
+        <td>SECRETRAVES - GAMECHANGER</td>
+        <td><a href="https://chat.whatsapp.com/GrNqlKodXugAsoAVT0mTTH" target="_blank">check WhatsApp</a></td>
+        <td>Düsseldorf</td>
+    </tr>
+    <tr data-date="2025-01-31">
+        <td class="date-cell">31.01<br><span></span></td>
+        <td><a href="https://www.instagram.com/p/DEUNQmaI6kt/?img_index=1&igsh=MW5mMHo3bmpycTc2Zg==" target="_blank">X-BASS</a></td>
+        <td>viersieben</td>
+        <td>Duisburg</td>
+    </tr>
+    <tr data-date="2025-02-01">
+        <td class="date-cell">01.02<br><span></span></td>
+        <td><a href="https://www.instagram.com/p/DEUNQmaI6kt/?img_index=1&igsh=MW5mMHo3bmpycTc2Zg==" target="_blank">X-BASS</a></td>
+        <td>viersieben</td>
+        <td>Duisburg</td>
+    </tr>
+    <tr data-date="2025-02-01">
+        <td class="date-cell">01.02<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEzVAlqIdbQ/?igsh=MWo1eWw2M2poNGtsNQ==" target="_blank">CODE GREEN</a></td>
+        <td>Matrix</td>
+        <td>Bochum</td>
+    </tr>
+    <tr data-date="2025-02-01">
+        <td class="date-cell">01.02<br><span></span></td>
+        <td><a href="https://www.instagram.com/p/DEW02r-MFwR/?igsh=MWNxNGo3YWtrdTZlZQ==" target="_blank">HART ABER HERZLICH (BUTAN EVENT)</a></td>
+        <td>U-Club</td>
+        <td>Wuppertal</td>
+    </tr>
+    <tr data-date="2025-02-01">
+        <td class="date-cell">01.02<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DE0L1GoSkLI/?igsh=NXJ4cGZ5NHN0Z3No" target="_blank">Polaar Techno 2025 Opening</a></td>
+        <td>Rotunde</td>
+        <td>Bochum</td>
+    </tr>
+    <tr data-date="2025-02-01">
+        <td class="date-cell">01.02<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DD47S10OIWg/?igsh=bWhvaXZxeXA0d2lp" target="_blank">Snowdance Church Rave</a></td>
+        <td>Marktkirche</td>
+        <td>Essen</td>
+    <tr data-date="2025-02-01">
+        <td class="date-cell">01.02<br><span></span></td>
+        <td>SECRETRAVES</td>
+        <td><a href="https://chat.whatsapp.com/FubaTyqDC6pABbqGORPBO2" target="_blank">check WhatsApp</a></td>
+        <td>Düsseldorf</td>
+    <tr data-date="2025-02-01">
+        <td class="date-cell">01.02<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEsGT-zMzNs/?igsh=MTQ1aDg4OGpncGU4Yg==" target="_blank">BANANA RAVE</a></td>
+        <td>Samy's Club</td>
+        <td>Düsseldorf</td>
+    </tr>
+    </tr>
+    <tr data-date="2025-02-02">
+        <td class="date-cell">02.02<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEXu4beta1g/?igsh=N3lxOGt0MzlxcGIx" target="_blank">OFF-SEASON Special (14 Uhr)</a></td>
+        <td>hafen7</td>
+        <td>Neuss</td>
+    </tr>
+    </tr>
+    <tr data-date="2025-02-08">
+        <td class="date-cell">08.02<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEH140IgwiO/?igsh=MTc2bTFmaHFiZ3ZvNg==" target="_blank">Ravemania</a></td>
+        <td>Schlachthof</td>
+        <td>Düsseldorf</td>
+    </tr>
+    <tr data-date="2025-02-08">
+        <td class="date-cell">08.02<br><span></span></td>
+        <td><a href="https://www.instagram.com/p/DCZjynsNPIT/?igsh=b3lndnozcGowZGtx" target="_blank">Heaven & Hill - Techno Edition</a></td>
+        <td>ENNI Eventhalle</td>
+        <td>Moers</td>
+    </tr>
+    <tr data-date="2025-02-14">
+        <td class="date-cell">14.02<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DE2LTH8uHIY/?igsh=YTMwcjQ3bnV6MDgz" target="_blank">TRINITY RAVE (Roses are red, Basslines are better)</a></td>
+        <td>Matrix</td>
+        <td>Bochum</td>
+    </tr>
+    <tr data-date="2025-03-01">
+        <td class="date-cell">01.03<br><span></span></td>
+        <td><a href="https://www.instagram.com/ravemania.official/?igsh=aDJsbXBtNHp0aGlu" target="_blank">Ravemania (Karneval Special)</a></td>
+        <td>Schlachthof</td>
+        <td>Düsseldorf</td>
+    </tr>
+    <tr data-date="2025-03-07">
+        <td class="date-cell">07.03<br><span></span></td>
+        <td><a href="https://www.instagram.com/taktlos_events?igsh=a2p3Mm54aHJmaGFz" target="_blank">DOPAMYN Indoor Festival</a></td>
+        <td>Delta</td>
+        <td>Essen</td>
+    </tr>
+    <tr data-date="2025-03-08">
+        <td class="date-cell">08.03<br><span></span></td>
+        <td><a href="https://www.instagram.com/p/DE0C3S4AtTA/?igsh=d3VicHhvd3FveDQ2" target="_blank">SURVIVAL & HEXAGON RAVES PRESENT: CHAIN REACTION</a></td>
+        <td>Mikroport</td>
+        <td>Krefeld</td>
+    </tr>
+    <tr data-date="2025-03-15">
+        <td class="date-cell">15.03<br><span></span></td>
+        <td><a href="https://www.instagram.com/verkniptevents/?igsh=NXlpMzlwcWowb2tn" target="_blank">VERKNIPT</a></td>
+        <td>Turbinenhalle</td>
+        <td>Oberhausen</td>
+    </tr>
+    <tr data-date="2025-04-26">
+        <td class="date-cell">26.04<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DDHr2CmMjZN/?igsh=eWdkajQ4czg2ejV4" target="_blank">PollerWiesen Opening 2025</a></td>
+        <td>Jugendpark</td>
+        <td>Köln</td>
+    </tr>
+    <tr data-date="2025-04-30">
+        <td class="date-cell">30.04<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DDujFrJAlB0/?igsh=MTVmZnR3MHUxcTlrMA%3D%3D" target="_blank">MAYDAY 2025</a></td>
+        <td>Westfalenhallen</td>
+        <td>Dortmund</td>
+    </tr>
+    <tr data-date="2025-05-31">
+        <td class="date-cell">31.05<br><span></span></td>
+        <td><a href="https://www.instagram.com/p/DDmm_8HKmPr/?igsh=NHB1ampmOWF1Zzcz" target="_blank">Heaven & Hill Festival</a></td>
+        <td>Halde Norddeutschland</td>
+        <td>Neukirchen-Vluyn</td>
+    </tr>
+    <tr data-date="2025-05-31">
+        <td class="date-cell">31.05<br><span></span></td>
+        <td><a href="https://www.instagram.com/partykumpel_ruhrgebiet/?igsh=ZzV3b2Nlb3BheTQz" target="_blank">Rave im Stadtgarten (15-22 Uhr)</a></td>
+        <td>Stadtgarten</td>
+        <td>Gelsenkirchen</td>
+    </tr>
+    <tr data-date="2025-06-08">
+        <td class="date-cell">08.06<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DDM3IW8gyNO/?igsh=bGlpZTlpbWdpOXdm" target="_blank">PollerWiesen Festival 2025</a></td>
+        <td>Revierpark Wischlingen</td>
+        <td>Dortmund</td>
+    </tr>
+    <tr data-date="2025-07-05">
+        <td class="date-cell">05.07<br><span></span></td>
+        <td><a href="https://www.instagram.com/ruhrinlove/?igsh=ZmVpNWhpcjF1Z3l5" target="_blank">Ruhr In Love</a></td>
+        <td>Olgapark</td>
+        <td>Oberhausen</td>
+    </tr>
+    <tr data-date="2025-07-11">
+        <td class="date-cell">11.07<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DDfJelBgZH9/?igsh=MWRyNGd5aDlmMXYzbA%3D%3D" target="_blank">Stone Techno Festival</a></td>
+        <td>Zeche Zollverein</td>
+        <td>Essen</td>
+    </tr>
+    <tr data-date="2025-07-12">
+        <td class="date-cell">12.07<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DDfJelBgZH9/?igsh=MWRyNGd5aDlmMXYzbA%3D%3D" target="_blank">Stone Techno Festival</a></td>
+        <td>Zeche Zollverein</td>
+        <td>Essen</td>
+    </tr>
+    <tr data-date="2025-07-13">
+        <td class="date-cell">13.07<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DDfJelBgZH9/?igsh=MWRyNGd5aDlmMXYzbA%3D%3D" target="_blank">Stone Techno Festival</a></td>
+        <td>Zeche Zollverein</td>
+        <td>Essen</td>
+    </tr>
+    <tr data-date="2025-07-13">
+        <td class="date-cell">13.07<br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DDXKM2ZJ6kf/?igsh=MTRzNGd6cWJkNTl4YQ%3D%3D"_blank">PollerWiesen Boat 2025</a></td>
+        <td>MS Rheinenergie</td>
+        <td>Köln</td>
+    </tr>
+    <tr data-date="2025-07-18">
+        <td class="date-cell">18.07<br><span></span></td>
+        <td><a href="https://www.instagram.com/parookaville/?igsh=cjB5M2luZnNuMm5w"_blank">PAROOKAVILLE</a></td>
+        <td>Airport Weeze</td>
+        <td>Weeze</td>
+    </tr>
+    <tr data-date="2025-07-19">
+        <td class="date-cell">19.07<br><span></span></td>
+        <td><a href="https://www.instagram.com/parookaville/?igsh=cjB5M2luZnNuMm5w"_blank">PAROOKAVILLE</a></td>
+        <td>Airport Weeze</td>
+        <td>Weeze</td>
+    </tr>
+    <tr data-date="2025-07-20">
+        <td class="date-cell">20.07<br><span></span></td>
+        <td><a href="https://www.instagram.com/parookaville/?igsh=cjB5M2luZnNuMm5w"_blank">PAROOKAVILLE</a></td>
+        <td>Airport Weeze</td>
+        <td>Weeze</td>
+    </tr>
+    <tr data-date="2025-08-08">
+        <td class="date-cell">08.08<br><span></span></td>
+        <td><a href="https://www.instagram.com/electrisize/?igsh=MXV0djN3b29hOTE4bA%3D%3D"_blank">Electrisize</a></td>
+        <td>Gelände Haus Hohenbusch</td>
+        <td>Erkelenz</td>
+    </tr>
+    <tr data-date="2025-08-09">
+        <td class="date-cell">09.08<br><span></span></td>
+        <td><a href="https://www.instagram.com/electrisize/?igsh=MXV0djN3b29hOTE4bA%3D%3D"_blank">Electrisize</a></td>
+        <td>Gelände Haus Hohenbusch</td>
+        <td>Erkelenz</td>
+    </tr>
+    <tr data-date="2025-08-09">
+        <td class="date-cell">09.08<br><span></span></td>
+        <td><a href="https://www.instagram.com/p/DCM4UixNj9r/?igsh=MXR0enk0eHgzeWF5OA%3D%3D"_blank">Heile Welt Open Air</a></td>
+        <td>Halde Norddeutschland</td>
+        <td>Neukirchen-Vluyn</td>
+    </tr>
+    <tr data-date="2025-08-10">
+        <td class="date-cell">10.08<br><span></span></td>
+        <td><a href="https://www.instagram.com/electrisize/?igsh=MXV0djN3b29hOTE4bA%3D%3D"_blank">Electrisize</a></td>
+        <td>Gelände Haus Hohenbusch</td>
+        <td>Erkelenz</td>
+    </tr>
+    <tr data-date="2025-08-22">
+        <td class="date-cell">22.08<br><span></span></td>
+        <td><a href="https://www.instagram.com/nibirii/?igsh=MWg4aXpkdndqODRtcQ%3D%3D"_blank">Nibirii</a></td>
+        <td>Dürener Badesee</td>
+        <td>Düren</td>
+    </tr>
+    <tr data-date="2025-08-23">
+        <td class="date-cell">23.08<br><span></span></td>
+        <td><a href="https://www.instagram.com/nibirii/?igsh=MWg4aXpkdndqODRtcQ%3D%3D"_blank">Nibirii</a></td>
+        <td>Dürener Badesee</td>
+        <td>Düren</td>
+    </tr>
+    <tr data-date="2025-08-24">
+        <td class="date-cell">24.08<br><span></span></td>
+        <td><a href="https://www.instagram.com/nibirii/?igsh=MWg4aXpkdndqODRtcQ%3D%3D"_blank">Nibirii</a></td>
+        <td>Dürener Badesee</td>
+        <td>Düren</td>
+    </tr>
+    <tr data-date="2025-10-31">
+        <td class="date-cell">31.10<br><span></span></td>
+        <td><a href="https://www.instagram.com/hasenbautechno/?igsh=MXA5NWQza3RpbmMweA%3D%3D"_blank">Hasenbau Halloween Special</a></td>
+        <td>Druckluft</td>
+        <td>Oberhausen</td>
+    </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const tableBody = document.querySelector("#eventTable tbody");
+        const rows = Array.from(tableBody.querySelectorAll("tr"));
+
+        // Sortierlogik: Zuerst nach Datum, dann nach Eventname
+        rows.sort((a, b) => {
+            const dateA = new Date(a.getAttribute("data-date"));
+            const dateB = new Date(b.getAttribute("data-date"));
+            const eventA = a.cells[1].textContent.trim().toLowerCase();
+            const eventB = b.cells[1].textContent.trim().toLowerCase();
+
+            if (dateA < dateB) return -1;
+            if (dateA > dateB) return 1;
+            if (eventA < eventB) return -1;
+            if (eventA > eventB) return 1;
+            return 0;
+        });
+
+        // Reihenfolge im DOM aktualisieren
+        rows.forEach(row => tableBody.appendChild(row));
+
+        // Bestehende Funktionen für vergangene Events und Scrollen
+        const today = new Date().toISOString().split("T")[0];
+        let scrolled = false;
+
+        rows.forEach(row => {
+            const eventDate = row.getAttribute("data-date");
+            const dateObj = new Date(eventDate);
+
+            if (!isNaN(dateObj)) {
+                const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
+                const weekday = weekdays[dateObj.getDay()];
+                const dateCell = row.querySelector(".date-cell span");
+                dateCell.textContent = weekday;
+
+                if (eventDate < today) {
+                    row.classList.add("past-event");
+                }
+
+                if (!scrolled && eventDate >= today) {
+                    const tableContainer = document.getElementById("tableContainer");
+                    const headerHeight = document.querySelector("th").offsetHeight;
+                    const rowOffset = row.offsetTop - headerHeight;
+
+                    tableContainer.scrollTo({
+                        top: rowOffset,
+                        behavior: "smooth"
+                    });
+
+                    scrolled = true;
+                }
+            }
+        });
+    });
+
+    </script>
+</body>
+</html>
