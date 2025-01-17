@@ -127,6 +127,13 @@
             display: block;
             margin-top: 0px;
         }
+        table a {
+            color: black; /* Links immer schwarz */
+            text-decoration: none;
+        }
+        table a:hover {
+            text-decoration: underline;
+        }
         @media (max-width: 600px) {
         body {
             font-size: 14px;
@@ -172,7 +179,6 @@
                 </tr>
             </thead>
             <tbody>
-
     <tr data-date="2025-01-19">
         <td class="date-cell">19.01<br><span></span></td>
         <td><a href="https://www.instagram.com/stories/3am.jhd/3546867603755182280?utm_source=ig_story_item_share&igsh=b3VyaW91NHc4OHlv" target="_blank">test1</a></td>
@@ -535,12 +541,17 @@
             const rows = document.querySelectorAll('#eventTable tbody tr');
             rows.forEach(row => {
                 const dataDate = row.getAttribute('data-date');
-                const formattedDate = new Date(dataDate).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+                const dateObj = new Date(dataDate);
+                const formattedDate = dateObj.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+                const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' });
+
                 const dateCell = row.querySelector('.date-cell');
-                if (dateCell) dateCell.innerHTML = formattedDate;
+                if (dateCell) {
+                    dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+                }
             });
 
-            // Tabelle nach Datum, Stadt und Event sortieren
+            // Tabelle sortieren
             const tableBody = document.querySelector('#eventTable tbody');
             const sortedRows = Array.from(rows).sort((a, b) => {
                 const dateA = new Date(a.getAttribute('data-date'));
@@ -550,15 +561,20 @@
                 const eventA = a.cells[1].textContent.toLowerCase();
                 const eventB = b.cells[1].textContent.toLowerCase();
 
-                if (dateA - dateB !== 0) return dateA - dateB; // Datum zuerst
-                if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB); // Dann Stadt
-                return eventA.localeCompare(eventB); // Zuletzt Event
+                if (dateA - dateB !== 0) return dateA - dateB;
+                if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB);
+                return eventA.localeCompare(eventB);
             });
             sortedRows.forEach(row => tableBody.appendChild(row));
 
             // Kontextmenü und Textauswahl verhindern
             document.addEventListener('contextmenu', e => e.preventDefault());
             document.addEventListener('selectstart', e => e.preventDefault());
+
+            // Zoom verhindern
+            document.addEventListener('gesturestart', e => e.preventDefault());
+            document.addEventListener('gesturechange', e => e.preventDefault());
+            document.addEventListener('gestureend', e => e.preventDefault());
 
             // Menü-Toggle
             const menu = document.getElementById('menu');
