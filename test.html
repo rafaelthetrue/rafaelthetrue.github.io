@@ -128,8 +128,8 @@
             margin-top: 0px;
         }
         table a {
-            color: black; /* Links immer schwarz */
-            text-decoration: none;
+            color: black;
+            text-decoration: underline;
         }
         table a:hover {
             text-decoration: underline;
@@ -537,21 +537,25 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Automatisches Datum aus `data-date` setzen
+            const today = new Date().toISOString().split('T')[0];
             const rows = document.querySelectorAll('#eventTable tbody tr');
+
             rows.forEach(row => {
                 const dataDate = row.getAttribute('data-date');
                 const dateObj = new Date(dataDate);
                 const formattedDate = dateObj.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
                 const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' });
-
+                
                 const dateCell = row.querySelector('.date-cell');
                 if (dateCell) {
                     dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
                 }
+                
+                if (dataDate < today) {
+                    row.classList.add('past-event');
+                }
             });
 
-            // Tabelle sortieren
             const tableBody = document.querySelector('#eventTable tbody');
             const sortedRows = Array.from(rows).sort((a, b) => {
                 const dateA = new Date(a.getAttribute('data-date'));
@@ -567,16 +571,22 @@
             });
             sortedRows.forEach(row => tableBody.appendChild(row));
 
-            // Kontextmenü und Textauswahl verhindern
+            let scrolled = false;
+            rows.forEach(row => {
+                const eventDate = row.getAttribute('data-date');
+                if (!scrolled && eventDate >= today) {
+                    const offset = row.offsetTop - document.querySelector('th').offsetHeight;
+                    document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
+                    scrolled = true;
+                }
+            });
+
             document.addEventListener('contextmenu', e => e.preventDefault());
             document.addEventListener('selectstart', e => e.preventDefault());
-
-            // Zoom verhindern
             document.addEventListener('gesturestart', e => e.preventDefault());
             document.addEventListener('gesturechange', e => e.preventDefault());
             document.addEventListener('gestureend', e => e.preventDefault());
 
-            // Menü-Toggle
             const menu = document.getElementById('menu');
             const menuIcon = document.getElementById('menuIcon');
             document.addEventListener('click', e => {
