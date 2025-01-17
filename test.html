@@ -638,6 +638,18 @@
         adjustTableHeight();
         window.addEventListener('resize', adjustTableHeight);
     });
+        function searchTable() {
+    const input = document.getElementById('search');
+    const filter = input.value.toLowerCase();
+    const rows = document.querySelectorAll('#eventTable tbody tr');
+
+    rows.forEach(row => {
+        const cells = Array.from(row.getElementsByTagName('td'));
+        const match = cells.some(cell => cell.textContent.toLowerCase().includes(filter));
+        row.style.display = match ? '' : 'none';
+    });
+}
+
     </script>
 </body>
 </html>
