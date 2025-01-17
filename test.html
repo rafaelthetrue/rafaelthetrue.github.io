@@ -537,75 +537,88 @@
         </table>
     </div>
     <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const today = new Date().toISOString().split('T')[0];
-    const rows = document.querySelectorAll('#eventTable tbody tr');
+    document.addEventListener('DOMContentLoaded', function () {
+        const today = new Date().toISOString().split('T')[0];
+        const rows = document.querySelectorAll('#eventTable tbody tr');
 
-    // Automatisches Setzen von Datum und Wochentag
-    rows.forEach(row => {
-        const dataDate = row.getAttribute('data-date');
-        const dateObj = new Date(dataDate);
-        const formattedDate = dateObj.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
-        const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' });
-        
-        const dateCell = row.querySelector('.date-cell');
-        if (dateCell) {
-            dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+        // Automatisches Setzen von Datum und Wochentag
+        rows.forEach(row => {
+            const dataDate = row.getAttribute('data-date');
+            const dateObj = new Date(dataDate);
+            const formattedDate = dateObj.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+            const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' });
+
+            const dateCell = row.querySelector('.date-cell');
+            if (dateCell) {
+                dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+            }
+
+            if (dataDate < today) {
+                row.classList.add('past-event');
+            }
+        });
+
+        // Sortieren der Tabelle
+        const tableBody = document.querySelector('#eventTable tbody');
+        const sortedRows = Array.from(rows).sort((a, b) => {
+            const dateA = new Date(a.getAttribute('data-date'));
+            const dateB = new Date(b.getAttribute('data-date'));
+            const cityA = a.cells[3].textContent.toLowerCase();
+            const cityB = b.cells[3].textContent.toLowerCase();
+            const eventA = a.cells[1].textContent.toLowerCase();
+            const eventB = b.cells[1].textContent.toLowerCase();
+
+            if (dateA - dateB !== 0) return dateA - dateB;
+            if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB);
+            return eventA.localeCompare(eventB);
+        });
+        sortedRows.forEach(row => tableBody.appendChild(row));
+
+        // Scrollen zum nächsten Event
+        let scrolled = false;
+        sortedRows.forEach(row => {
+            const eventDate = row.getAttribute('data-date');
+            if (!scrolled && eventDate >= today) {
+                const offset = row.offsetTop - document.querySelector('th').offsetHeight;
+                document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
+                scrolled = true;
+            }
+        });
+
+        // Kontextmenü und Textauswahl verhindern
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('selectstart', e => e.preventDefault());
+
+        // Zoom deaktivieren
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        document.addEventListener('gesturechange', e => e.preventDefault());
+        document.addEventListener('gestureend', e => e.preventDefault());
+
+        // Menü-Toggle
+        const menu = document.getElementById('menu');
+        const menuIcon = document.getElementById('menuIcon');
+        menuIcon.addEventListener('click', () => {
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        });
+        document.addEventListener('click', e => {
+            if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
+
+        // Dynamische Anpassung der Tabellenhöhe
+        function adjustTableHeight() {
+            const headerHeight = document.querySelector(".header").offsetHeight;
+            const searchHeight = document.querySelector(".search-container").offsetHeight;
+            const viewportHeight = window.innerHeight;
+            const tableContainer = document.getElementById("tableContainer");
+            tableContainer.style.height = `${0.85 * (viewportHeight - headerHeight - searchHeight)}px`;
         }
-        
-        if (dataDate < today) {
-            row.classList.add('past-event');
-        }
+
+        // Höhe der Tabelle anpassen und bei Fenstergrößenänderungen neu berechnen
+        adjustTableHeight();
+        window.addEventListener('resize', adjustTableHeight);
     });
-
-    // Sortieren der Tabelle
-    const tableBody = document.querySelector('#eventTable tbody');
-    const sortedRows = Array.from(rows).sort((a, b) => {
-        const dateA = new Date(a.getAttribute('data-date'));
-        const dateB = new Date(b.getAttribute('data-date'));
-        const cityA = a.cells[3].textContent.toLowerCase();
-        const cityB = b.cells[3].textContent.toLowerCase();
-        const eventA = a.cells[1].textContent.toLowerCase();
-        const eventB = b.cells[1].textContent.toLowerCase();
-
-        if (dateA - dateB !== 0) return dateA - dateB;
-        if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB);
-        return eventA.localeCompare(eventB);
-    });
-    sortedRows.forEach(row => tableBody.appendChild(row));
-
-    // Scrollen zum nächsten Event
-    let scrolled = false;
-    sortedRows.forEach(row => {
-        const eventDate = row.getAttribute('data-date');
-        if (!scrolled && eventDate >= today) {
-            const offset = row.offsetTop - document.querySelector('th').offsetHeight;
-            document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
-            scrolled = true;
-        }
-    });
-
-    // Kontextmenü und Textauswahl verhindern
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('selectstart', e => e.preventDefault());
-
-    // Zoom deaktivieren
-    document.addEventListener('gesturestart', e => e.preventDefault());
-    document.addEventListener('gesturechange', e => e.preventDefault());
-    document.addEventListener('gestureend', e => e.preventDefault());
-
-    // Menü-Toggle
-    const menu = document.getElementById('menu');
-    const menuIcon = document.getElementById('menuIcon');
-    menuIcon.addEventListener('click', () => {
-        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-    });
-    document.addEventListener('click', e => {
-        if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
-            menu.style.display = 'none';
-        }
-    });
-});
     </script>
 </body>
 </html>
