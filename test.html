@@ -552,21 +552,21 @@
         const rows = document.querySelectorAll('#eventTable tbody tr');
 
         // Automatisches Setzen von Datum und Wochentag
-        rows.forEach(row => {
-            const dataDate = row.getAttribute('data-date');
-            const dateObj = new Date(dataDate);
-            const formattedDate = dateObj.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
-            const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
+       rows.forEach(row => {
+    const dataDate = row.getAttribute('data-date');
+    const dateObj = new Date(dataDate);
+    const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+    const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
 
-            const dateCell = row.querySelector('.date-cell');
-            if (dateCell) {
-                dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
-            }
+    const dateCell = row.querySelector('.date-cell');
+    if (dateCell) {
+        dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+    }
 
-            if (dataDate < today) {
-                row.classList.add('past-event');
-            }
-        });
+    if (dataDate < today) {
+        row.classList.add('past-event');
+    }
+});
 
         // Sortieren der Tabelle
         const tableBody = document.querySelector('#eventTable tbody');
