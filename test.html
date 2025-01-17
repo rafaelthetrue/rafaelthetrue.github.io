@@ -93,7 +93,7 @@
             margin: 0 auto;
             border-collapse: collapse; /* Sorgt dafür, dass alle Zellen ohne Lücke dargestellt werden */
             padding: 0; /* Entfernt mögliche Innenabstände */
-            height: 85%;
+            height: 90%;
             position: relative;
         }
         table {
@@ -622,7 +622,7 @@
             const searchHeight = document.querySelector(".search-container").offsetHeight;
             const viewportHeight = window.innerHeight;
             const tableContainer = document.getElementById("tableContainer");
-            tableContainer.style.height = `${0.85 * (viewportHeight - headerHeight - searchHeight)}px`;
+            tableContainer.style.height = `${0.90 * (viewportHeight - headerHeight - searchHeight)}px`;
         }
 
         // Höhe der Tabelle anpassen und bei Fenstergrößenänderungen neu berechnen
