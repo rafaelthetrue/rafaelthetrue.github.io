@@ -570,9 +570,10 @@
     if (dateCell) {
         dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
     }
+});
 
 
-    // Vergangene Events am Folgetag um 06:00 Uhr morgens kennzeichnen 
+// Vergangene Events am Folgetag um 06:00 Uhr morgens kennzeichnen 
     document.addEventListener('DOMContentLoaded', function () {
     const now = new Date(); // Aktuelle Zeit
     const rows = document.querySelectorAll('#eventTable tbody tr');
@@ -591,7 +592,7 @@
         }
     });
 });
-});
+
 
         // Sortieren der Tabelle
         const tableBody = document.querySelector('#eventTable tbody');
