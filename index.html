@@ -171,6 +171,9 @@
         
     /* Nur für die Spalte "Location" */
     td:nth-child(3) {
+        word-break: break-word; /* Wörter an beliebigen Stellen brechen */
+        hyphens: auto; /* Automatische Silbentrennung */
+        overflow-wrap: break-word; /* Alternative für ältere Browser */
         white-space: normal; /* Erlaubt Zeilenumbruch */
         min-width: 60px; /* Mindestbreite der Spalte */
         max-width: 80px; /* Maximale Breite der Spalte, um Layout zu schützen */
