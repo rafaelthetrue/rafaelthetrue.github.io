@@ -555,7 +555,7 @@
         </table>
     </div>
     <script>
-document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
     const today = new Date().toISOString().split('T')[0];
     const rows = document.querySelectorAll('#eventTable tbody tr');
 
@@ -604,14 +604,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     sortedRows.forEach(row => tableBody.appendChild(row));
 
-    // Scrollen zum nächsten Event
-    let scrolled = false;
-    sortedRows.forEach(row => {
-        const eventDate = row.getAttribute('data-date');
-        if (!scrolled && eventDate >= today) {
+        // Scrollen zum nächsten Event, das noch nicht vergangen ist
+    let scrolled = false; // Um nur einmal zu scrollen
+    rows.forEach(row => {
+        const dataDate = row.getAttribute('data-date');
+        const eventDate = new Date(dataDate);
+
+        // Event gilt bis zum nächsten Tag um 06:00 Uhr
+        eventDate.setDate(eventDate.getDate() + 1);
+        eventDate.setHours(6, 0, 0, 0);
+
+        // Wenn das Event noch nicht vergangen ist, scrollen
+        if (!scrolled && now <= eventDate) {
             const offset = row.offsetTop - document.querySelector('th').offsetHeight;
             document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
-            scrolled = true;
+            scrolled = true; // Nur zum ersten passenden Event scrollen
         }
     });
 
