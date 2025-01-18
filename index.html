@@ -556,73 +556,73 @@
     </div>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const today = new Date().toISOString().split('T')[0];
     const rows = document.querySelectorAll('#eventTable tbody tr');
+    const now = new Date(); // Aktuelle Zeit
 
-    // Automatisches Setzen von Datum und Wochentag
+    // Automatisches Setzen von Datum und Wochentag in der Tabelle
     rows.forEach(row => {
         const dataDate = row.getAttribute('data-date');
         const dateObj = new Date(dataDate);
-        const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
-        const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
 
-        const dateCell = row.querySelector('.date-cell');
-        if (dateCell) {
-            dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+        if (!isNaN(dateObj)) {
+            const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+            const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
+
+            const dateCell = row.querySelector('.date-cell');
+            if (dateCell) {
+                dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+            }
         }
     });
 
-    // Vergangene Events am Folgetag um 06:00 Uhr morgens kennzeichnen
-    const now = new Date(); // Aktuelle Zeit
+    // Markieren vergangener Events
     rows.forEach(row => {
         const dataDate = row.getAttribute('data-date');
-        const eventDate = new Date(dataDate); // Datum des Events
+        const eventDate = new Date(dataDate);
 
         // Setze das Event-Datum auf den nächsten Tag um 06:00 Uhr
-        eventDate.setDate(eventDate.getDate() + 1); // Gehe auf den Folgetag
-        eventDate.setHours(6, 0, 0, 0); // Setze die Uhrzeit auf 06:00 Uhr
+        eventDate.setDate(eventDate.getDate() + 1);
+        eventDate.setHours(6, 0, 0, 0);
 
-        // Wenn die aktuelle Zeit später als das Eventdatum + 6 Stunden ist, markieren
+        // Markiere vergangene Events
         if (now > eventDate) {
             row.classList.add('past-event');
         }
     });
 
-    // Sortieren der Tabelle
+    // Sortieren der Tabelle nach Datum
     const tableBody = document.querySelector('#eventTable tbody');
-const sortedRows = Array.from(rows).sort((a, b) => {
-    const dateA = new Date(a.getAttribute('data-date'));
-    const dateB = new Date(b.getAttribute('data-date'));
+    const sortedRows = Array.from(rows).sort((a, b) => {
+        const dateA = new Date(a.getAttribute('data-date'));
+        const dateB = new Date(b.getAttribute('data-date'));
+        return dateA - dateB; // Sortiere nach Datum
+    });
 
-    if (dateA - dateB !== 0) return dateA - dateB; // Nach Datum sortieren
-    return 0; // Weitere Kriterien könnten hier hinzugefügt werden
-});
+    // Sortierte Zeilen ins DOM einfügen
+    sortedRows.forEach(row => tableBody.appendChild(row));
 
-// Sortierte Zeilen ins DOM einfügen
-sortedRows.forEach(row => tableBody.appendChild(row));
+    // Scrollen zur ersten gültigen Zeile (nächstes Event)
+    let firstValidRow = null;
+    sortedRows.forEach(row => {
+        const dataDate = row.getAttribute('data-date');
+        const eventDate = new Date(dataDate);
 
-    // Nach der Sortierung: Scrollen zur ersten gültigen Zeile
-let firstValidRow = null;
-const now = new Date();
+        // Folgetag um 06:00 Uhr
+        eventDate.setDate(eventDate.getDate() + 1);
+        eventDate.setHours(6, 0, 0, 0);
 
-sortedRows.forEach(row => {
-    const dataDate = row.getAttribute('data-date');
-    const eventDate = new Date(dataDate);
+        // Finde das erste zukünftige Event
+        if (now <= eventDate && !firstValidRow) {
+            firstValidRow = row;
+        }
+    });
 
-    // Folgetag um 6:00 Uhr
-    eventDate.setDate(eventDate.getDate() + 1);
-    eventDate.setHours(6, 0, 0, 0);
-
-    if (now <= eventDate && !firstValidRow) {
-        firstValidRow = row;
+    // Scrollen zur ersten gültigen Zeile
+    if (firstValidRow) {
+        const offset = firstValidRow.offsetTop - document.querySelector('th').offsetHeight;
+        document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
     }
 });
-
-// Scrollen zur ersten gültigen Zeile
-if (firstValidRow) {
-    const offset = firstValidRow.offsetTop - document.querySelector('th').offsetHeight;
-    document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
-}
 
     // Kontextmenü und Textauswahl verhindern
     document.addEventListener('contextmenu', e => e.preventDefault());
