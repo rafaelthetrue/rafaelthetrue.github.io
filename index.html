@@ -604,11 +604,11 @@
     });
     sortedRows.forEach(row => tableBody.appendChild(row));
 
-    // Scrollen zum nächsten anstehenden Event (einschließlich derer, die heute bis 6 Uhr des Folgetages gelten)
+    // Scrollen zum nächsten gültigen Event (einschließlich derer, die bis 6 Uhr des Folgetages gültig sind)
     let scrolled = false;
-    rows.forEach(row => {
-    if (scrolled) return; // Schleife beenden, wenn bereits gescrollt wurde
-
+    let lastValidDate = null; // Speichert das zuletzt überprüfte Datum
+    for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
     const dataDate = row.getAttribute('data-date');
     const eventDate = new Date(dataDate);
 
@@ -616,12 +616,15 @@
     eventDate.setDate(eventDate.getDate() + 1); // Folgetag
     eventDate.setHours(6, 0, 0, 0); // Uhrzeit auf 06:00 Uhr setzen
 
-    if (now <= eventDate) { // Wenn das Event noch aktuell ist
+    // Wenn das Event noch gültig ist und das Datum nicht erneut betrachtet wird
+    if (now <= eventDate && dataDate !== lastValidDate) {
         const offset = row.offsetTop - document.querySelector('th').offsetHeight; // Scroll-Offset berechnen
         document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
         scrolled = true; // Markieren, dass gescrollt wurde
+        lastValidDate = dataDate; // Datum speichern, um Duplikate zu vermeiden
+        break; // Schleife abbrechen, nachdem das erste gültige Event gefunden wurde
     }
-});
+}
 
     // Kontextmenü und Textauswahl verhindern
     document.addEventListener('contextmenu', e => e.preventDefault());
