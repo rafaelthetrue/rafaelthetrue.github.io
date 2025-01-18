@@ -604,21 +604,17 @@
     });
     sortedRows.forEach(row => tableBody.appendChild(row));
 
-    
-    // Scrollen zur ersten Zeile, die nicht die Klasse "past-event" hat
-    let firstValidRow = null;
-    rows.forEach(row => {
-        if (!row.classList.contains('past-event') && !firstValidRow) {
-            firstValidRow = row;
+    // Scrollen zum nächsten Event
+    let scrolled = false;
+    sortedRows.forEach(row => {
+        const eventDate = row.getAttribute('data-date');
+        if (!scrolled && eventDate >= today) {
+            const offset = row.offsetTop - document.querySelector('th').offsetHeight;
+            document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
+            scrolled = true;
         }
     });
 
-    // Scrollen zur ersten gültigen Zeile
-    if (firstValidRow) {
-        const offset = firstValidRow.offsetTop - document.querySelector('th').offsetHeight;
-        tableContainer.scrollTo({ top: offset, behavior: 'smooth' });
-    }
-});
     // Kontextmenü und Textauswahl verhindern
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('selectstart', e => e.preventDefault());
