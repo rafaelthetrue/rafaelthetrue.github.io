@@ -605,27 +605,28 @@
     sortedRows.forEach(row => tableBody.appendChild(row));
 
     // Scrollen zum nächsten gültigen Event (einschließlich derer, die bis 6 Uhr des Folgetages gültig sind)
-    let scrolled = false;
-    let lastValidDate = null; // Speichert das zuletzt überprüfte Datum
-    for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
+let firstValidRow = null; // Speichert die erste gültige Zeile
+const now = new Date(); // Aktuelle Zeit
+
+rows.forEach(row => {
     const dataDate = row.getAttribute('data-date');
     const eventDate = new Date(dataDate);
 
     // Event ist bis 6:00 Uhr des Folgetages gültig
-    eventDate.setDate(eventDate.getDate() + 1); // Folgetag
+    eventDate.setDate(eventDate.getDate() + 1); // Gehe auf den Folgetag
     eventDate.setHours(6, 0, 0, 0); // Uhrzeit auf 06:00 Uhr setzen
 
-    // Wenn das Event noch gültig ist und das Datum nicht erneut betrachtet wird
-    if (now <= eventDate && dataDate !== lastValidDate) {
-        const offset = row.offsetTop - document.querySelector('th').offsetHeight; // Scroll-Offset berechnen
-        document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
-        scrolled = true; // Markieren, dass gescrollt wurde
-        lastValidDate = dataDate; // Datum speichern, um Duplikate zu vermeiden
-        break; // Schleife abbrechen, nachdem das erste gültige Event gefunden wurde
+    // Wenn das Event gültig ist und noch keine gültige Zeile gefunden wurde
+    if (now <= eventDate && !firstValidRow) {
+        firstValidRow = row; // Diese Zeile ist die erste gültige
     }
-}
+});
 
+// Wenn eine gültige Zeile gefunden wurde, scrolle zu dieser
+if (firstValidRow) {
+    const offset = firstValidRow.offsetTop - document.querySelector('th').offsetHeight; // Scroll-Offset berechnen
+    document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
+}
     // Kontextmenü und Textauswahl verhindern
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('selectstart', e => e.preventDefault());
