@@ -169,6 +169,13 @@
             padding: 8px; /* Weniger Padding in den Zellen */
         }
         
+    /* Nur für die Spalte "Location" */
+    td:nth-child(3) {
+        white-space: normal; /* Erlaubt Zeilenumbruch */
+        min-width: 70px; /* Mindestbreite der Spalte */
+        max-width: 100px; /* Maximale Breite der Spalte, um Layout zu schützen */
+    }
+        
 
     /* Nur für die Spalte "Stadt" */
     td:nth-child(4) {
