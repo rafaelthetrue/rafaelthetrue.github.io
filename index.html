@@ -168,7 +168,14 @@
             font-size: 12px; /* Kleinere Schrift in der Tabelle */
             padding: 6px; /* Weniger Padding in den Zellen */
         }
+        
+    /* Nur für die Spalte "Stadt" */
+    td:nth-child(4) {
+        word-break: break-word; /* Allgemeines Brechen von Wörtern */
+        hyphens: auto; /* Aktiviert Silbentrennung */
+        overflow-wrap: break-word; /* Alternative für ältere Browser */
     }
+}
     </style>
 </head>
 <body>
