@@ -191,6 +191,7 @@
     <div class="menu-icon-container" id="menuIconContainer">
         <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
         <div class="menu" id="menu">
+            <a href="#" id="refreshPage">Aktualisieren</a>
             <a href="impressum.html">Impressum</a>
             <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
         </div>
@@ -705,7 +706,13 @@
             menu.style.display = 'none';
         });
     });
-
+    // Funktion für "Aktualisieren"
+        const refreshPage = document.getElementById('refreshPage');
+        refreshPage.addEventListener('click', (e) => {
+        e.preventDefault(); // Verhindert die Standardaktion des Links
+        window.location.reload(true); // Erzwingt das Neuladen ohne Cache
+        });
+    });
     // Dynamische Anpassung der Tabellenhöhe
     function adjustTableHeight() {
         const headerHeight = document.querySelector(".header").offsetHeight;
