@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://www.ravebro.de/sitemap.xml
+Sitemap: https://ravebro.de/sitemap.xml
