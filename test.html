@@ -16,7 +16,7 @@
             color: #333;
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100);
             overflow: hidden;
             user-select: none; /* Verhindert Textauswahl */
             -webkit-user-select: none;
@@ -138,11 +138,24 @@
             display: block;
             margin-top: 0px;
         }
-        table a:link, 
-        table a:visited, 
-        table a:hover, 
+        /* Standardlinks in der Tabelle */
+        table a:link,
+        table a:visited,
+        table a:hover,
         table a:active {
-            color: black; /* Textfarbe immer schwarz */
+             color: black; /* Textfarbe immer schwarz */
+        }
+
+        /* Links in vergangenen Events */
+        tr.past-event a:link,
+        tr.past-event a:visited {
+             color: #888; /* Ausgegraute Farbe */
+        }
+
+        tr.past-event a:hover,
+        tr.past-event a:active {
+        color: #666; /* Etwas dunkler beim Hover */
+        text-decoration: none; /* Optional: Keine Unterstreichung */
         }
         @media (max-width: 600px) {
         body {
@@ -155,7 +168,19 @@
             font-size: 12px; /* Kleinere Schrift in der Tabelle */
             padding: 8px; /* Weniger Padding in den Zellen */
         }
+        
+
+    /* Nur für die Spalte "Stadt" */
+    td:nth-child(4) {
+        word-break: break-word; /* Wörter an beliebigen Stellen brechen */
+        hyphens: auto; /* Automatische Silbentrennung */
+        overflow-wrap: break-word; /* Alternative für ältere Browser */
+        white-space: normal; /* Erlaubt Zeilenumbruch */
+        min-width: 70px; /* Mindestbreite der Spalte */
+        max-width: 120px; /* Maximale Breite der Spalte, um Layout zu schützen */
     }
+}
+
     </style>
 </head>
 <body>
@@ -189,7 +214,13 @@
                 </tr>
             </thead>
             <tbody>
-
+                
+    <tr data-date="2025-01-17">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEu6UKKN5zL/?igsh=MWVvYnVuNjZ1YmdjMg==" target="_blank">SCHNELLE NACHT XXL</a></td>
+        <td>Die Nacht</td>
+        <td>Mönchengladbach</td>
+    </tr>             
 
     <tr data-date="2025-07-12">
         <td class="date-cell"><br><span></span></td>
@@ -403,7 +434,7 @@
     </tr>
     <tr data-date="2025-03-07">
         <td class="date-cell">07.03<br><span></span></td>
-        <td><a href="https://www.instagram.com/taktlos_events?igsh=a2p3Mm54aHJmaGFz" target="_blank">DOPAMYN Indoor Festival</a></td>
+        <td><a href="https://www.instagram.com/reel/DE75LSturHN/?igsh=cGJjanJqbG1jOHIz" target="_blank">DOPAMYN Indoor Festival</a></td>
         <td>Delta</td>
         <td>Essen</td>
     </tr>
@@ -550,107 +581,129 @@
     </div>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const today = new Date().toISOString().split('T')[0];
-        const rows = document.querySelectorAll('#eventTable tbody tr');
-
-        // Automatisches Setzen von Datum und Wochentag
-      rows.forEach(row => {
-    const dataDate = row.getAttribute('data-date');
-    const dateObj = new Date(dataDate);
-    const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
-    const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
-
-    const dateCell = row.querySelector('.date-cell');
-    if (dateCell) {
-        dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
-    }
-
-    if (dataDate < today) {
-        row.classList.add('past-event');
-    }
-});
-
-        // Sortieren der Tabelle
-        const tableBody = document.querySelector('#eventTable tbody');
-        const sortedRows = Array.from(rows).sort((a, b) => {
-            const dateA = new Date(a.getAttribute('data-date'));
-            const dateB = new Date(b.getAttribute('data-date'));
-            const cityA = a.cells[3].textContent.toLowerCase();
-            const cityB = b.cells[3].textContent.toLowerCase();
-            const eventA = a.cells[1].textContent.toLowerCase();
-            const eventB = b.cells[1].textContent.toLowerCase();
-
-            if (dateA - dateB !== 0) return dateA - dateB;
-            if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB);
-            return eventA.localeCompare(eventB);
-        });
-        sortedRows.forEach(row => tableBody.appendChild(row));
-
-        // Scrollen zum nächsten Event
-        let scrolled = false;
-        sortedRows.forEach(row => {
-            const eventDate = row.getAttribute('data-date');
-            if (!scrolled && eventDate >= today) {
-                const offset = row.offsetTop - document.querySelector('th').offsetHeight;
-                document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
-                scrolled = true;
-            }
-        });
-
-        // Kontextmenü und Textauswahl verhindern
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('selectstart', e => e.preventDefault());
-
-        // Zoom deaktivieren
-        document.addEventListener('gesturestart', e => e.preventDefault());
-        document.addEventListener('gesturechange', e => e.preventDefault());
-        document.addEventListener('gestureend', e => e.preventDefault());
-
-        // Menü-Toggle
-        const menu = document.getElementById('menu');
-        const menuIcon = document.getElementById('menuIcon');
-        menuIcon.addEventListener('click', () => {
-            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-        });
-        document.addEventListener('click', e => {
-            if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
-                menu.style.display = 'none';
-            }
-        });
-
-        // Menü schließen, wenn ein Link angeklickt wird
-        const menuLinks = document.querySelectorAll('.menu a');
-        menuLinks.forEach(link => {
-        link.addEventListener('click', () => {
-        menu.style.display = 'none';
-            });
-        });
-
-        // Dynamische Anpassung der Tabellenhöhe
-        function adjustTableHeight() {
-            const headerHeight = document.querySelector(".header").offsetHeight;
-            const searchHeight = document.querySelector(".search-container").offsetHeight;
-            const viewportHeight = window.innerHeight;
-            const tableContainer = document.getElementById("tableContainer");
-            tableContainer.style.height = `${0.90 * (viewportHeight - headerHeight - searchHeight)}px`;
-        }
-
-        // Höhe der Tabelle anpassen und bei Fenstergrößenänderungen neu berechnen
-        adjustTableHeight();
-        window.addEventListener('resize', adjustTableHeight);
-    });
-        function searchTable() {
-    const input = document.getElementById('search');
-    const filter = input.value.toLowerCase();
+    const today = new Date().toISOString().split('T')[0];
     const rows = document.querySelectorAll('#eventTable tbody tr');
 
+    // Automatisches Setzen von Datum und Wochentag
     rows.forEach(row => {
-        const cells = Array.from(row.getElementsByTagName('td'));
-        const match = cells.some(cell => cell.textContent.toLowerCase().includes(filter));
-        row.style.display = match ? '' : 'none';
-    });
-}
+        const dataDate = row.getAttribute('data-date');
+        const dateObj = new Date(dataDate);
+        const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+        const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
 
+        const dateCell = row.querySelector('.date-cell');
+        if (dateCell) {
+            dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+        }
+    });
+
+    // Vergangene Events am Folgetag um 06:00 Uhr morgens kennzeichnen
+    const now = new Date(); // Aktuelle Zeit
+    rows.forEach(row => {
+        const dataDate = row.getAttribute('data-date');
+        const eventDate = new Date(dataDate); // Datum des Events
+
+        // Setze das Event-Datum auf den nächsten Tag um 06:00 Uhr
+        eventDate.setDate(eventDate.getDate() + 1); // Gehe auf den Folgetag
+        eventDate.setHours(6, 0, 0, 0); // Setze die Uhrzeit auf 06:00 Uhr
+
+        // Wenn die aktuelle Zeit später als das Eventdatum + 6 Stunden ist, markieren
+        if (now > eventDate) {
+            row.classList.add('past-event');
+        }
+    });
+
+    // Sortieren der Tabelle
+    const tableBody = document.querySelector('#eventTable tbody');
+    const sortedRows = Array.from(rows).sort((a, b) => {
+        const dateA = new Date(a.getAttribute('data-date'));
+        const dateB = new Date(b.getAttribute('data-date'));
+        const cityA = a.cells[3].textContent.toLowerCase();
+        const cityB = b.cells[3].textContent.toLowerCase();
+        const eventA = a.cells[1].textContent.toLowerCase();
+        const eventB = b.cells[1].textContent.toLowerCase();
+
+        if (dateA - dateB !== 0) return dateA - dateB;
+        if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB);
+        return eventA.localeCompare(eventB);
+    });
+    sortedRows.forEach(row => tableBody.appendChild(row));
+
+    // Scrollen zum nächsten Event
+    let scrolled = false;
+    sortedRows.forEach(row => {
+        const eventDate = row.getAttribute('data-date');
+        if (!scrolled && eventDate >= today) {
+            const offset = row.offsetTop - document.querySelector('th').offsetHeight;
+            document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
+            scrolled = true;
+        }
+    });
+
+    // Kontextmenü und Textauswahl verhindern
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('selectstart', e => e.preventDefault());
+
+    // Zoom deaktivieren
+    document.addEventListener('gesturestart', e => e.preventDefault());
+    document.addEventListener('gesturechange', e => e.preventDefault());
+    document.addEventListener('gestureend', e => e.preventDefault());
+
+    // Menü-Toggle
+    const menu = document.getElementById('menu');
+    const menuIcon = document.getElementById('menuIcon');
+    menuIcon.addEventListener('click', () => {
+        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    });
+    document.addEventListener('click', e => {
+        if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
+            menu.style.display = 'none';
+        }
+    });
+
+    // Menü schließen, wenn ein Link angeklickt wird
+    const menuLinks = document.querySelectorAll('.menu a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            menu.style.display = 'none';
+        });
+    });
+
+    // Dynamische Anpassung der Tabellenhöhe
+    function adjustTableHeight() {
+        const headerHeight = document.querySelector(".header").offsetHeight;
+        const searchHeight = document.querySelector(".search-container").offsetHeight;
+        const viewportHeight = window.innerHeight;
+        const tableContainer = document.getElementById("tableContainer");
+        tableContainer.style.height = `${0.90 * (viewportHeight - headerHeight - searchHeight)}px`;
+    }
+
+    // Höhe der Tabelle anpassen und bei Fenstergrößenänderungen neu berechnen
+    adjustTableHeight();
+    window.addEventListener('resize', adjustTableHeight);
+
+    // Dynamische Anpassung der Viewport-Höhe (für mobile Geräte)
+    function adjustViewportHeight() {
+        const vh = window.innerHeight * 0.01; // 1% der tatsächlichen Fensterhöhe
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    window.addEventListener('load', adjustViewportHeight);
+    window.addEventListener('resize', adjustViewportHeight);
+
+    // Suchfunktion für die Tabelle
+    function searchTable() {
+        const input = document.getElementById('search');
+        const filter = input.value.toLowerCase();
+        const rows = document.querySelectorAll('#eventTable tbody tr');
+
+        rows.forEach(row => {
+            const cells = Array.from(row.getElementsByTagName('td'));
+            const match = cells.some(cell => cell.textContent.toLowerCase().includes(filter));
+            row.style.display = match ? '' : 'none';
+        });
+    }
+    document.getElementById('search').addEventListener('keyup', searchTable);
+});
     </script>
 </body>
 </html>
