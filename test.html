@@ -581,35 +581,36 @@
     </div>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const today = new Date();
+    const now = new Date();
+    const currentHour = now.getHours();
     const rows = document.querySelectorAll('#eventTable tbody tr');
 
     // Automatisches Setzen von Datum und Wochentag
     rows.forEach(row => {
         const dataDate = row.getAttribute('data-date');
-        const dateObj = new Date(dataDate);
-        const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
-        const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
+        if (dataDate) {
+            const dateObj = new Date(dataDate);
+            const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+            const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
 
-        const dateCell = row.querySelector('.date-cell');
-        if (dateCell && !dateCell.textContent.trim()) { // Nur füllen, wenn die Zelle leer ist
-            dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+            const dateCell = row.querySelector('.date-cell');
+            if (dateCell && !dateCell.textContent.trim()) { // Nur füllen, wenn die Zelle leer ist
+                dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+            }
         }
     });
 
     // Vergangene Events am Folgetag um 06:00 Uhr morgens kennzeichnen
-    const now = new Date(); // Aktuelle Zeit
     rows.forEach(row => {
         const dataDate = row.getAttribute('data-date');
-        const eventDate = new Date(dataDate); // Datum des Events
+        if (dataDate) {
+            const eventDate = new Date(dataDate);
+            eventDate.setDate(eventDate.getDate() + 1); // Auf den Folgetag setzen
+            eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr morgens am Folgetag
 
-        // Setze das Event-Datum auf den nächsten Tag um 06:00 Uhr
-        eventDate.setDate(eventDate.getDate() + 1); // Gehe auf den Folgetag
-        eventDate.setHours(6, 0, 0, 0); // Setze die Uhrzeit auf 06:00 Uhr
-
-        // Wenn die aktuelle Zeit später als das Eventdatum + 6 Stunden ist, markieren
-        if (now > eventDate) {
-            row.classList.add('past-event');
+            if (now > eventDate) {
+                row.classList.add('past-event');
+            }
         }
     });
 
@@ -630,27 +631,25 @@
     sortedRows.forEach(row => tableBody.appendChild(row));
 
     // Scrollen basierend auf Uhrzeit
-    const currentHour = now.getHours();
+    let scrolled = false;
 
     if (currentHour >= 6) {
         // Nach 6 Uhr morgens: Scrollen zum nächsten Event ab heute
-        let scrolled = false;
         sortedRows.forEach(row => {
             const eventDate = new Date(row.getAttribute('data-date'));
-            if (!scrolled && eventDate >= today) {
+            if (!scrolled && eventDate >= now) {
                 const offset = row.offsetTop - document.querySelector('th').offsetHeight;
                 document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
                 scrolled = true;
             }
         });
     } else {
-        // Vor 6 Uhr morgens: Scrollen zu Events, die gestern nach 6 Uhr morgens relevant waren
-        let scrolled = false;
+        // Vor 6 Uhr morgens: Scrollen zu Events, die gestern nach 6 Uhr morgens relevant wären
         sortedRows.forEach(row => {
             const dataDate = row.getAttribute('data-date');
             const eventDate = new Date(dataDate);
-            eventDate.setDate(eventDate.getDate() + 1); // Auf den Folgetag setzen
-            eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr am Folgetag
+            eventDate.setDate(eventDate.getDate() + 1);
+            eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr morgens am Folgetag
 
             if (!scrolled && now <= eventDate) {
                 const offset = row.offsetTop - document.querySelector('th').offsetHeight;
