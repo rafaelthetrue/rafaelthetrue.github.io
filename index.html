@@ -735,17 +735,37 @@
 
     // Suchfunktion für die Tabelle
     function searchTable() {
-        const input = document.getElementById('search');
-        const filter = input.value.toLowerCase();
-        const rows = document.querySelectorAll('#eventTable tbody tr');
+    const input = document.getElementById('search');
+    const filter = input.value.toLowerCase();
+    const rows = Array.from(document.querySelectorAll('#eventTable tbody tr'));
+    const tableBody = document.querySelector('#eventTable tbody');
 
-        rows.forEach(row => {
-            const cells = Array.from(row.getElementsByTagName('td'));
-            const match = cells.some(cell => cell.textContent.toLowerCase().includes(filter));
-            row.style.display = match ? '' : 'none';
-        });
-    }
-    document.getElementById('search').addEventListener('keyup', searchTable);
+    let scrolled = false; // Zum Verhindern von mehrfachen Scrolls
+    const now = new Date();
+
+    // Filterung der Zeilen basierend auf der Eingabe
+    rows.forEach(row => {
+        const cells = Array.from(row.getElementsByTagName('td'));
+        const match = cells.some(cell => cell.textContent.toLowerCase().includes(filter));
+        row.style.display = match ? '' : 'none';
+    });
+
+    // Scrollen zur ersten relevanten Zeile
+    rows.forEach(row => {
+        const isVisible = row.style.display !== 'none';
+        const dataDate = row.getAttribute('data-date');
+        if (isVisible && dataDate) {
+            const eventDate = new Date(dataDate);
+
+            // Scrollen, wenn das Event noch nicht vorbei ist
+            if (!scrolled && eventDate >= now) {
+                const offset = row.offsetTop - document.querySelector('th').offsetHeight;
+                document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
+                scrolled = true;
+            }
+        }
+    });
+}
     </script>
 </body>
 </html>
