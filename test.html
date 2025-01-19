@@ -594,7 +594,8 @@
             const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
 
             const dateCell = row.querySelector('.date-cell');
-            if (dateCell && !dateCell.textContent.trim()) { // Nur füllen, wenn die Zelle leer ist
+            if (dateCell) {
+                // Unabhängig von vorhandenem HTML-Inhalt überschreiben
                 dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
             }
         }
