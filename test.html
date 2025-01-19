@@ -592,7 +592,7 @@
         const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
 
         const dateCell = row.querySelector('.date-cell');
-        if (dateCell) {
+        if (dateCell && !dateCell.textContent.trim()) { // Nur füllen, wenn die Zelle leer ist
             dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
         }
     });
@@ -618,10 +618,10 @@
     const sortedRows = Array.from(rows).sort((a, b) => {
         const dateA = new Date(a.getAttribute('data-date'));
         const dateB = new Date(b.getAttribute('data-date'));
-        const cityA = a.cells[3].textContent.toLowerCase();
-        const cityB = b.cells[3].textContent.toLowerCase();
-        const eventA = a.cells[1].textContent.toLowerCase();
-        const eventB = b.cells[1].textContent.toLowerCase();
+        const cityA = a.cells[3]?.textContent.toLowerCase() || '';
+        const cityB = b.cells[3]?.textContent.toLowerCase() || '';
+        const eventA = a.cells[1]?.textContent.toLowerCase() || '';
+        const eventB = b.cells[1]?.textContent.toLowerCase() || '';
 
         if (dateA - dateB !== 0) return dateA - dateB; // Erst nach Datum sortieren
         if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB); // Danach nach Stadt
@@ -644,7 +644,7 @@
             }
         });
     } else {
-        // Vor 6 Uhr morgens: Scrollen zu Events, die gestern relevant waren
+        // Vor 6 Uhr morgens: Scrollen zu Events, die gestern nach 6 Uhr morgens relevant waren
         let scrolled = false;
         sortedRows.forEach(row => {
             const dataDate = row.getAttribute('data-date');
@@ -660,7 +660,6 @@
         });
     }
 });
-
     // Kontextmenü und Textauswahl verhindern
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('selectstart', e => e.preventDefault());
