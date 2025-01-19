@@ -581,7 +581,7 @@
     </div>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date();
     const rows = document.querySelectorAll('#eventTable tbody tr');
 
     // Automatisches Setzen von Datum und Wochentag
@@ -613,7 +613,7 @@
         }
     });
 
-    // Sortieren der Tabelle
+    // Sortieren der Tabelle mit zusätzlichen Kriterien
     const tableBody = document.querySelector('#eventTable tbody');
     const sortedRows = Array.from(rows).sort((a, b) => {
         const dateA = new Date(a.getAttribute('data-date'));
@@ -623,22 +623,43 @@
         const eventA = a.cells[1].textContent.toLowerCase();
         const eventB = b.cells[1].textContent.toLowerCase();
 
-        if (dateA - dateB !== 0) return dateA - dateB;
-        if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB);
-        return eventA.localeCompare(eventB);
+        if (dateA - dateB !== 0) return dateA - dateB; // Erst nach Datum sortieren
+        if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB); // Danach nach Stadt
+        return eventA.localeCompare(eventB); // Zuletzt nach Eventname
     });
     sortedRows.forEach(row => tableBody.appendChild(row));
 
-    // Scrollen zum nächsten Event
-    let scrolled = false;
-    sortedRows.forEach(row => {
-        const eventDate = row.getAttribute('data-date');
-        if (!scrolled && eventDate >= today) {
-            const offset = row.offsetTop - document.querySelector('th').offsetHeight;
-            document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
-            scrolled = true;
-        }
-    });
+    // Scrollen basierend auf Uhrzeit
+    const currentHour = now.getHours();
+
+    if (currentHour >= 6) {
+        // Nach 6 Uhr morgens: Scrollen zum nächsten Event ab heute
+        let scrolled = false;
+        sortedRows.forEach(row => {
+            const eventDate = new Date(row.getAttribute('data-date'));
+            if (!scrolled && eventDate >= today) {
+                const offset = row.offsetTop - document.querySelector('th').offsetHeight;
+                document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
+                scrolled = true;
+            }
+        });
+    } else {
+        // Vor 6 Uhr morgens: Scrollen zu Events, die gestern relevant waren
+        let scrolled = false;
+        sortedRows.forEach(row => {
+            const dataDate = row.getAttribute('data-date');
+            const eventDate = new Date(dataDate);
+            eventDate.setDate(eventDate.getDate() + 1); // Auf den Folgetag setzen
+            eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr am Folgetag
+
+            if (!scrolled && now <= eventDate) {
+                const offset = row.offsetTop - document.querySelector('th').offsetHeight;
+                document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
+                scrolled = true;
+            }
+        });
+    }
+});
 
     // Kontextmenü und Textauswahl verhindern
     document.addEventListener('contextmenu', e => e.preventDefault());
