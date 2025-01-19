@@ -636,25 +636,30 @@
     if (currentHour >= 6) {
         // Nach 6 Uhr morgens: Scrollen zum nächsten Event ab heute
         sortedRows.forEach(row => {
-            const eventDate = new Date(row.getAttribute('data-date'));
-            if (!scrolled && eventDate >= now) {
-                const offset = row.offsetTop - document.querySelector('th').offsetHeight;
-                document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
-                scrolled = true;
+            const dataDate = row.getAttribute('data-date');
+            if (dataDate) {
+                const eventDate = new Date(dataDate);
+                if (!scrolled && eventDate >= now) {
+                    const offset = row.offsetTop - document.querySelector('th').offsetHeight;
+                    document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
+                    scrolled = true;
+                }
             }
         });
     } else {
         // Vor 6 Uhr morgens: Scrollen zu Events, die gestern nach 6 Uhr morgens relevant wären
         sortedRows.forEach(row => {
             const dataDate = row.getAttribute('data-date');
-            const eventDate = new Date(dataDate);
-            eventDate.setDate(eventDate.getDate() + 1);
-            eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr morgens am Folgetag
+            if (dataDate) {
+                const eventDate = new Date(dataDate);
+                eventDate.setDate(eventDate.getDate() + 1);
+                eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr morgens am Folgetag
 
-            if (!scrolled && now <= eventDate) {
-                const offset = row.offsetTop - document.querySelector('th').offsetHeight;
-                document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
-                scrolled = true;
+                if (!scrolled && now <= eventDate) {
+                    const offset = row.offsetTop - document.querySelector('th').offsetHeight;
+                    document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
+                    scrolled = true;
+                }
             }
         });
     }
