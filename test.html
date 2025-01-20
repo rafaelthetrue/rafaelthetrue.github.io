@@ -86,6 +86,27 @@
             padding: 10px;
             font-size: 16px;
         }
+    .stats-container {
+        display: flex;
+        justify-content: space-between;
+        max-width: 800px;
+        margin: 10px auto;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .stats-item {
+        flex: 1;
+        text-align: center;
+    }
+
+    .stats-item:first-child {
+        text-align: left;
+    }
+
+    .stats-item:last-child {
+        text-align: right;
+    }
         .table-container {
             overflow-y: auto;
             border: 1px solid #ddd;
@@ -872,6 +893,39 @@
         });
     }
     document.getElementById('search').addEventListener('keyup', searchTable);
+    document.addEventListener('DOMContentLoaded', function () {
+    try {
+        const now = new Date();
+        const rows = document.querySelectorAll('#eventTable tbody tr');
+        
+        // Statistiken berechnen
+        const totalEvents = rows.length;
+        let pastEvents = 0;
+        let upcomingEvents = 0;
+
+        rows.forEach(row => {
+            const dataDate = row.getAttribute('data-date');
+            if (dataDate) {
+                const eventDate = new Date(dataDate);
+                eventDate.setDate(eventDate.getDate() + 1); // Bis zum Folgetag 06:00 zählen
+                eventDate.setHours(6, 0, 0, 0);
+
+                if (now > eventDate) {
+                    pastEvents++;
+                } else {
+                    upcomingEvents++;
+                }
+            }
+        });
+
+        // Statistiken aktualisieren
+        document.getElementById('totalEvents').textContent = `Gesamt: ${totalEvents}`;
+        document.getElementById('pastEvents').textContent = `Vergangen: ${pastEvents}`;
+        document.getElementById('upcomingEvents').textContent = `Anstehend: ${upcomingEvents}`;
+    } catch (error) {
+        console.error("Fehler beim Berechnen der Statistiken:", error);
+    }
+});
     </script>
 </body>
 </html>
