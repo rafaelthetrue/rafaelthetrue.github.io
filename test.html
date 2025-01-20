@@ -18,10 +18,6 @@
             flex-direction: column;
             height: calc(var(--vh, 1vh) * 100);
             overflow: hidden;
-            user-select: none; /* Verhindert Textauswahl */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
         }
         .header {
             max-width: 800px;
@@ -31,14 +27,13 @@
         h1 {
             color: #444;
             margin-top: 15px;
-            margin-bottom: 0px;
+            margin-bottom: 0;
             font-size: 24px;
         }
         h2 {
             color: #444;
-            margin-top: 0px;
-            margin-bottom: 0px;
-            font-size: 10px;
+            margin: 0;
+            font-size: 14px;
         }
         .menu-icon-container {
             margin: 0 auto;
@@ -86,58 +81,48 @@
             padding: 10px;
             font-size: 16px;
         }
-    .stats-container {
-        display: flex;
-        justify-content: space-between;
-        max-width: 800px;
-        margin: 10px auto;
-        font-size: 14px;
-        font-weight: bold;
-    }
-
-    .stats-item {
-        flex: 1;
-        text-align: center;
-    }
-
-    .stats-item:first-child {
-        text-align: left;
-    }
-
-    .stats-item:last-child {
-        text-align: right;
-    }
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 800px;
+            margin: 10px auto;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .stats-item {
+            flex: 1;
+            text-align: center;
+        }
+        .stats-item:first-child {
+            text-align: left;
+        }
+        .stats-item:last-child {
+            text-align: right;
+        }
         .table-container {
             overflow-y: auto;
             border: 1px solid #ddd;
             max-width: 100%;
             margin: 0 auto;
-            border-collapse: collapse; /* Sorgt dafür, dass alle Zellen ohne Lücke dargestellt werden */
-            padding: 0; /* Entfernt mögliche Innenabstände */
             height: 90%;
             position: relative;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: auto; /* Dynamische Spaltenbreite */
         }
         th, td {
             border: 1px solid #ddd;
             padding: 10px;
             text-align: left;
             font-size: 14px;
-            vertical-align: top;
-            word-wrap: break-word;
-            white-space: normal;
         }
         th {
             background-color: #f4f4f4;
             position: sticky;
             top: 0;
             z-index: 2;
-            margin: 0; /* Wichtig: Entfernt eventuell bestehende Außenabstände */
-            }
+        }
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
@@ -145,63 +130,18 @@
             text-decoration: line-through;
             color: #888;
         }
-        tr.past-event .date-cell span {
-        color: #888; /* Wochentag ebenfalls ausgrauen */
-        }
-        .date-cell {
-            text-align: center;
-            white-space: nowrap; /* Verhindert Zeilenumbruch */
-        }
-        .date-cell span {
-            font-size: 13px;
-            color: #333;
-            font-family: Arial, sans-serif; /* Schriftart vom Wochentag wie der Rest der Tabelle */
-            display: block;
-            margin-top: 0px;
-        }
-        /* Standardlinks in der Tabelle */
-        table a:link,
-        table a:visited,
-        table a:hover,
-        table a:active {
-             color: black; /* Textfarbe immer schwarz */
-        }
-
-        /* Links in vergangenen Events */
-        tr.past-event a:link,
-        tr.past-event a:visited {
-             color: #888; /* Ausgegraute Farbe */
-        }
-
-        tr.past-event a:hover,
-        tr.past-event a:active {
-        color: #666; /* Etwas dunkler beim Hover */
-        text-decoration: none; /* Optional: Keine Unterstreichung */
-        }
         @media (max-width: 600px) {
-        body {
-            font-size: 14px; /* Kleinere Schrift für mobile Endgeräte */
+            body {
+                font-size: 14px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            th, td {
+                font-size: 12px;
+                padding: 8px;
+            }
         }
-        h1 {
-            font-size: 22px; /* Kleinere Überschrift */
-        }
-        th, td {
-            font-size: 12px; /* Kleinere Schrift in der Tabelle */
-            padding: 8px; /* Weniger Padding in den Zellen */
-        }
-        
-
-    /* Nur für die Spalte "Stadt" */
-    td:nth-child(4) {
-        word-break: break-word; /* Wörter an beliebigen Stellen brechen */
-        hyphens: auto; /* Automatische Silbentrennung */
-        overflow-wrap: break-word; /* Alternative für ältere Browser */
-        white-space: normal; /* Erlaubt Zeilenumbruch */
-        min-width: 70px; /* Mindestbreite der Spalte */
-        max-width: 120px; /* Maximale Breite der Spalte, um Layout zu schützen */
-    }
-}
-
     </style>
 </head>
 <body>
@@ -210,7 +150,7 @@
         <h2>Termine, Events & Locations in NRW</h2>
     </div>
     <div class="menu-icon-container" id="menuIconContainer">
-        <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
+        <div class="menu-icon" id="menuIcon">☰</div>
         <div class="menu" id="menu">
             <a href="#" id="refreshPage">Aktualisieren</a>
             <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
@@ -218,12 +158,12 @@
         </div>
     </div>
     <div class="search-container">
-        <input 
-            type="text" 
-            id="search" 
-            placeholder="Suche Datum, Event, Location oder Stadt..."
-            onkeyup="searchTable()"
-        >
+        <input type="text" id="search" placeholder="Suche Datum, Event, Location oder Stadt...">
+    </div>
+    <div class="stats-container">
+        <div class="stats-item" id="totalEvents">Gesamt: 0</div>
+        <div class="stats-item" id="upcomingEvents">Anstehend: 0</div>
+        <div class="stats-item" id="pastEvents">Vergangen: 0</div>
     </div>
     <div class="table-container" id="tableContainer">
         <table id="eventTable">
@@ -730,29 +670,38 @@
     </div>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-    try {
-        const now = new Date();
-        const currentHour = now.getHours();
-        const rows = document.querySelectorAll('#eventTable tbody tr');
-        const tableBody = document.querySelector('#eventTable tbody');
+document.addEventListener('DOMContentLoaded', function () {
+            const now = new Date();
+            const rows = document.querySelectorAll('#eventTable tbody tr');
+            const tableBody = document.querySelector('#eventTable tbody');
 
-        // Automatisches Setzen von Datum und Wochentag
-        rows.forEach(row => {
-            const dataDate = row.getAttribute('data-date');
-            if (dataDate) {
-                const dateObj = new Date(dataDate);
-                const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
-                const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
+            let totalEvents = rows.length;
+            let pastEvents = 0;
+            let upcomingEvents = 0;
 
-                const dateCell = row.querySelector('.date-cell');
-                if (dateCell) {
-                    // Datum und Wochentag nur füllen, wenn die Zelle leer ist
-                    dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
-                }
-            } else {
-                console.warn("Zeile ohne gültiges 'data-date':", row);
+            try {
+                rows.forEach(row => {
+                    const dataDate = row.getAttribute('data-date');
+                    if (dataDate) {
+                        const eventDate = new Date(dataDate);
+                        eventDate.setDate(eventDate.getDate() + 1);
+                        eventDate.setHours(6, 0, 0, 0);
+
+                        if (now > eventDate) {
+                            row.classList.add('past-event');
+                            pastEvents++;
+                        } else {
+                            upcomingEvents++;
+                        }
+                    }
+                });
+
+                document.getElementById('totalEvents').textContent = `Gesamt: ${totalEvents}`;
+                document.getElementById('pastEvents').textContent = `Vergangen: ${pastEvents}`;
+                document.getElementById('upcomingEvents').textContent = `Anstehend: ${upcomingEvents}`;
+            } catch (error) {
+                console.error('Fehler beim Verarbeiten der Events:', error);
             }
-        });
 
         // Vergangene Events am Folgetag um 06:00 Uhr morgens kennzeichnen
         rows.forEach(row => {
@@ -893,39 +842,6 @@
         });
     }
     document.getElementById('search').addEventListener('keyup', searchTable);
-    document.addEventListener('DOMContentLoaded', function () {
-    try {
-        const now = new Date();
-        const rows = document.querySelectorAll('#eventTable tbody tr');
-        
-        // Statistiken berechnen
-        const totalEvents = rows.length;
-        let pastEvents = 0;
-        let upcomingEvents = 0;
-
-        rows.forEach(row => {
-            const dataDate = row.getAttribute('data-date');
-            if (dataDate) {
-                const eventDate = new Date(dataDate);
-                eventDate.setDate(eventDate.getDate() + 1); // Bis zum Folgetag 06:00 zählen
-                eventDate.setHours(6, 0, 0, 0);
-
-                if (now > eventDate) {
-                    pastEvents++;
-                } else {
-                    upcomingEvents++;
-                }
-            }
-        });
-
-        // Statistiken aktualisieren
-        document.getElementById('totalEvents').textContent = `Gesamt: ${totalEvents}`;
-        document.getElementById('pastEvents').textContent = `Vergangen: ${pastEvents}`;
-        document.getElementById('upcomingEvents').textContent = `Anstehend: ${upcomingEvents}`;
-    } catch (error) {
-        console.error("Fehler beim Berechnen der Statistiken:", error);
-    }
-});
     </script>
 </body>
 </html>
