@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Entdecke in unserer Übersicht die nächsten Techno Raves und anstehende Events in NRW, egal ob Techno Raves heute, morgen oder am Wochenende im Ruhrgebiet und Umgebung.">
-    <link rel="canonical" href="https://www.ravebro.de" />
+    <link rel="canonical" href="https://ravebro.de" />
     <title>Techno Raves 2025 (Termine, Events & Locations) - ravebro.de</title>
     <style>
         body {
@@ -132,9 +132,9 @@
             white-space: nowrap; /* Verhindert Zeilenumbruch */
         }
         .date-cell span {
-            font-size: 12px;
+            font-size: 13px;
             color: #333;
-            font-family: Arial, sans-serif; /* Gleiche Schriftart wie der Rest der Tabelle */
+            font-family: Arial, sans-serif; /* Schriftart vom Wochentag wie der Rest der Tabelle */
             display: block;
             margin-top: 0px;
         }
@@ -191,8 +191,9 @@
     <div class="menu-icon-container" id="menuIconContainer">
         <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
         <div class="menu" id="menu">
-            <a href="impressum.html">Impressum</a>
+            <a href="#" id="refreshPage">Aktualisieren</a>
             <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+            <a href="impressum.html">Impressum</a>
         </div>
     </div>
     <div class="search-container">
@@ -705,7 +706,12 @@
             menu.style.display = 'none';
         });
     });
-
+    // Funktion für "Aktualisieren"
+        const refreshPage = document.getElementById('refreshPage');
+        refreshPage.addEventListener('click', (e) => {
+        e.preventDefault(); // Verhindert die Standardaktion des Links
+        window.location.reload(true); // Erzwingt das Neuladen ohne Cache
+        });
     // Dynamische Anpassung der Tabellenhöhe
     function adjustTableHeight() {
         const headerHeight = document.querySelector(".header").offsetHeight;
