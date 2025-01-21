@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Entdecke in unserer Übersicht die nächsten Techno Raves und anstehende Events in NRW, egal ob Techno Raves heute, morgen oder am Wochenende im Ruhrgebiet und Umgebung.">
     <link rel="canonical" href="https://ravebro.de"/>
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
     <title>Techno Raves 2025 (Termine, Events & Locations) - ravebro.de</title>
     <style>
         body {
@@ -18,6 +35,10 @@
             flex-direction: column;
             height: calc(var(--vh, 1vh) * 100);
             overflow: hidden;
+            user-select: none; /* Verhindert Textauswahl */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
         .header {
             max-width: 800px;
@@ -27,13 +48,14 @@
         h1 {
             color: #444;
             margin-top: 15px;
-            margin-bottom: 0;
+            margin-bottom: 0px;
             font-size: 24px;
         }
         h2 {
             color: #444;
-            margin: 0;
-            font-size: 14px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-size: 10px;
         }
         .menu-icon-container {
             margin: 0 auto;
@@ -81,48 +103,37 @@
             padding: 10px;
             font-size: 16px;
         }
-        .stats-container {
-            display: flex;
-            justify-content: space-between;
-            max-width: 800px;
-            margin: 10px auto;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        .stats-item {
-            flex: 1;
-            text-align: center;
-        }
-        .stats-item:first-child {
-            text-align: left;
-        }
-        .stats-item:last-child {
-            text-align: right;
-        }
         .table-container {
             overflow-y: auto;
             border: 1px solid #ddd;
             max-width: 100%;
             margin: 0 auto;
+            border-collapse: collapse; /* Sorgt dafür, dass alle Zellen ohne Lücke dargestellt werden */
+            padding: 0; /* Entfernt mögliche Innenabstände */
             height: 90%;
             position: relative;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            table-layout: auto; /* Dynamische Spaltenbreite */
         }
         th, td {
             border: 1px solid #ddd;
             padding: 10px;
             text-align: left;
             font-size: 14px;
+            vertical-align: top;
+            word-wrap: break-word;
+            white-space: normal;
         }
         th {
             background-color: #f4f4f4;
             position: sticky;
             top: 0;
             z-index: 2;
-        }
+            margin: 0; /* Wichtig: Entfernt eventuell bestehende Außenabstände */
+            }
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
@@ -130,18 +141,63 @@
             text-decoration: line-through;
             color: #888;
         }
-        @media (max-width: 600px) {
-            body {
-                font-size: 14px;
-            }
-            h1 {
-                font-size: 22px;
-            }
-            th, td {
-                font-size: 12px;
-                padding: 8px;
-            }
+        tr.past-event .date-cell span {
+        color: #888; /* Wochentag ebenfalls ausgrauen */
         }
+        .date-cell {
+            text-align: center;
+            white-space: nowrap; /* Verhindert Zeilenumbruch */
+        }
+        .date-cell span {
+            font-size: 13px;
+            color: #333;
+            font-family: Arial, sans-serif; /* Schriftart vom Wochentag wie der Rest der Tabelle */
+            display: block;
+            margin-top: 0px;
+        }
+        /* Standardlinks in der Tabelle */
+        table a:link,
+        table a:visited,
+        table a:hover,
+        table a:active {
+             color: black; /* Textfarbe immer schwarz */
+        }
+
+        /* Links in vergangenen Events */
+        tr.past-event a:link,
+        tr.past-event a:visited {
+             color: #888; /* Ausgegraute Farbe */
+        }
+
+        tr.past-event a:hover,
+        tr.past-event a:active {
+        color: #666; /* Etwas dunkler beim Hover */
+        text-decoration: none; /* Optional: Keine Unterstreichung */
+        }
+        @media (max-width: 600px) {
+        body {
+            font-size: 14px; /* Kleinere Schrift für mobile Endgeräte */
+        }
+        h1 {
+            font-size: 22px; /* Kleinere Überschrift */
+        }
+        th, td {
+            font-size: 12px; /* Kleinere Schrift in der Tabelle */
+            padding: 8px; /* Weniger Padding in den Zellen */
+        }
+        
+
+    /* Nur für die Spalte "Stadt" */
+    td:nth-child(4) {
+        word-break: break-word; /* Wörter an beliebigen Stellen brechen */
+        hyphens: auto; /* Automatische Silbentrennung */
+        overflow-wrap: break-word; /* Alternative für ältere Browser */
+        white-space: normal; /* Erlaubt Zeilenumbruch */
+        min-width: 70px; /* Mindestbreite der Spalte */
+        max-width: 120px; /* Maximale Breite der Spalte, um Layout zu schützen */
+    }
+}
+
     </style>
 </head>
 <body>
@@ -150,7 +206,7 @@
         <h2>Termine, Events & Locations in NRW</h2>
     </div>
     <div class="menu-icon-container" id="menuIconContainer">
-        <div class="menu-icon" id="menuIcon">☰</div>
+        <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
         <div class="menu" id="menu">
             <a href="#" id="refreshPage">Aktualisieren</a>
             <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
@@ -158,12 +214,12 @@
         </div>
     </div>
     <div class="search-container">
-        <input type="text" id="search" placeholder="Suche Datum, Event, Location oder Stadt...">
-    </div>
-    <div class="stats-container">
-        <div class="stats-item" id="totalEvents">Gesamt: 0</div>
-        <div class="stats-item" id="upcomingEvents">Anstehend: 0</div>
-        <div class="stats-item" id="pastEvents">Vergangen: 0</div>
+        <input 
+            type="text" 
+            id="search" 
+            placeholder="Suche Datum, Event, Location oder Stadt..."
+            onkeyup="searchTable()"
+        >
     </div>
     <div class="table-container" id="tableContainer">
         <table id="eventTable">
@@ -176,6 +232,118 @@
                 </tr>
             </thead>
             <tbody>
+
+    <tr data-date="2025-01-24">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://bootshaus.tv/events/bootshaus-nibirii-pres-zeuz-all-night-long/" target="_blank">Bootshaus & NIBIRII PRES. ZEUZ – ALL NIGHT LONG</a></td>
+        <td>Bootshaus</td>
+        <td>Köln</td>
+    </tr>
+
+    <tr data-date="2025-02-15">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEFACP8MAai/?igsh=MThmYmZlcXRxMmlkbg==" target="_blank">EVACUATE SUPREMACY AFTERPARTY</a></td>
+        <td>Prismatic</td>
+        <td>Dortmund</td>
+    </tr>
+
+    <tr data-date="2025-02-22">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/p/DFF_foFIWmj/?igsh=MTRsOHdtZGtpZXI2dg==" target="_blank">U-BOUNCE SCHNELLER ALS DER REST</a></td>
+        <td>U-Club</td>
+        <td>Wuppertal</td>
+    </tr>
+                
+    <tr data-date="2025-02-02">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DFF-Vy8s6g4/?igsh=MWlmcWUzd3V3c2h1Ng==" target="_blank">BLITZ & DONNER AFTERHOUR (6-13Uhr)</a></td>
+        <td>Projekt X</td>
+        <td>Bochum</td>
+    </tr>
+
+    <tr data-date="2025-02-08">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/p/DFFaQi8Nv5i/?igsh=MWZyemdsYWh2ODJyZQ==" target="_blank">BASSMANIA HARDTECHNO</a></td>
+        <td>Favela</td>
+        <td>Münster</td>
+    </tr>
+                
+    <tr data-date="2025-02-05">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEjlS_ys7j-/?igsh=OG9ydDVuM2p1anpk" target="_blank">180 MIN RAVE (20-23Uhr)</a></td>
+        <td>Prismatic</td>
+        <td>Dortmund</td>
+    </tr>
+    
+    <tr data-date="2025-03-05">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEjlS_ys7j-/?igsh=OG9ydDVuM2p1anpk" target="_blank">180 MIN RAVE (20-23Uhr)</a></td>
+        <td>Prismatic</td>
+        <td>Dortmund</td>
+    </tr>
+    
+    <tr data-date="2025-04-02">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEjlS_ys7j-/?igsh=OG9ydDVuM2p1anpk" target="_blank">180 MIN RAVE (20-23Uhr)</a></td>
+        <td>Prismatic</td>
+        <td>Dortmund</td>
+    </tr>
+    
+        <tr data-date="2025-05-07">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEjlS_ys7j-/?igsh=OG9ydDVuM2p1anpk" target="_blank">180 MIN RAVE (20-23Uhr)</a></td>
+        <td>Prismatic</td>
+        <td>Dortmund</td>
+    </tr>
+    
+    <tr data-date="2025-06-04">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEjlS_ys7j-/?igsh=OG9ydDVuM2p1anpk" target="_blank">180 MIN RAVE (20-23Uhr)</a></td>
+        <td>Prismatic</td>
+        <td>Dortmund</td>
+    </tr>
+    
+    <tr data-date="2025-07-02">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEjlS_ys7j-/?igsh=OG9ydDVuM2p1anpk" target="_blank">180 MIN RAVE (20-23Uhr)</a></td>
+        <td>Prismatic</td>
+        <td>Dortmund</td>
+    </tr>
+                
+    <tr data-date="2025-02-15">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/p/DD0OM0IMFAj/?igsh=MXh6eGdleDFkdzgxbQ==" target="_blank">BAD GIRLS CLUB</a></td>
+        <td>Stollen134</td>
+        <td>Dortmund</td>
+    </tr>
+                
+    <tr data-date="2025-01-25">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DExsYQnMBjX/?igsh=MTQ4eDY0YmI4cXo5dQ==" target="_blank">LOST IN RAVES PRESENTS DEFINITION OF HARD VOL.2</a></td>
+        <td>Stollen134</td>
+        <td>Dortmund</td>
+    </tr>
+                
+    <tr data-date="2025-01-24">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DE2v_WGg5en/?igsh=OXU5bjExZHVidTBt" target="_blank">WACH</a></td>
+        <td>Stollen134</td>
+        <td>Dortmund</td>
+    </tr>
+                
+    <tr data-date="2025-01-31">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/reel/DEvDBi7tanf/?igsh=MTNwM2htMnhzMTMyNQ==" target="_blank">RAVE INDUSTRY</a></td>
+        <td>Stollen134</td>
+        <td>Dortmund</td>
+    </tr>
+                
+    <tr data-date="2025-02-07">
+        <td class="date-cell"><br><span></span></td>
+        <td><a href="https://www.instagram.com/samys.club?igsh=eGIweng0bmtrMTN5" target="_blank">ALÉGARO All Night Long</a></td>
+        <td>Samy's Club</td>
+        <td>Düsseldorf</td>
+    </tr>
                 
     <tr data-date="2025-01-22">
         <td class="date-cell"><br><span></span></td>
@@ -194,28 +362,28 @@
  <tr data-date="2025-03-07">
         <td class="date-cell"><br><span></span></td>
         <td><a href="https://www.instagram.com/p/DE0E_WAOSdh/?igsh=bTZ2bW43OGhkaHdq" target="_blank">Bassmania B-DAY Wochenende Festival</a></td>
-        <td>Club Favela</td>
+        <td>Favela</td>
         <td>Münster</td>
     </tr>
     
  <tr data-date="2025-03-08">
         <td class="date-cell"><br><span></span></td>
         <td><a href="https://www.instagram.com/p/DE0E_WAOSdh/?igsh=bTZ2bW43OGhkaHdq" target="_blank">Bassmania B-DAY Wochenende Festival</a></td>
-        <td>Club Favela</td>
+        <td>Favela</td>
         <td>Münster</td>
     </tr>
 
  <tr data-date="2025-04-11">
         <td class="date-cell"><br><span></span></td>
         <td><a href="https://www.instagram.com/p/DE63adANDnO/?igsh=c3V4b2tjZmJlajVy" target="_blank">Bassmania Wochenende Festival</a></td>
-        <td>Club Favela</td>
+        <td>Favela</td>
         <td>Münster</td>
     </tr>
     
  <tr data-date="2025-04-12">
         <td class="date-cell"><br><span></span></td>
         <td><a href="https://www.instagram.com/p/DE63adANDnO/?igsh=c3V4b2tjZmJlajVy" target="_blank">Bassmania Wochenende Festival</a></td>
-        <td>Club Favela</td>
+        <td>Favela</td>
         <td>Münster</td>
     </tr>
 
@@ -250,7 +418,7 @@
     <tr data-date="2025-10-31">
         <td class="date-cell"><br><span></span></td>
         <td><a href="https://www.instagram.com/p/DEl1xYDtvaa/?igsh=MXFjZjM1enJpczM3" target="_blank">Bassmania Halloween 2025 - Münster</a></td>
-        <td>Club Favela</td>
+        <td>Favela</td>
         <td>Münster</td>
     </tr>
     
@@ -292,7 +460,7 @@
     <tr data-date="2025-01-25">
         <td class="date-cell"><br><span></span></td>
         <td><a href="https://www.instagram.com/reel/DEKjN_uMAVT/?igsh=c3hmdHB2ZnVtODZ4" target="_blank">BERRYLECTRO FAVELA 360° HARDTECHNO</a></td>
-        <td>Club Favela</td>
+        <td>Favela</td>
         <td>Münster</td>
     </tr>
                 
@@ -670,38 +838,29 @@
     </div>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-document.addEventListener('DOMContentLoaded', function () {
-            const now = new Date();
-            const rows = document.querySelectorAll('#eventTable tbody tr');
-            const tableBody = document.querySelector('#eventTable tbody');
+    try {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const rows = document.querySelectorAll('#eventTable tbody tr');
+        const tableBody = document.querySelector('#eventTable tbody');
 
-            let totalEvents = rows.length;
-            let pastEvents = 0;
-            let upcomingEvents = 0;
+        // Automatisches Setzen von Datum und Wochentag
+        rows.forEach(row => {
+            const dataDate = row.getAttribute('data-date');
+            if (dataDate) {
+                const dateObj = new Date(dataDate);
+                const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+                const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
 
-            try {
-                rows.forEach(row => {
-                    const dataDate = row.getAttribute('data-date');
-                    if (dataDate) {
-                        const eventDate = new Date(dataDate);
-                        eventDate.setDate(eventDate.getDate() + 1);
-                        eventDate.setHours(6, 0, 0, 0);
-
-                        if (now > eventDate) {
-                            row.classList.add('past-event');
-                            pastEvents++;
-                        } else {
-                            upcomingEvents++;
-                        }
-                    }
-                });
-
-                document.getElementById('totalEvents').textContent = `Gesamt: ${totalEvents}`;
-                document.getElementById('pastEvents').textContent = `Vergangen: ${pastEvents}`;
-                document.getElementById('upcomingEvents').textContent = `Anstehend: ${upcomingEvents}`;
-            } catch (error) {
-                console.error('Fehler beim Verarbeiten der Events:', error);
+                const dateCell = row.querySelector('.date-cell');
+                if (dateCell) {
+                    // Datum und Wochentag nur füllen, wenn die Zelle leer ist
+                    dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+                }
+            } else {
+                console.warn("Zeile ohne gültiges 'data-date':", row);
             }
+        });
 
         // Vergangene Events am Folgetag um 06:00 Uhr morgens kennzeichnen
         rows.forEach(row => {
