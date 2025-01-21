@@ -837,12 +837,13 @@
         </table>
     </div>
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     try {
         const now = new Date();
         const currentHour = now.getHours();
         const rows = document.querySelectorAll('#eventTable tbody tr');
         const tableBody = document.querySelector('#eventTable tbody');
+        const head = document.querySelector('head'); // <head>-Element der Seite
 
         // Automatisches Setzen von Datum und Wochentag
         rows.forEach(row => {
@@ -927,7 +928,43 @@
             });
         }
 
-        console.log("Skript abgeschlossen.");
+        // **Schema.org-Markup generieren**
+        rows.forEach(row => {
+            const date = row.getAttribute('data-date'); // Datum des Events
+            const eventLink = row.querySelector('td:nth-child(2) a'); // Event-Name mit Link
+            const eventName = eventLink ? eventLink.textContent.trim() : row.querySelector('td:nth-child(2)').textContent.trim();
+            const eventUrl = eventLink ? eventLink.href : ''; // Event-Link (falls vorhanden)
+            const location = row.querySelector('td:nth-child(3)').textContent.trim(); // Location-Name
+            const city = row.querySelector('td:nth-child(4)').textContent.trim(); // Stadt
+
+            if (date && eventName && location && city) {
+                // JSON-LD für das Event generieren
+                const eventMarkup = {
+                    "@context": "https://schema.org",
+                    "@type": "Event",
+                    "name": eventName,
+                    "startDate": date,
+                    "location": {
+                        "@type": "Place",
+                        "name": location,
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressLocality": city,
+                            "addressCountry": "DE"
+                        }
+                    },
+                    "url": eventUrl || undefined
+                };
+
+                // JSON-LD in ein Script-Tag einfügen
+                const script = document.createElement('script');
+                script.type = 'application/ld+json';
+                script.textContent = JSON.stringify(eventMarkup, null, 2); // Formatieren
+                head.appendChild(script); // Ins <head> der Seite einfügen
+            }
+        });
+
+        console.log("JSON-LD für alle Events erfolgreich generiert.");
     } catch (error) {
         console.error("Fehler im Skript:", error);
     }
