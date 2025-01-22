@@ -133,20 +133,19 @@
     </p>
 
     <script>
-        // Menü-Toggle
         const menu = document.getElementById('menu');
         const menuIcon = document.getElementById('menuIcon');
+
         menuIcon.addEventListener('click', () => {
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         });
 
-        document.addEventListener('click', (e) => {
-            if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
+        document.addEventListener('click', (event) => {
+            if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
                 menu.style.display = 'none';
             }
         });
 
-        // Menü schließen, wenn ein Link angeklickt wird
         const menuLinks = document.querySelectorAll('.menu a');
         menuLinks.forEach(link => {
             link.addEventListener('click', () => {
