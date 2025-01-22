@@ -14,11 +14,6 @@
             background-color: #f9f9f9;
             color: #333;
         }
-        .header {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
         h1 {
             color: #444;
             text-align: center;
@@ -42,36 +37,48 @@
             text-align: center;
             position: relative;
         }
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+            display: inline-block;
+            color: #333;
+        }
         .menu {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
             background-color: white;
-            padding: 10px;
             border: 1px solid #ddd;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
         }
         .menu a {
+            padding: 10px 20px;
             text-decoration: none;
             color: #333;
-            font-size: 16px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        .menu a:last-child {
+            border-bottom: none;
         }
         .menu a:hover {
             background-color: #f4f4f4;
-            padding: 5px 10px;
-            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Datenschutzerklärung</h1>
-        <div class="menu-icon-container">
-            <div class="menu">
-                <a href="index.html">Startseite</a>
-                <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
-                <a href="impressum.html">Impressum</a>
-            </div>
+    <h1>Datenschutzerklärung</h1>
+
+    <div class="menu-icon-container" id="menuIconContainer">
+        <div class="menu-icon" id="menuIcon">☰</div>
+        <div class="menu" id="menu">
+            <a href="index.html">Startseite</a>
+            <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+            <a href="impressum.html">Impressum</a>
         </div>
     </div>
 
@@ -129,5 +136,27 @@
     </p>
 
     <p>Stand: Januar 2025</p>
+
+    <script>
+        const menu = document.getElementById('menu');
+        const menuIcon = document.getElementById('menuIcon');
+
+        menuIcon.addEventListener('click', () => {
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+                menu.style.display = 'none';
+            }
+        });
+
+        const menuLinks = document.querySelectorAll('.menu a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.style.display = 'none';
+            });
+        });
+    </script>
 </body>
 </html>
