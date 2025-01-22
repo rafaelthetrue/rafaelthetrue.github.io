@@ -36,7 +36,6 @@
             margin: 20px auto;
             text-align: center;
             position: relative;
-            max-width: 800px;
         }
         .menu-icon {
             font-size: 24px;
@@ -47,7 +46,8 @@
         .menu {
             position: absolute;
             top: 100%;
-            right: 0;
+            left: 50%;
+            transform: translateX(-50%);
             background-color: white;
             border: 1px solid #ddd;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -60,6 +60,7 @@
             text-decoration: none;
             color: #333;
             border-bottom: 1px solid #ddd;
+            text-align: left;
         }
         .menu a:last-child {
             border-bottom: none;
