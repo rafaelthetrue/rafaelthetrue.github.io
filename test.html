@@ -838,13 +838,11 @@
     </div>
     <script>
 document.addEventListener('DOMContentLoaded', function () {
-document.addEventListener('DOMContentLoaded', function () {
     try {
         const now = new Date();
         const rows = document.querySelectorAll('#eventTable tbody tr');
         const tableBody = document.querySelector('#eventTable tbody');
         const head = document.querySelector('head'); // <head>-Element der Seite
-document.querySelectorAll('#eventTable tbody tr');
 
         // Automatisches Setzen von Datum und Wochentag
         rows.forEach(row => {
@@ -856,7 +854,6 @@ document.querySelectorAll('#eventTable tbody tr');
 
                 const dateCell = row.querySelector('.date-cell');
                 if (dateCell) {
-                    // Setze das Datum und den Wochentag
                     dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
                 } else {
                     console.warn("Kein gültiges .date-cell gefunden:", row);
@@ -866,19 +863,13 @@ document.querySelectorAll('#eventTable tbody tr');
             }
         });
 
-        // Weitere Logik für vergangene Events und Scrollen...
-    } catch (error) {
-        console.error("Fehler im Skript:", error);
-    }
-});
-
-        // Vergangene Events am Folgetag um 06:00 Uhr morgens kennzeichnen
+        // Vergangene Events am Folgetag um 06:00 Uhr kennzeichnen
         rows.forEach(row => {
             const dataDate = row.getAttribute('data-date');
             if (dataDate) {
                 const eventDate = new Date(dataDate);
                 eventDate.setDate(eventDate.getDate() + 1); // Auf den Folgetag setzen
-                eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr morgens am Folgetag
+                eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr morgens
 
                 if (now > eventDate) {
                     row.classList.add('past-event'); // Als vergangenes Event markieren
@@ -895,9 +886,9 @@ document.querySelectorAll('#eventTable tbody tr');
             const eventA = a.cells[1]?.textContent.toLowerCase() || '';
             const eventB = b.cells[1]?.textContent.toLowerCase() || '';
 
-            if (dateA - dateB !== 0) return dateA - dateB; // Nach Datum sortieren
-            if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB); // Nach Stadt sortieren
-            return eventA.localeCompare(eventB); // Nach Eventname sortieren
+            if (dateA - dateB !== 0) return dateA - dateB;
+            if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB);
+            return eventA.localeCompare(eventB);
         });
 
         // Aktualisierte Reihenfolge in das DOM einfügen
@@ -905,15 +896,13 @@ document.querySelectorAll('#eventTable tbody tr');
 
         // Scrollen basierend auf Uhrzeit
         let scrolled = false;
-
         sortedRows.forEach(row => {
             const dataDate = row.getAttribute('data-date');
             if (dataDate) {
                 const eventDate = new Date(dataDate);
-                eventDate.setDate(eventDate.getDate() + 1); // Auf den Folgetag setzen
-                eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr morgens des Folgetags
+                eventDate.setDate(eventDate.getDate() + 1);
+                eventDate.setHours(6, 0, 0, 0);
 
-                // Scrollen zu dem nächsten relevanten Event
                 if (!scrolled && now <= eventDate) {
                     const offset = row.offsetTop - document.querySelector('th').offsetHeight;
                     document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
@@ -921,12 +910,7 @@ document.querySelectorAll('#eventTable tbody tr');
                 }
             }
         });
-
-        console.log("Vergangene Events und Scroll-Logik erfolgreich angewendet.");
-    } catch (error) {
-        console.error("Fehler im Skript:", error);
-    }
-});
+        
         // **Schema.org-Markup generieren**
         rows.forEach(row => {
             const date = row.getAttribute('data-date'); // Datum des Events
