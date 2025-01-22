@@ -844,6 +844,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const rows = document.querySelectorAll('#eventTable tbody tr');
         const tableBody = document.querySelector('#eventTable tbody');
         const head = document.querySelector('head'); // <head>-Element der Seite
+document.querySelectorAll('#eventTable tbody tr');
 
         // Automatisches Setzen von Datum und Wochentag
         rows.forEach(row => {
@@ -855,13 +856,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const dateCell = row.querySelector('.date-cell');
                 if (dateCell) {
-                    // Datum und Wochentag nur füllen, wenn die Zelle leer ist
+                    // Setze das Datum und den Wochentag
                     dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+                } else {
+                    console.warn("Kein gültiges .date-cell gefunden:", row);
                 }
             } else {
                 console.warn("Zeile ohne gültiges 'data-date':", row);
             }
         });
+
+        // Weitere Logik für vergangene Events und Scrollen...
+    } catch (error) {
+        console.error("Fehler im Skript:", error);
+    }
+});
 
         // Vergangene Events am Folgetag um 06:00 Uhr morgens kennzeichnen
         rows.forEach(row => {
