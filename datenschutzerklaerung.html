@@ -14,6 +14,11 @@
             background-color: #f9f9f9;
             color: #333;
         }
+        .header {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
         h1 {
             color: #444;
             text-align: center;
@@ -32,36 +37,43 @@
         a:hover {
             text-decoration: underline;
         }
+        .menu-icon-container {
+            margin: 20px auto;
+            text-align: center;
+            position: relative;
+        }
         .menu {
             display: flex;
-            flex-direction: column;
             justify-content: center;
-            align-items: center;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #fff;
+            gap: 20px;
+            background-color: white;
+            padding: 10px;
             border: 1px solid #ddd;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            width: 300px;
         }
         .menu a {
-            margin: 10px 0;
-            font-size: 18px;
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+        }
+        .menu a:hover {
+            background-color: #f4f4f4;
+            padding: 5px 10px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="menu">
-        <a href="index.html">Startseite</a>
-        <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
-        <a href="impressum.html">Impressum</a>
+    <div class="header">
+        <h1>Datenschutzerklärung</h1>
+        <div class="menu-icon-container">
+            <div class="menu">
+                <a href="index.html">Startseite</a>
+                <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+                <a href="impressum.html">Impressum</a>
+            </div>
+        </div>
     </div>
-
-    <h1>Datenschutzerklärung</h1>
 
     <p>Vielen Dank für Ihr Interesse an unserer Website <strong>ravebro.de</strong>. Der Schutz Ihrer Daten und Ihrer Privatsphäre ist uns sehr wichtig. Nachfolgend informieren wir Sie über die Erhebung, Verarbeitung und Nutzung Ihrer personenbezogenen Daten.</p>
 
