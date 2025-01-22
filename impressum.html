@@ -11,16 +11,22 @@
             line-height: 1.6;
             margin: 0;
             padding: 20px;
+            padding-top: 0px;
             background-color: #f9f9f9;
             color: #333;
         }
         h1 {
-            color: #444;
             text-align: center;
+            color: #444;
+            margin-top: 15px;
+            margin-bottom: 0px;
+            font-size: 24px;
         }
         h2 {
-            color: #666;
-            margin-top: 20px;
+            color: #444;
+            margin-top: 35px;
+            margin-bottom: 0px;
+            font-size: 10px;
         }
         p {
             margin: 10px 0;
@@ -33,7 +39,7 @@
             text-decoration: underline;
         }
         .menu-icon-container {
-            margin: 20px auto;
+            margin: 15px auto;
             text-align: center;
             position: relative;
         }
@@ -67,6 +73,16 @@
         }
         .menu a:hover {
             background-color: #f4f4f4;
+        }
+        @media (max-width: 600px) {
+        body {
+            font-size: 14px; /* Kleinere Schrift für mobile Endgeräte */
+        }
+        h1 {
+            font-size: 22px; /* Kleinere Überschrift */
+        }
+        h2 {
+            font-size: 18px; /* Kleinere Überschrift */
         }
     </style>
 </head>
