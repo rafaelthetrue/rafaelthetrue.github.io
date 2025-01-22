@@ -838,9 +838,9 @@
     </div>
     <script>
 document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     try {
         const now = new Date();
-        const currentHour = now.getHours();
         const rows = document.querySelectorAll('#eventTable tbody tr');
         const tableBody = document.querySelector('#eventTable tbody');
         const head = document.querySelector('head'); // <head>-Element der Seite
@@ -872,7 +872,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr morgens am Folgetag
 
                 if (now > eventDate) {
-                    row.classList.add('past-event');
+                    row.classList.add('past-event'); // Als vergangenes Event markieren
                 }
             }
         });
@@ -897,37 +897,27 @@ document.addEventListener('DOMContentLoaded', function () {
         // Scrollen basierend auf Uhrzeit
         let scrolled = false;
 
-        if (currentHour >= 6) {
-            // Nach 6 Uhr morgens: Scrollen zum nächsten Event ab heute
-            sortedRows.forEach(row => {
-                const dataDate = row.getAttribute('data-date');
-                if (dataDate) {
-                    const eventDate = new Date(dataDate);
-                    if (!scrolled && eventDate >= now) {
-                        const offset = row.offsetTop - document.querySelector('th').offsetHeight;
-                        document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
-                        scrolled = true;
-                    }
-                }
-            });
-        } else {
-            // Vor 6 Uhr morgens: Scrollen zu Events, die gestern nach 6 Uhr morgens relevant wären
-            sortedRows.forEach(row => {
-                const dataDate = row.getAttribute('data-date');
-                if (dataDate) {
-                    const eventDate = new Date(dataDate);
-                    eventDate.setDate(eventDate.getDate() + 1);
-                    eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr morgens am Folgetag
+        sortedRows.forEach(row => {
+            const dataDate = row.getAttribute('data-date');
+            if (dataDate) {
+                const eventDate = new Date(dataDate);
+                eventDate.setDate(eventDate.getDate() + 1); // Auf den Folgetag setzen
+                eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr morgens des Folgetags
 
-                    if (!scrolled && now <= eventDate) {
-                        const offset = row.offsetTop - document.querySelector('th').offsetHeight;
-                        document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
-                        scrolled = true;
-                    }
+                // Scrollen zu dem nächsten relevanten Event
+                if (!scrolled && now <= eventDate) {
+                    const offset = row.offsetTop - document.querySelector('th').offsetHeight;
+                    document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
+                    scrolled = true;
                 }
-            });
-        }
+            }
+        });
 
+        console.log("Vergangene Events und Scroll-Logik erfolgreich angewendet.");
+    } catch (error) {
+        console.error("Fehler im Skript:", error);
+    }
+});
         // **Schema.org-Markup generieren**
         rows.forEach(row => {
             const date = row.getAttribute('data-date'); // Datum des Events
