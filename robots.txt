@@ -1,4 +1,5 @@
 User-agent: *
+Allow: /favicon.ico
 Disallow:
 
 Sitemap: https://ravebro.de/sitemap.xml
