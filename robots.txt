@@ -1,5 +1,5 @@
 User-agent: *
-Allow: /favicon.ico
+Allow: /android-icon-192x192.png
 Disallow:
 
 Sitemap: https://ravebro.de/sitemap.xml
