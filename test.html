@@ -285,6 +285,25 @@
                 }
             });
 
+       // Automatisches Setzen von Datum und Wochentag
+        rows.forEach(row => {
+            const dataDate = row.getAttribute('data-date');
+            if (dataDate) {
+                const dateObj = new Date(dataDate);
+                const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+                const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
+
+                const dateCell = row.querySelector('.date-cell');
+                if (dateCell) {
+                    dateCell.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+                } else {
+                    console.warn("Kein gültiges .date-cell gefunden:", row);
+                }
+            } else {
+                console.warn("Zeile ohne gültiges 'data-date':", row);
+            }
+        });
+
         // Vergangene Events am Folgetag um 06:00 Uhr kennzeichnen
         rows.forEach(row => {
             const dataDate = row.getAttribute('data-date');
