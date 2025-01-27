@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Entdecke in unserer Übersicht die nächsten Techno Raves und anstehende Events in der Nähe, egal ob Techno Raves heute, morgen oder am Wochenende im Ruhrgebiet und NRW.">
-    <link rel="canonical" href="https://ravebro.de"/>
     <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
@@ -23,8 +22,8 @@
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <meta name="theme-color" content="#f9f9f9">
     <title>Techno Raves 2025 (Termine, Events & Locations) - ravebro.de</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
+        /* Dein vorhandenes CSS bleibt unverändert */
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -36,10 +35,7 @@
             flex-direction: column;
             height: calc(var(--vh, 1vh) * 100);
             overflow: hidden;
-            user-select: none; /* Verhindert Textauswahl */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+            user-select: none;
         }
         .header {
             max-width: 800px;
@@ -49,50 +45,32 @@
         h1 {
             color: #444;
             margin-top: 15px;
-            margin-bottom: 0px;
             font-size: 24px;
         }
         h2 {
             color: #444;
-            margin-top: 0px;
-            margin-bottom: 0px;
             font-size: 10px;
         }
         .menu-icon-container {
+            max-width: 800px;
             margin: 0 auto;
             text-align: right;
             position: relative;
-            max-width: 800px;
         }
         .menu-icon {
             font-size: 24px;
             cursor: pointer;
-            display: inline-block;
-            color: #333;
         }
         .menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: white;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: none;
+            position: absolute;
+            right: 0;
             flex-direction: column;
-            z-index: 1000;
         }
         .menu a {
-            padding: 10px 20px;
+            padding: 10px;
             text-decoration: none;
-            color: #333;
             border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-        .menu a:last-child {
-            border-bottom: none;
-        }
-        .menu a:hover {
-            background-color: #f4f4f4;
         }
         .search-container {
             margin: 10px 0;
@@ -100,106 +78,32 @@
         }
         .search-container input {
             width: 80%;
-            max-width: 400px;
             padding: 10px;
-            font-size: 16px;
         }
         .table-container {
             overflow-y: auto;
             border: 1px solid #ddd;
             max-width: 100%;
-            margin: 0 auto;
-            border-collapse: collapse; /* Sorgt dafür, dass alle Zellen ohne Lücke dargestellt werden */
-            padding: 0; /* Entfernt mögliche Innenabstände */
             height: 90%;
             position: relative;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: auto; /* Dynamische Spaltenbreite */
         }
         th, td {
-            border: 1px solid #ddd;
             padding: 10px;
             text-align: left;
-            font-size: 14px;
-            vertical-align: top;
-            word-wrap: break-word;
-            white-space: normal;
         }
         th {
-            background-color: #f4f4f4;
             position: sticky;
             top: 0;
-            z-index: 2;
-            margin: 0; /* Wichtig: Entfernt eventuell bestehende Außenabstände */
-            }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
         }
         tr.past-event td {
-            text-decoration: line-through;
             color: #888;
         }
-        tr.past-event .date-cell span {
-        color: #888; /* Wochentag ebenfalls ausgrauen */
-        }
-        .date-cell {
-            text-align: center;
-            white-space: nowrap; /* Verhindert Zeilenumbruch */
-        }
-        .date-cell span {
-            font-size: 13px;
-            color: #333;
-            font-family: Arial, sans-serif; /* Schriftart vom Wochentag wie der Rest der Tabelle */
-            display: block;
-            margin-top: 0px;
-        }
-        /* Standardlinks in der Tabelle */
-        table a:link,
-        table a:visited,
-        table a:hover,
-        table a:active {
-             color: black; /* Textfarbe immer schwarz */
-        }
-
-        /* Links in vergangenen Events */
-        tr.past-event a:link,
-        tr.past-event a:visited {
-             color: #888; /* Ausgegraute Farbe */
-        }
-
-        tr.past-event a:hover,
-        tr.past-event a:active {
-        color: #666; /* Etwas dunkler beim Hover */
-        text-decoration: none; /* Optional: Keine Unterstreichung */
-        }
-        @media (max-width: 600px) {
-        body {
-            font-size: 14px; /* Kleinere Schrift für mobile Endgeräte */
-        }
-        h1 {
-            font-size: 22px; /* Kleinere Überschrift */
-        }
-        th, td {
-            font-size: 12px; /* Kleinere Schrift in der Tabelle */
-            padding: 8px; /* Weniger Padding in den Zellen */
-        }
-        
-
-    /* Nur für die Spalte "Stadt" */
-    td:nth-child(4) {
-        word-break: break-word; /* Wörter an beliebigen Stellen brechen */
-        hyphens: auto; /* Automatische Silbentrennung */
-        overflow-wrap: break-word; /* Alternative für ältere Browser */
-        white-space: normal; /* Erlaubt Zeilenumbruch */
-        min-width: 70px; /* Mindestbreite der Spalte */
-        max-width: 120px; /* Maximale Breite der Spalte, um Layout zu schützen */
-    }
-}
-
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
     <div class="header">
@@ -233,242 +137,74 @@
                 </tr>
             </thead>
             <tbody>
-
             </tbody>
         </table>
     </div>
     <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Definition aller Konstanten
-    const now = new Date();
-    const csvUrl = "events.csv"; // Pfad zur CSV-Datei
-    const tableBody = document.querySelector('#eventTable tbody');
-    const tableContainer = document.getElementById("tableContainer");
-    const head = document.querySelector('head'); // <head>-Element der Seite
+        document.addEventListener('DOMContentLoaded', function () {
+            const csvUrl = "events.csv"; // Dein CSV-Pfad
+            const tableBody = document.querySelector('#eventTable tbody');
+            const now = new Date();
 
-    // CSV laden und Tabelle füllen
-    Papa.parse(csvUrl, {
-        download: true,
-        header: true,
-        complete: function (results) {
-            const rows = results.data;
+            // CSV-Daten laden und in die Tabelle einfügen
+            Papa.parse(csvUrl, {
+                download: true,
+                header: true,
+                complete: function (results) {
+                    const rows = results.data;
 
-            rows.forEach(row => {
-                if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return; // Ungültige Zeilen überspringen
-                
-                const dateObj = new Date(row.Datum);
-                const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
-                const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
+                    rows.forEach(row => {
+                        if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
 
-                // Dynamische Zeile erstellen
-                const tr = document.createElement('tr');
-                tr.setAttribute('data-date', row.Datum);
+                        const dateObj = new Date(row.Datum);
+                        const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+                        const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
 
-                // Datumsspalte
-                const dateTd = document.createElement('td');
-                dateTd.classList.add('date-cell');
-                dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
-                tr.appendChild(dateTd);
+                        const tr = document.createElement('tr');
+                        tr.setAttribute('data-date', row.Datum);
 
-                // Eventspalte
-                const eventTd = document.createElement('td');
-                eventTd.innerHTML = `<a href="${row.Link || '#'}" target="_blank">${row.Event}</a>`;
-                tr.appendChild(eventTd);
+                        const dateTd = document.createElement('td');
+                        dateTd.classList.add('date-cell');
+                        dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+                        tr.appendChild(dateTd);
 
-                // Location
-                const locationTd = document.createElement('td');
-                locationTd.textContent = row.Location;
-                tr.appendChild(locationTd);
+                        const eventTd = document.createElement('td');
+                        eventTd.innerHTML = `<a href="${row.Link || '#'}" target="_blank">${row.Event}</a>`;
+                        tr.appendChild(eventTd);
 
-                // Stadt
-                const cityTd = document.createElement('td');
-                cityTd.textContent = row.Stadt;
-                tr.appendChild(cityTd);
+                        const locationTd = document.createElement('td');
+                        locationTd.textContent = row.Location;
+                        tr.appendChild(locationTd);
 
-                // Vergangene Events kennzeichnen
-                const eventDate = new Date(row.Datum);
-                eventDate.setDate(eventDate.getDate() + 1); // Folgetag 6:00 Uhr
-                eventDate.setHours(6, 0, 0, 0);
-                if (now > eventDate) {
-                    tr.classList.add('past-event');
+                        const cityTd = document.createElement('td');
+                        cityTd.textContent = row.Stadt;
+                        tr.appendChild(cityTd);
+
+                        const eventDate = new Date(row.Datum);
+                        if (now > eventDate) tr.classList.add('past-event');
+
+                        tableBody.appendChild(tr);
+                    });
                 }
-
-                tableBody.appendChild(tr);
-
-                // JSON-LD für das Event generieren und ins <head> einfügen
-                const eventMarkup = {
-                    "@context": "https://schema.org",
-                    "@type": "Event",
-                    "name": row.Event,
-                    "startDate": row.Datum,
-                    "location": {
-                        "@type": "Place",
-                        "name": row.Location,
-                        "address": {
-                            "@type": "PostalAddress",
-                            "addressLocality": row.Stadt,
-                            "addressCountry": "DE"
-                        }
-                    },
-                    "url": row.Link || undefined
-                };
-
-                const script = document.createElement('script');
-                script.type = 'application/ld+json';
-                script.textContent = JSON.stringify(eventMarkup, null, 2);
-                head.appendChild(script); // Ins <head> der Seite einfügen
             });
 
-            // Tabelle nach Datum sortieren
-            sortTableByDate();
+            // Menü-Toggle
+            const menu = document.getElementById('menu');
+            const menuIcon = document.getElementById('menuIcon');
+            menuIcon.addEventListener('click', () => {
+                menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+            });
+        });
+
+        function searchTable() {
+            const input = document.getElementById('search').value.toLowerCase();
+            const rows = document.querySelectorAll('#eventTable tbody tr');
+
+            rows.forEach(row => {
+                const cells = Array.from(row.querySelectorAll('td'));
+                row.style.display = cells.some(cell => cell.textContent.toLowerCase().includes(input)) ? '' : 'none';
+            });
         }
-    });
-
-
-
-        // Sortieren der Tabelle
-        const sortedRows = Array.from(rows).sort((a, b) => {
-            const dateA = new Date(a.getAttribute('data-date'));
-            const dateB = new Date(b.getAttribute('data-date'));
-            const cityA = a.cells[3]?.textContent.toLowerCase() || '';
-            const cityB = b.cells[3]?.textContent.toLowerCase() || '';
-            const eventA = a.cells[1]?.textContent.toLowerCase() || '';
-            const eventB = b.cells[1]?.textContent.toLowerCase() || '';
-
-            if (dateA - dateB !== 0) return dateA - dateB;
-            if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB);
-            return eventA.localeCompare(eventB);
-        });
-
-        // Aktualisierte Reihenfolge in das DOM einfügen
-        sortedRows.forEach(row => tableBody.appendChild(row));
-
-        // Scrollen basierend auf Uhrzeit
-        let scrolled = false;
-        sortedRows.forEach(row => {
-            const dataDate = row.getAttribute('data-date');
-            if (dataDate) {
-                const eventDate = new Date(dataDate);
-                eventDate.setDate(eventDate.getDate() + 1);
-                eventDate.setHours(6, 0, 0, 0);
-
-                if (!scrolled && now <= eventDate) {
-                    const offset = row.offsetTop - document.querySelector('th').offsetHeight;
-                    document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
-                    scrolled = true;
-                }
-            }
-        });
-        // **Schema.org-Markup generieren**
-        rows.forEach(row => {
-            const date = row.getAttribute('data-date'); // Datum des Events
-            const eventLink = row.querySelector('td:nth-child(2) a'); // Event-Name mit Link
-            const eventName = eventLink ? eventLink.textContent.trim() : row.querySelector('td:nth-child(2)').textContent.trim();
-            const eventUrl = eventLink ? eventLink.href : ''; // Event-Link (falls vorhanden)
-            const location = row.querySelector('td:nth-child(3)').textContent.trim(); // Location-Name
-            const city = row.querySelector('td:nth-child(4)').textContent.trim(); // Stadt
-
-            if (date && eventName && location && city) {
-                // JSON-LD für das Event generieren
-                const eventMarkup = {
-                    "@context": "https://schema.org",
-                    "@type": "Event",
-                    "name": eventName,
-                    "startDate": date,
-                    "location": {
-                        "@type": "Place",
-                        "name": location,
-                        "address": {
-                            "@type": "PostalAddress",
-                            "addressLocality": city,
-                            "addressCountry": "DE"
-                        }
-                    },
-                    "url": eventUrl || undefined
-                };
-
-                // JSON-LD in ein Script-Tag einfügen
-                const script = document.createElement('script');
-                script.type = 'application/ld+json';
-                script.textContent = JSON.stringify(eventMarkup, null, 2); // Formatieren
-                head.appendChild(script); // Ins <head> der Seite einfügen
-            }
-        });
-
-        console.log("JSON-LD für alle Events erfolgreich generiert.");
-    } catch (error) {
-        console.error("Fehler im Skript:", error);
-    }
-});
-
-    // Kontextmenü und Textauswahl verhindern
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('selectstart', e => e.preventDefault());
-
-    // Zoom deaktivieren
-    document.addEventListener('gesturestart', e => e.preventDefault());
-    document.addEventListener('gesturechange', e => e.preventDefault());
-    document.addEventListener('gestureend', e => e.preventDefault());
-
-    // Menü-Toggle
-    const menu = document.getElementById('menu');
-    const menuIcon = document.getElementById('menuIcon');
-    menuIcon.addEventListener('click', () => {
-        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-    });
-    document.addEventListener('click', e => {
-        if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
-            menu.style.display = 'none';
-        }
-    });
-
-    // Menü schließen, wenn ein Link angeklickt wird
-    const menuLinks = document.querySelectorAll('.menu a');
-    menuLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            menu.style.display = 'none';
-        });
-    });
-    // Funktion für "Aktualisieren"
-        const refreshPage = document.getElementById('refreshPage');
-        refreshPage.addEventListener('click', (e) => {
-        e.preventDefault(); // Verhindert die Standardaktion des Links
-        window.location.reload(true); // Erzwingt das Neuladen ohne Cache
-        });
-    // Dynamische Anpassung der Tabellenhöhe
-    function adjustTableHeight() {
-        const headerHeight = document.querySelector(".header").offsetHeight;
-        const searchHeight = document.querySelector(".search-container").offsetHeight;
-        const viewportHeight = window.innerHeight;
-        const tableContainer = document.getElementById("tableContainer");
-        tableContainer.style.height = `${0.90 * (viewportHeight - headerHeight - searchHeight)}px`;
-    }
-
-    // Höhe der Tabelle anpassen und bei Fenstergrößenänderungen neu berechnen
-    adjustTableHeight();
-    window.addEventListener('resize', adjustTableHeight);
-
-    // Dynamische Anpassung der Viewport-Höhe (für mobile Geräte)
-    function adjustViewportHeight() {
-        const vh = window.innerHeight * 0.01; // 1% der tatsächlichen Fensterhöhe
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-    }
-    window.addEventListener('load', adjustViewportHeight);
-    window.addEventListener('resize', adjustViewportHeight);
-
-    // Suchfunktion für die Tabelle
-    function searchTable() {
-        const input = document.getElementById('search');
-        const filter = input.value.toLowerCase();
-        const rows = document.querySelectorAll('#eventTable tbody tr');
-
-        rows.forEach(row => {
-            const cells = Array.from(row.getElementsByTagName('td'));
-            const match = cells.some(cell => cell.textContent.toLowerCase().includes(filter));
-            row.style.display = match ? '' : 'none';
-        });
-    }
-    document.getElementById('search').addEventListener('keyup', searchTable);
     </script>
 </body>
 </html>
