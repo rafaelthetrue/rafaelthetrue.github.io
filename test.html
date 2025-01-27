@@ -237,9 +237,10 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const csvUrl = "events.csv"; // Dein CSV-Pfad
-            const tableBody = document.querySelector('#eventTable tbody');
-            const now = new Date();
+        const now = new Date();
+        const rows = document.querySelectorAll('#eventTable tbody tr');
+        const tableBody = document.querySelector('#eventTable tbody');
+        const head = document.querySelector('head'); // <head>-Element der Seite
 
             // CSV-Daten laden und in die Tabelle einfügen
             Papa.parse(csvUrl, {
