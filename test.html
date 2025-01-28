@@ -326,7 +326,7 @@ function scrollToNextEvent() {
     const rows = Array.from(document.querySelectorAll("#eventTable tbody tr"));
     const tableContainer = document.getElementById("tableContainer");
     const headerHeight = document.querySelector("thead").offsetHeight; // Höhe des Tabellen-Headers
-    const containerOffset = tableContainer.offsetTop;
+    const now = new Date();
 
     let nextEventRow = null;
 
@@ -346,7 +346,7 @@ function scrollToNextEvent() {
 
     if (nextEventRow) {
         const offsetTop = nextEventRow.offsetTop; // Position des nächsten Events
-        const scrollPosition = offsetTop - containerOffset - headerHeight; // Scroll-Position berechnen
+        const scrollPosition = offsetTop - headerHeight; // Scroll-Position berechnen
         tableContainer.scrollTo({
             top: scrollPosition,
             behavior: "smooth",
