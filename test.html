@@ -2,103 +2,17 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Entdecke in unserer Übersicht die nächsten Techno Raves und anstehende Events in der Nähe, egal ob Techno Raves heute, morgen oder am Wochenende im Ruhrgebiet und NRW.">
-    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-    <meta name="theme-color" content="#f9f9f9">
-    <title>Techno Raves 2025 (Termine, Events & Locations) - ravebro.de</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events aus Excel</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         /* Dein CSS bleibt unverändert */
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 0;
-            margin: 0;
-            background-color: #f9f9f9;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            height: calc(var(--vh, 1vh) * 100);
-            overflow: hidden;
-            user-select: none;
-        }
-        .header {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        .menu-icon-container {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: right;
-            position: relative;
-        }
-        .menu-icon {
-            font-size: 24px;
-            cursor: pointer;
-        }
-        .menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            flex-direction: column;
-        }
-        .menu a {
-            padding: 10px;
-            text-decoration: none;
-        }
-        .table-container {
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            max-width: 100%;
-            height: 90%;
-            position: relative;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            position: sticky;
-            top: 0;
-        }
-        tr.past-event td {
-            color: #888;
-        }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
     <div class="header">
         <h1>Techno Raves 2025</h1>
         <h2>Termine, Events & Locations in NRW</h2>
-    </div>
-    <div class="menu-icon-container" id="menuIconContainer">
-        <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
-        <div class="menu" id="menu">
-            <a href="#" id="refreshPage">Aktualisieren</a>
-            <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
-            <a href="impressum.html">Impressum</a>
-        </div>
     </div>
     <div class="table-container" id="tableContainer">
         <table id="eventTable">
@@ -110,70 +24,74 @@
                     <th>Stadt</th>
                 </tr>
             </thead>
-            <tbody>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const csvUrl = "events.csv"; // Pfad zur CSV
-            const now = new Date();
+        document.addEventListener('DOMContentLoaded', async function () {
             const tableBody = document.querySelector('#eventTable tbody');
+            const now = new Date();
+            const excelFileUrl = 'events.xlsx'; // URL der Excel-Datei
 
-            Papa.parse(csvUrl, {
-                download: true,
-                header: true,
-                complete: function (results) {
-                    const rows = results.data;
+            // Excel-Datei abrufen und parsen
+            async function loadExcelFile(url) {
+                const response = await fetch(url);
+                const arrayBuffer = await response.arrayBuffer();
+                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                return XLSX.utils.sheet_to_json(worksheet);
+            }
 
-                    rows.forEach(row => {
-                        if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
+            const rows = await loadExcelFile(excelFileUrl);
 
-                        const dateObj = new Date(row.Datum);
-                        const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
-                        const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
+            // Tabelle befüllen
+            rows.forEach(row => {
+                if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
 
-                        const tr = document.createElement('tr');
-                        tr.setAttribute('data-date', row.Datum);
+                const dateObj = new Date(row.Datum);
+                const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+                const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
 
-                        // Datum
-                        const dateTd = document.createElement('td');
-                        dateTd.classList.add('date-cell');
-                        dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
-                        tr.appendChild(dateTd);
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-date', row.Datum);
 
-                        // Event
-                        const eventTd = document.createElement('td');
-                        eventTd.innerHTML = `<a href="${row.Link || '#'}" target="_blank">${row.Event}</a>`;
-                        tr.appendChild(eventTd);
+                // Datumsspalte
+                const dateTd = document.createElement('td');
+                dateTd.classList.add('date-cell');
+                dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+                tr.appendChild(dateTd);
 
-                        // Location
-                        const locationTd = document.createElement('td');
-                        locationTd.textContent = row.Location;
-                        tr.appendChild(locationTd);
+                // Event
+                const eventTd = document.createElement('td');
+                eventTd.innerHTML = `<a href="${row.Link || '#'}" target="_blank">${row.Event}</a>`;
+                tr.appendChild(eventTd);
 
-                        // Stadt
-                        const cityTd = document.createElement('td');
-                        cityTd.textContent = row.Stadt;
-                        tr.appendChild(cityTd);
+                // Location
+                const locationTd = document.createElement('td');
+                locationTd.textContent = row.Location;
+                tr.appendChild(locationTd);
 
-                        // Vergangene Events markieren
-                        const eventDate = new Date(row.Datum);
-                        eventDate.setDate(eventDate.getDate() + 1);
-                        eventDate.setHours(6, 0, 0, 0);
-                        if (now > eventDate) {
-                            tr.classList.add('past-event');
-                        }
+                // Stadt
+                const cityTd = document.createElement('td');
+                cityTd.textContent = row.Stadt;
+                tr.appendChild(cityTd);
 
-                        tableBody.appendChild(tr);
-                    });
-
-                    // Tabelle nach Datum sortieren
-                    sortTable();
+                // Vergangene Events markieren
+                const eventDate = new Date(row.Datum);
+                eventDate.setDate(eventDate.getDate() + 1);
+                eventDate.setHours(6, 0, 0, 0);
+                if (now > eventDate) {
+                    tr.classList.add('past-event');
                 }
+
+                tableBody.appendChild(tr);
             });
 
-            // Tabelle sortieren
+            // Tabelle nach Datum sortieren
+            sortTable();
+
+            // Sortierfunktion
             function sortTable() {
                 const rows = Array.from(tableBody.querySelectorAll('tr'));
                 rows.sort((a, b) => {
@@ -183,34 +101,7 @@
                 });
                 rows.forEach(row => tableBody.appendChild(row));
             }
-
-            // Menü-Toggle
-            const menu = document.getElementById('menu');
-            const menuIcon = document.getElementById('menuIcon');
-            menuIcon.addEventListener('click', () => {
-                menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-            });
-
-            // Dynamische Anpassung der Tabellenhöhe
-            function adjustTableHeight() {
-                const viewportHeight = window.innerHeight;
-                const tableContainer = document.getElementById("tableContainer");
-                tableContainer.style.height = `${viewportHeight * 0.8}px`;
-            }
-
-            window.addEventListener('resize', adjustTableHeight);
-            adjustTableHeight();
         });
-
-        // Suchfunktion
-        function searchTable() {
-            const searchInput = document.getElementById('search').value.toLowerCase();
-            const rows = document.querySelectorAll('#eventTable tbody tr');
-            rows.forEach(row => {
-                const match = Array.from(row.cells).some(cell => cell.textContent.toLowerCase().includes(searchInput));
-                row.style.display = match ? '' : 'none';
-            });
-        }
     </script>
 </body>
 </html>
