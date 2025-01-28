@@ -234,80 +234,99 @@
         </table>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', async function () {
-            const tableBody = document.querySelector('#eventTable tbody');
-            const now = new Date();
-            const excelFileUrl = 'events.xlsx'; // URL der Excel-Datei
+    document.addEventListener('DOMContentLoaded', async function () {
+        const tableBody = document.querySelector('#eventTable tbody');
+        const now = new Date();
+        const excelFileUrl = 'events.xlsx'; // URL der Excel-Datei
 
-            // Excel-Datei abrufen und parsen
-            async function loadExcelFile(url) {
-                const response = await fetch(url);
-                const arrayBuffer = await response.arrayBuffer();
-                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-                const firstSheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[firstSheetName];
-                return XLSX.utils.sheet_to_json(worksheet);
+        // Excel-Datei abrufen und parsen
+        async function loadExcelFile(url) {
+            const response = await fetch(url);
+            const arrayBuffer = await response.arrayBuffer();
+            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            return XLSX.utils.sheet_to_json(worksheet);
+        }
+
+        function parseExcelDate(value) {
+            // Prüfen, ob der Wert eine Excel-Datumsnummer ist
+            if (typeof value === 'number') {
+                // Excel-Datum (Tagesanzahl seit 1900-01-01)
+                const excelEpoch = new Date(Date.UTC(1899, 11, 30)); // Basisdatum
+                return new Date(excelEpoch.getTime() + value * 86400000); // Tage in Millisekunden
+            }
+            // Wenn der Wert ein Textdatum ist
+            return new Date(value);
+        }
+
+        const rows = await loadExcelFile(excelFileUrl);
+
+        // Tabelle befüllen
+        rows.forEach(row => {
+            if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
+
+            // Datum korrekt parsen
+            const dateObj = parseExcelDate(row.Datum);
+
+            // Prüfen, ob das Datum gültig ist
+            if (isNaN(dateObj)) {
+                console.error(`Ungültiges Datum für Event: ${row.Event}`);
+                return;
             }
 
-            const rows = await loadExcelFile(excelFileUrl);
+            const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+            const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
 
-            // Tabelle befüllen
-            rows.forEach(row => {
-                if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-date', dateObj.toISOString());
 
-                const dateObj = new Date(row.Datum);
-                const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
-                const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
+            // Datumsspalte
+            const dateTd = document.createElement('td');
+            dateTd.classList.add('date-cell');
+            dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+            tr.appendChild(dateTd);
 
-                const tr = document.createElement('tr');
-                tr.setAttribute('data-date', row.Datum);
+            // Event
+            const eventTd = document.createElement('td');
+            eventTd.innerHTML = `<a href="${row.Link || '#'}" target="_blank">${row.Event}</a>`;
+            tr.appendChild(eventTd);
 
-                // Datumsspalte
-                const dateTd = document.createElement('td');
-                dateTd.classList.add('date-cell');
-                dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
-                tr.appendChild(dateTd);
+            // Location
+            const locationTd = document.createElement('td');
+            locationTd.textContent = row.Location;
+            tr.appendChild(locationTd);
 
-                // Event
-                const eventTd = document.createElement('td');
-                eventTd.innerHTML = `<a href="${row.Link || '#'}" target="_blank">${row.Event}</a>`;
-                tr.appendChild(eventTd);
+            // Stadt
+            const cityTd = document.createElement('td');
+            cityTd.textContent = row.Stadt;
+            tr.appendChild(cityTd);
 
-                // Location
-                const locationTd = document.createElement('td');
-                locationTd.textContent = row.Location;
-                tr.appendChild(locationTd);
-
-                // Stadt
-                const cityTd = document.createElement('td');
-                cityTd.textContent = row.Stadt;
-                tr.appendChild(cityTd);
-
-                // Vergangene Events markieren
-                const eventDate = new Date(row.Datum);
-                eventDate.setDate(eventDate.getDate() + 1);
-                eventDate.setHours(6, 0, 0, 0);
-                if (now > eventDate) {
-                    tr.classList.add('past-event');
-                }
-
-                tableBody.appendChild(tr);
-            });
-
-            // Tabelle nach Datum sortieren
-            sortTable();
-
-            // Sortierfunktion
-            function sortTable() {
-                const rows = Array.from(tableBody.querySelectorAll('tr'));
-                rows.sort((a, b) => {
-                    const dateA = new Date(a.getAttribute('data-date'));
-                    const dateB = new Date(b.getAttribute('data-date'));
-                    return dateA - dateB;
-                });
-                rows.forEach(row => tableBody.appendChild(row));
+            // Vergangene Events markieren
+            const eventDate = new Date(dateObj);
+            eventDate.setDate(eventDate.getDate() + 1);
+            eventDate.setHours(6, 0, 0, 0);
+            if (now > eventDate) {
+                tr.classList.add('past-event');
             }
+
+            tableBody.appendChild(tr);
         });
+
+        // Tabelle nach Datum sortieren
+        sortTable();
+
+        // Sortierfunktion
+        function sortTable() {
+            const rows = Array.from(tableBody.querySelectorAll('tr'));
+            rows.sort((a, b) => {
+                const dateA = new Date(a.getAttribute('data-date'));
+                const dateB = new Date(b.getAttribute('data-date'));
+                return dateA - dateB;
+            });
+            rows.forEach(row => tableBody.appendChild(row));
+        }
+    });
     </script>
 </body>
 </html>
