@@ -234,132 +234,110 @@
         </table>
     </div>
     <script>
-    document.addEventListener('DOMContentLoaded', async function () {
-        const tableBody = document.querySelector('#eventTable tbody');
-        const now = new Date();
-        const excelFileUrl = 'events.xlsx'; // URL der Excel-Datei
-
-        // Excel-Datei abrufen und parsen
-        async function loadExcelFile(url) {
-            const response = await fetch(url);
-            const arrayBuffer = await response.arrayBuffer();
-            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-            const firstSheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheetName];
-            return XLSX.utils.sheet_to_json(worksheet);
-        }
-
-        function parseExcelDate(value) {
-            // Prüfen, ob der Wert eine Excel-Datumsnummer ist
-            if (typeof value === 'number') {
-                // Excel-Datum (Tagesanzahl seit 1900-01-01)
-                const excelEpoch = new Date(Date.UTC(1899, 11, 30)); // Basisdatum
-                return new Date(excelEpoch.getTime() + value * 86400000); // Tage in Millisekunden
-            }
-            // Wenn der Wert ein Textdatum ist
-            return new Date(value);
-        }
-
-        const rows = await loadExcelFile(excelFileUrl);
-
-        // Tabelle befüllen
-        rows.forEach(row => {
-            if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
-
-            // Datum korrekt parsen
-            const dateObj = parseExcelDate(row.Datum);
-
-            // Prüfen, ob das Datum gültig ist
-            if (isNaN(dateObj)) {
-                console.error(`Ungültiges Datum für Event: ${row.Event}`);
-                return;
-            }
-
-            const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
-            const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
-
-            const tr = document.createElement('tr');
-            tr.setAttribute('data-date', dateObj.toISOString());
-
-            // Datumsspalte
-            const dateTd = document.createElement('td');
-            dateTd.classList.add('date-cell');
-            dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
-            tr.appendChild(dateTd);
-
-            // Event
-            const eventTd = document.createElement('td');
-            eventTd.innerHTML = `<a href="${row.Link || '#'}" target="_blank">${row.Event}</a>`;
-            tr.appendChild(eventTd);
-
-            // Location
-            const locationTd = document.createElement('td');
-            locationTd.textContent = row.Location;
-            tr.appendChild(locationTd);
-
-            // Stadt
-            const cityTd = document.createElement('td');
-            cityTd.textContent = row.Stadt;
-            tr.appendChild(cityTd);
-
-            // Vergangene Events markieren
-            const eventDate = new Date(dateObj);
-            eventDate.setDate(eventDate.getDate() + 1);
-            eventDate.setHours(6, 0, 0, 0);
-            if (now > eventDate) {
-                tr.classList.add('past-event');
-            }
-
-            tableBody.appendChild(tr);
-        });
-
-        // Tabelle nach Datum sortieren
-        sortTable();
-
-        // Sortierfunktion
-        function sortTable() {
-            const rows = Array.from(tableBody.querySelectorAll('tr'));
-            rows.sort((a, b) => {
-                const dateA = new Date(a.getAttribute('data-date'));
-                const dateB = new Date(b.getAttribute('data-date'));
-                return dateA - dateB;
-            });
-            rows.forEach(row => tableBody.appendChild(row));
-        }
-    });
 // Automatisch zum nächsten Event scrollen
 function scrollToNextEvent() {
     const rows = Array.from(document.querySelectorAll('#eventTable tbody tr'));
     const now = new Date();
-
     let nextEventRow = null;
 
     for (const row of rows) {
         const dataDate = row.getAttribute('data-date');
         if (dataDate) {
             const eventDate = new Date(dataDate);
-            eventDate.setDate(eventDate.getDate() + 1); // Setze auf den Folgetag
-            eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr morgens
+            // Vergangene Events am Folgetag um 6:00 Uhr markieren
+            eventDate.setDate(eventDate.getDate() + 1);
+            eventDate.setHours(6, 0, 0, 0);
 
             if (now <= eventDate) {
                 nextEventRow = row;
-                break; // Nächstes Event gefunden
+                break; // Nächstes anstehendes Event gefunden
             }
         }
     }
 
     if (nextEventRow) {
-        const offsetTop = nextEventRow.offsetTop; // Position des nächsten Events
+        const offsetTop = nextEventRow.offsetTop;
         const tableContainer = document.getElementById('tableContainer');
+        // Scrollen zur nächsten Eventzeile
         tableContainer.scrollTo({
-            top: offsetTop - document.querySelector('th').offsetHeight, // Scrollen mit Berücksichtigung des Tabellenkopfs
-            behavior: 'smooth'
+            top: offsetTop - tableContainer.offsetTop,
+            behavior: 'smooth',
         });
+        console.log('Zum nächsten Event gescrollt:', nextEventRow);
+    } else {
+        console.log('Kein zukünftiges Event gefunden.');
     }
 }
 
-// Rufe die Funktion nach dem Laden der Tabelle auf
-scrollToNextEvent();
+// Tabelle initialisieren und Scrollfunktion nach dem Laden der Tabelle aufrufen
+document.addEventListener('DOMContentLoaded', async function () {
+    const tableBody = document.querySelector('#eventTable tbody');
+    const now = new Date();
+
+    // Beispiel: Excel-Datei laden (Pfad anpassen)
+    const excelFileUrl = 'events.xlsx';
+
+    async function loadExcelFile(url) {
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        return XLSX.utils.sheet_to_json(worksheet);
+    }
+
+    function parseExcelDate(value) {
+        if (typeof value === 'number') {
+            const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+            return new Date(excelEpoch.getTime() + value * 86400000);
+        }
+        return new Date(value);
+    }
+
+    const rows = await loadExcelFile(excelFileUrl);
+
+    rows.forEach(row => {
+        if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
+
+        const dateObj = parseExcelDate(row.Datum);
+        if (isNaN(dateObj)) return;
+
+        const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+        const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
+
+        const tr = document.createElement('tr');
+        tr.setAttribute('data-date', dateObj.toISOString());
+
+        const dateTd = document.createElement('td');
+        dateTd.classList.add('date-cell');
+        dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+        tr.appendChild(dateTd);
+
+        const eventTd = document.createElement('td');
+        eventTd.innerHTML = `<a href="${row.Link || '#'}" target="_blank">${row.Event}</a>`;
+        tr.appendChild(eventTd);
+
+        const locationTd = document.createElement('td');
+        locationTd.textContent = row.Location;
+        tr.appendChild(locationTd);
+
+        const cityTd = document.createElement('td');
+        cityTd.textContent = row.Stadt;
+        tr.appendChild(cityTd);
+
+        const eventDate = new Date(dateObj);
+        eventDate.setDate(eventDate.getDate() + 1);
+        eventDate.setHours(6, 0, 0, 0);
+        if (now > eventDate) {
+            tr.classList.add('past-event');
+        }
+
+        tableBody.appendChild(tr);
+    });
+
+    // Rufe die Scrollfunktion nach dem Hinzufügen der Daten auf
+    scrollToNextEvent();
+});
     </script>
 </body>
 </html>
