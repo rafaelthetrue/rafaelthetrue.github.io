@@ -2,11 +2,201 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Events aus Excel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Entdecke in unserer Übersicht die nächsten Techno Raves und anstehende Events in der Nähe, egal ob Techno Raves heute, morgen oder am Wochenende im Ruhrgebiet und NRW.">
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#f9f9f9">
+    <title>Techno Raves 2025 (Termine, Events & Locations) - ravebro.de</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        /* Dein CSS bleibt unverändert */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: calc(var(--vh, 1vh) * 100);
+            overflow: hidden;
+            user-select: none; /* Verhindert Textauswahl */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        .header {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            color: #444;
+            margin-top: 15px;
+            margin-bottom: 0px;
+            font-size: 24px;
+        }
+        h2 {
+            color: #444;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-size: 10px;
+        }
+        .menu-icon-container {
+            margin: 0 auto;
+            text-align: right;
+            position: relative;
+            max-width: 800px;
+        }
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+            display: inline-block;
+            color: #333;
+        }
+        .menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        .menu a {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        .menu a:last-child {
+            border-bottom: none;
+        }
+        .menu a:hover {
+            background-color: #f4f4f4;
+        }
+        .search-container {
+            margin: 10px 0;
+            text-align: center;
+        }
+        .search-container input {
+            width: 80%;
+            max-width: 400px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .table-container {
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            max-width: 100%;
+            margin: 0 auto;
+            border-collapse: collapse; /* Sorgt dafür, dass alle Zellen ohne Lücke dargestellt werden */
+            padding: 0; /* Entfernt mögliche Innenabstände */
+            height: 90%;
+            position: relative;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: auto; /* Dynamische Spaltenbreite */
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+            vertical-align: top;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        th {
+            background-color: #f4f4f4;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            margin: 0; /* Wichtig: Entfernt eventuell bestehende Außenabstände */
+            }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr.past-event td {
+            text-decoration: line-through;
+            color: #888;
+        }
+        tr.past-event .date-cell span {
+        color: #888; /* Wochentag ebenfalls ausgrauen */
+        }
+        .date-cell {
+            text-align: center;
+            white-space: nowrap; /* Verhindert Zeilenumbruch */
+        }
+        .date-cell span {
+            font-size: 13px;
+            color: #333;
+            font-family: Arial, sans-serif; /* Schriftart vom Wochentag wie der Rest der Tabelle */
+            display: block;
+            margin-top: 0px;
+        }
+        /* Standardlinks in der Tabelle */
+        table a:link,
+        table a:visited,
+        table a:hover,
+        table a:active {
+             color: black; /* Textfarbe immer schwarz */
+        }
+
+        /* Links in vergangenen Events */
+        tr.past-event a:link,
+        tr.past-event a:visited {
+             color: #888; /* Ausgegraute Farbe */
+        }
+
+        tr.past-event a:hover,
+        tr.past-event a:active {
+        color: #666; /* Etwas dunkler beim Hover */
+        text-decoration: none; /* Optional: Keine Unterstreichung */
+        }
+        @media (max-width: 600px) {
+        body {
+            font-size: 14px; /* Kleinere Schrift für mobile Endgeräte */
+        }
+        h1 {
+            font-size: 22px; /* Kleinere Überschrift */
+        }
+        th, td {
+            font-size: 12px; /* Kleinere Schrift in der Tabelle */
+            padding: 8px; /* Weniger Padding in den Zellen */
+        }
+        
+
+    /* Nur für die Spalte "Stadt" */
+    td:nth-child(4) {
+        word-break: break-word; /* Wörter an beliebigen Stellen brechen */
+        hyphens: auto; /* Automatische Silbentrennung */
+        overflow-wrap: break-word; /* Alternative für ältere Browser */
+        white-space: normal; /* Erlaubt Zeilenumbruch */
+        min-width: 70px; /* Mindestbreite der Spalte */
+        max-width: 120px; /* Maximale Breite der Spalte, um Layout zu schützen */
+    }
+}
     </style>
 </head>
 <body>
