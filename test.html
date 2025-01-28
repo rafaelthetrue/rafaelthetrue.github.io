@@ -364,6 +364,118 @@ function scrollToNextEvent() {
     renderTable(sortedRows);
     scrollToNextEvent();
 });
+
+
+        // **Schema.org-Markup generieren**
+        rows.forEach(row => {
+            const date = row.getAttribute('data-date'); // Datum des Events
+            const eventLink = row.querySelector('td:nth-child(2) a'); // Event-Name mit Link
+            const eventName = eventLink ? eventLink.textContent.trim() : row.querySelector('td:nth-child(2)').textContent.trim();
+            const eventUrl = eventLink ? eventLink.href : ''; // Event-Link (falls vorhanden)
+            const location = row.querySelector('td:nth-child(3)').textContent.trim(); // Location-Name
+            const city = row.querySelector('td:nth-child(4)').textContent.trim(); // Stadt
+
+            if (date && eventName && location && city) {
+                // JSON-LD für das Event generieren
+                const eventMarkup = {
+                    "@context": "https://schema.org",
+                    "@type": "Event",
+                    "name": eventName,
+                    "startDate": date,
+                    "location": {
+                        "@type": "Place",
+                        "name": location,
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressLocality": city,
+                            "addressCountry": "DE"
+                        }
+                    },
+                    "url": eventUrl || undefined
+                };
+
+                // JSON-LD in ein Script-Tag einfügen
+                const script = document.createElement('script');
+                script.type = 'application/ld+json';
+                script.textContent = JSON.stringify(eventMarkup, null, 2); // Formatieren
+                head.appendChild(script); // Ins <head> der Seite einfügen
+            }
+        });
+
+        console.log("JSON-LD für alle Events erfolgreich generiert.");
+    } catch (error) {
+        console.error("Fehler im Skript:", error);
+    }
+});
+
+    // Kontextmenü und Textauswahl verhindern
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('selectstart', e => e.preventDefault());
+
+    // Zoom deaktivieren
+    document.addEventListener('gesturestart', e => e.preventDefault());
+    document.addEventListener('gesturechange', e => e.preventDefault());
+    document.addEventListener('gestureend', e => e.preventDefault());
+
+    // Menü-Toggle
+    const menu = document.getElementById('menu');
+    const menuIcon = document.getElementById('menuIcon');
+    menuIcon.addEventListener('click', () => {
+        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    });
+    document.addEventListener('click', e => {
+        if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
+            menu.style.display = 'none';
+        }
+    });
+
+    // Menü schließen, wenn ein Link angeklickt wird
+    const menuLinks = document.querySelectorAll('.menu a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            menu.style.display = 'none';
+        });
+    });
+    // Funktion für "Aktualisieren"
+        const refreshPage = document.getElementById('refreshPage');
+        refreshPage.addEventListener('click', (e) => {
+        e.preventDefault(); // Verhindert die Standardaktion des Links
+        window.location.reload(true); // Erzwingt das Neuladen ohne Cache
+        });
+    // Dynamische Anpassung der Tabellenhöhe
+    function adjustTableHeight() {
+        const headerHeight = document.querySelector(".header").offsetHeight;
+        const searchHeight = document.querySelector(".search-container").offsetHeight;
+        const viewportHeight = window.innerHeight;
+        const tableContainer = document.getElementById("tableContainer");
+        tableContainer.style.height = `${0.90 * (viewportHeight - headerHeight - searchHeight)}px`;
+    }
+
+    // Höhe der Tabelle anpassen und bei Fenstergrößenänderungen neu berechnen
+    adjustTableHeight();
+    window.addEventListener('resize', adjustTableHeight);
+
+    // Dynamische Anpassung der Viewport-Höhe (für mobile Geräte)
+    function adjustViewportHeight() {
+        const vh = window.innerHeight * 0.01; // 1% der tatsächlichen Fensterhöhe
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    window.addEventListener('load', adjustViewportHeight);
+    window.addEventListener('resize', adjustViewportHeight);
+
+    // Suchfunktion für die Tabelle
+    function searchTable() {
+        const input = document.getElementById('search');
+        const filter = input.value.toLowerCase();
+        const rows = document.querySelectorAll('#eventTable tbody tr');
+
+        rows.forEach(row => {
+            const cells = Array.from(row.getElementsByTagName('td'));
+            const match = cells.some(cell => cell.textContent.toLowerCase().includes(filter));
+            row.style.display = match ? '' : 'none';
+        });
+    }
+    document.getElementById('search').addEventListener('keyup', searchTable);
     </script>
 </body>
 </html>
