@@ -243,13 +243,11 @@
         </table>
     </div>
     <script>
-// Automatisch zum nächsten Event scrollen
-// Tabelle initialisieren und Events sortieren, markieren und scrollen
 document.addEventListener("DOMContentLoaded", async function () {
     const tableBody = document.querySelector("#eventTable tbody");
     const now = new Date();
 
-    // Beispiel: Excel-Datei laden (Pfad anpassen)
+    // Excel-Datei laden (Pfad anpassen)
     const excelFileUrl = "events.xlsx";
 
     async function loadExcelFile(url) {
@@ -324,83 +322,87 @@ document.addEventListener("DOMContentLoaded", async function () {
             eventDate.setHours(6, 0, 0, 0);
 
             if (now > eventDate) {
-                tr.classList.add("past-event"); // Event ist vergangen
+                tr.classList.add("past-event");
             }
 
             tableBody.appendChild(tr);
         });
     }
 
-function scrollToNextEvent() {
-    const rows = Array.from(document.querySelectorAll("#eventTable tbody tr"));
-    const tableContainer = document.getElementById("tableContainer");
-    const headerHeight = document.querySelector("thead").offsetHeight; // Höhe des Tabellen-Headers
-    const now = new Date();
+    function scrollToNextEvent() {
+        const rows = Array.from(document.querySelectorAll("#eventTable tbody tr"));
+        const tableContainer = document.getElementById("tableContainer");
+        const headerHeight = document.querySelector("thead").offsetHeight;
 
-    let nextEventRow = null;
+        let nextEventRow = null;
 
-    for (const row of rows) {
-        const dataDate = row.getAttribute("data-date");
-        if (dataDate) {
-            const eventDate = new Date(dataDate);
-            eventDate.setDate(eventDate.getDate() + 1); // Vergangene Events am Folgetag um 6:00 Uhr markieren
-            eventDate.setHours(6, 0, 0, 0);
+        for (const row of rows) {
+            const dataDate = row.getAttribute("data-date");
+            if (dataDate) {
+                const eventDate = new Date(dataDate);
+                eventDate.setDate(eventDate.getDate() + 1);
+                eventDate.setHours(6, 0, 0, 0);
 
-            if (now <= eventDate) {
-                nextEventRow = row;
-                break; // Nächstes anstehendes Event gefunden
+                if (now <= eventDate) {
+                    nextEventRow = row;
+                    break;
+                }
             }
+        }
+
+        if (nextEventRow) {
+            const offsetTop = nextEventRow.offsetTop;
+            const scrollPosition = offsetTop - headerHeight;
+            tableContainer.scrollTo({
+                top: scrollPosition,
+                behavior: "smooth",
+            });
+            console.log("Zum nächsten Event gescrollt:", nextEventRow);
+        } else {
+            console.log("Kein zukünftiges Event gefunden.");
         }
     }
 
-    if (nextEventRow) {
-        const offsetTop = nextEventRow.offsetTop; // Position des nächsten Events
-        const scrollPosition = offsetTop - headerHeight; // Scroll-Position berechnen
-        tableContainer.scrollTo({
-            top: scrollPosition,
-            behavior: "smooth",
+    function generateSchemaOrgMarkup(rows) {
+        const head = document.querySelector("head");
+
+        rows.forEach(row => {
+            if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
+
+            const dateObj = parseExcelDate(row.Datum);
+            if (isNaN(dateObj)) return;
+
+            const eventMarkup = {
+                "@context": "https://schema.org",
+                "@type": "Event",
+                "name": row.Event,
+                "startDate": dateObj.toISOString(),
+                "location": {
+                    "@type": "Place",
+                    "name": row.Location,
+                    "address": {
+                        "@type": "PostalAddress",
+                        "addressLocality": row.Stadt,
+                        "addressCountry": "DE"
+                    }
+                },
+                "url": row.Link || undefined
+            };
+
+            const script = document.createElement("script");
+            script.type = "application/ld+json";
+            script.textContent = JSON.stringify(eventMarkup, null, 2);
+            head.appendChild(script);
         });
-        console.log("Zum nächsten Event gescrollt:", nextEventRow);
-    } else {
-        console.log("Kein zukünftiges Event gefunden.");
     }
-}
-        
-function generateSchemaOrgMarkup(rows) {
-    const head = document.querySelector("head");
 
-    rows.forEach(row => {
-        if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
-
-        const dateObj = parseExcelDate(row.Datum);
-        if (isNaN(dateObj)) return;
-
-        const eventMarkup = {
-            "@context": "https://schema.org",
-            "@type": "Event",
-            "name": row.Event,
-            "startDate": dateObj.toISOString(),
-            "location": {
-                "@type": "Place",
-                "name": row.Location,
-                "address": {
-                    "@type": "PostalAddress",
-                    "addressLocality": row.Stadt,
-                    "addressCountry": "DE"
-                }
-            },
-            "url": row.Link || undefined
-        };
-        
-    // Excel-Datei laden, sortieren, Tabelle rendern, scrollen und schema.org-Markup generieren
     const rows = await loadExcelFile(excelFileUrl);
     const sortedRows = sortRows(rows);
 
     renderTable(sortedRows);
     scrollToNextEvent();
-    generateSchemaOrgMarkup(sortedRows); // Schema.org-Markup generieren
+    generateSchemaOrgMarkup(sortedRows);
 });
-
     // Kontextmenü und Textauswahl verhindern
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('selectstart', e => e.preventDefault());
