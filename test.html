@@ -322,38 +322,40 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    function scrollToNextEvent() {
-        const rows = Array.from(document.querySelectorAll("#eventTable tbody tr"));
-        const tableContainer = document.getElementById("tableContainer");
+function scrollToNextEvent() {
+    const rows = Array.from(document.querySelectorAll("#eventTable tbody tr"));
+    const tableContainer = document.getElementById("tableContainer");
+    const headerHeight = document.querySelector("thead").offsetHeight; // Höhe des Tabellen-Headers
+    const containerOffset = tableContainer.offsetTop;
 
-        let nextEventRow = null;
+    let nextEventRow = null;
 
-        for (const row of rows) {
-            const dataDate = row.getAttribute("data-date");
-            if (dataDate) {
-                const eventDate = new Date(dataDate);
-                // Vergangene Events am Folgetag um 6:00 Uhr markieren
-                eventDate.setDate(eventDate.getDate() + 1);
-                eventDate.setHours(6, 0, 0, 0);
+    for (const row of rows) {
+        const dataDate = row.getAttribute("data-date");
+        if (dataDate) {
+            const eventDate = new Date(dataDate);
+            eventDate.setDate(eventDate.getDate() + 1); // Vergangene Events am Folgetag um 6:00 Uhr markieren
+            eventDate.setHours(6, 0, 0, 0);
 
-                if (now <= eventDate) {
-                    nextEventRow = row;
-                    break; // Nächstes anstehendes Event gefunden
-                }
+            if (now <= eventDate) {
+                nextEventRow = row;
+                break; // Nächstes anstehendes Event gefunden
             }
         }
-
-        if (nextEventRow) {
-            const offsetTop = nextEventRow.offsetTop;
-            tableContainer.scrollTo({
-                top: offsetTop - tableContainer.offsetTop,
-                behavior: "smooth",
-            });
-            console.log("Zum nächsten Event gescrollt:", nextEventRow);
-        } else {
-            console.log("Kein zukünftiges Event gefunden.");
-        }
     }
+
+    if (nextEventRow) {
+        const offsetTop = nextEventRow.offsetTop; // Position des nächsten Events
+        const scrollPosition = offsetTop - containerOffset - headerHeight; // Scroll-Position berechnen
+        tableContainer.scrollTo({
+            top: scrollPosition,
+            behavior: "smooth",
+        });
+        console.log("Zum nächsten Event gescrollt:", nextEventRow);
+    } else {
+        console.log("Kein zukünftiges Event gefunden.");
+    }
+}
 
     // Excel-Datei laden, sortieren, Tabelle rendern und scrollen
     const rows = await loadExcelFile(excelFileUrl);
