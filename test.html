@@ -23,6 +23,15 @@
     <meta name="theme-color" content="#f9f9f9">
     <title>Techno Raves 2025 (Termine, Events & Locations) - ravebro.de</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        // JSON-LD als <script> in den <head>-Bereich einfügen
+        const script = document.createElement("script");
+        script.type = "application/ld+json";
+        script.textContent = JSON.stringify(eventMarkup, null, 2);
+        head.appendChild(script);
+        });
+    }
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -356,13 +365,40 @@ function scrollToNextEvent() {
         console.log("Kein zukünftiges Event gefunden.");
     }
 }
+        
+function generateSchemaOrgMarkup(rows) {
+    const head = document.querySelector("head");
 
-    // Excel-Datei laden, sortieren, Tabelle rendern und scrollen
+    rows.forEach(row => {
+        if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
+
+        const dateObj = parseExcelDate(row.Datum);
+        if (isNaN(dateObj)) return;
+
+        const eventMarkup = {
+            "@context": "https://schema.org",
+            "@type": "Event",
+            "name": row.Event,
+            "startDate": dateObj.toISOString(),
+            "location": {
+                "@type": "Place",
+                "name": row.Location,
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": row.Stadt,
+                    "addressCountry": "DE"
+                }
+            },
+            "url": row.Link || undefined
+        };
+        
+    // Excel-Datei laden, sortieren, Tabelle rendern, scrollen und schema.org-Markup generieren
     const rows = await loadExcelFile(excelFileUrl);
     const sortedRows = sortRows(rows);
 
     renderTable(sortedRows);
     scrollToNextEvent();
+    generateSchemaOrgMarkup(sortedRows); // Schema.org-Markup generieren
 });
 
     // Kontextmenü und Textauswahl verhindern
