@@ -235,107 +235,131 @@
     </div>
     <script>
 // Automatisch zum nächsten Event scrollen
-function scrollToNextEvent() {
-    const rows = Array.from(document.querySelectorAll('#eventTable tbody tr'));
-    const now = new Date();
-    let nextEventRow = null;
-
-    for (const row of rows) {
-        const dataDate = row.getAttribute('data-date');
-        if (dataDate) {
-            const eventDate = new Date(dataDate);
-            // Vergangene Events am Folgetag um 6:00 Uhr markieren
-            eventDate.setDate(eventDate.getDate() + 1);
-            eventDate.setHours(6, 0, 0, 0);
-
-            if (now <= eventDate) {
-                nextEventRow = row;
-                break; // Nächstes anstehendes Event gefunden
-            }
-        }
-    }
-
-    if (nextEventRow) {
-        const offsetTop = nextEventRow.offsetTop;
-        const tableContainer = document.getElementById('tableContainer');
-        // Scrollen zur nächsten Eventzeile
-        tableContainer.scrollTo({
-            top: offsetTop - tableContainer.offsetTop,
-            behavior: 'smooth',
-        });
-        console.log('Zum nächsten Event gescrollt:', nextEventRow);
-    } else {
-        console.log('Kein zukünftiges Event gefunden.');
-    }
-}
-
-// Tabelle initialisieren und Scrollfunktion nach dem Laden der Tabelle aufrufen
-document.addEventListener('DOMContentLoaded', async function () {
-    const tableBody = document.querySelector('#eventTable tbody');
+// Tabelle initialisieren und Events sortieren, markieren und scrollen
+document.addEventListener("DOMContentLoaded", async function () {
+    const tableBody = document.querySelector("#eventTable tbody");
     const now = new Date();
 
     // Beispiel: Excel-Datei laden (Pfad anpassen)
-    const excelFileUrl = 'events.xlsx';
+    const excelFileUrl = "events.xlsx";
 
     async function loadExcelFile(url) {
         const response = await fetch(url);
         const arrayBuffer = await response.arrayBuffer();
-        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
         return XLSX.utils.sheet_to_json(worksheet);
     }
 
     function parseExcelDate(value) {
-        if (typeof value === 'number') {
+        if (typeof value === "number") {
             const excelEpoch = new Date(Date.UTC(1899, 11, 30));
             return new Date(excelEpoch.getTime() + value * 86400000);
         }
         return new Date(value);
     }
 
-    const rows = await loadExcelFile(excelFileUrl);
+    function sortRows(rows) {
+        return rows.sort((a, b) => {
+            const dateA = new Date(a.Datum);
+            const dateB = new Date(b.Datum);
+            const cityA = a.Stadt?.toLowerCase() || "";
+            const cityB = b.Stadt?.toLowerCase() || "";
+            const eventA = a.Event?.toLowerCase() || "";
+            const eventB = b.Event?.toLowerCase() || "";
 
-    rows.forEach(row => {
-        if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
+            if (dateA - dateB !== 0) return dateA - dateB;
+            if (cityA.localeCompare(cityB) !== 0) return cityA.localeCompare(cityB);
+            return eventA.localeCompare(eventB);
+        });
+    }
 
-        const dateObj = parseExcelDate(row.Datum);
-        if (isNaN(dateObj)) return;
+    function renderTable(rows) {
+        tableBody.innerHTML = ""; // Bestehende Inhalte löschen
 
-        const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
-        const weekday = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }) + '.';
+        rows.forEach(row => {
+            if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
 
-        const tr = document.createElement('tr');
-        tr.setAttribute('data-date', dateObj.toISOString());
+            const dateObj = parseExcelDate(row.Datum);
+            if (isNaN(dateObj)) return;
 
-        const dateTd = document.createElement('td');
-        dateTd.classList.add('date-cell');
-        dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
-        tr.appendChild(dateTd);
+            const formattedDate = `${String(dateObj.getDate()).padStart(2, "0")}.${String(
+                dateObj.getMonth() + 1
+            ).padStart(2, "0")}`;
+            const weekday = dateObj.toLocaleDateString("de-DE", { weekday: "short" }) + ".";
 
-        const eventTd = document.createElement('td');
-        eventTd.innerHTML = `<a href="${row.Link || '#'}" target="_blank">${row.Event}</a>`;
-        tr.appendChild(eventTd);
+            const tr = document.createElement("tr");
+            tr.setAttribute("data-date", dateObj.toISOString());
 
-        const locationTd = document.createElement('td');
-        locationTd.textContent = row.Location;
-        tr.appendChild(locationTd);
+            const dateTd = document.createElement("td");
+            dateTd.classList.add("date-cell");
+            dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+            tr.appendChild(dateTd);
 
-        const cityTd = document.createElement('td');
-        cityTd.textContent = row.Stadt;
-        tr.appendChild(cityTd);
+            const eventTd = document.createElement("td");
+            eventTd.innerHTML = `<a href="${row.Link || "#"}" target="_blank">${row.Event}</a>`;
+            tr.appendChild(eventTd);
 
-        const eventDate = new Date(dateObj);
-        eventDate.setDate(eventDate.getDate() + 1);
-        eventDate.setHours(6, 0, 0, 0);
-        if (now > eventDate) {
-            tr.classList.add('past-event');
+            const locationTd = document.createElement("td");
+            locationTd.textContent = row.Location;
+            tr.appendChild(locationTd);
+
+            const cityTd = document.createElement("td");
+            cityTd.textContent = row.Stadt;
+            tr.appendChild(cityTd);
+
+            // Vergangene Events kennzeichnen
+            const eventDate = new Date(dateObj);
+            eventDate.setDate(eventDate.getDate() + 1);
+            eventDate.setHours(6, 0, 0, 0);
+
+            if (now > eventDate) {
+                tr.classList.add("past-event"); // Event ist vergangen
+            }
+
+            tableBody.appendChild(tr);
+        });
+    }
+
+    function scrollToNextEvent() {
+        const rows = Array.from(document.querySelectorAll("#eventTable tbody tr"));
+        const tableContainer = document.getElementById("tableContainer");
+
+        let nextEventRow = null;
+
+        for (const row of rows) {
+            const dataDate = row.getAttribute("data-date");
+            if (dataDate) {
+                const eventDate = new Date(dataDate);
+                // Vergangene Events am Folgetag um 6:00 Uhr markieren
+                eventDate.setDate(eventDate.getDate() + 1);
+                eventDate.setHours(6, 0, 0, 0);
+
+                if (now <= eventDate) {
+                    nextEventRow = row;
+                    break; // Nächstes anstehendes Event gefunden
+                }
+            }
         }
 
-        tableBody.appendChild(tr);
-    });
+        if (nextEventRow) {
+            const offsetTop = nextEventRow.offsetTop;
+            tableContainer.scrollTo({
+                top: offsetTop - tableContainer.offsetTop,
+                behavior: "smooth",
+            });
+            console.log("Zum nächsten Event gescrollt:", nextEventRow);
+        } else {
+            console.log("Kein zukünftiges Event gefunden.");
+        }
+    }
 
-    // Rufe die Scrollfunktion nach dem Hinzufügen der Daten auf
+    // Excel-Datei laden, sortieren, Tabelle rendern und scrollen
+    const rows = await loadExcelFile(excelFileUrl);
+    const sortedRows = sortRows(rows);
+
+    renderTable(sortedRows);
     scrollToNextEvent();
 });
     </script>
