@@ -204,6 +204,22 @@
         <h1>Techno Raves 2025</h1>
         <h2>Termine, Events & Locations in NRW</h2>
     </div>
+    <div class="menu-icon-container" id="menuIconContainer">
+        <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
+        <div class="menu" id="menu">
+            <a href="#" id="refreshPage">Aktualisieren</a>
+            <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+            <a href="impressum.html">Impressum</a>
+        </div>
+    </div>
+    <div class="search-container">
+        <input 
+            type="text" 
+            id="search" 
+            placeholder="Suche Datum, Event, Location oder Stadt..."
+            onkeyup="searchTable()"
+        >
+    </div>
     <div class="table-container" id="tableContainer">
         <table id="eventTable">
             <thead>
