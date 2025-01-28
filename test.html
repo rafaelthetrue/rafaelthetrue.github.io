@@ -327,22 +327,39 @@
             rows.forEach(row => tableBody.appendChild(row));
         }
     });
-        // Scrollen basierend auf Uhrzeit
-        let scrolled = false;
-        sortedRows.forEach(row => {
-            const dataDate = row.getAttribute('data-date');
-            if (dataDate) {
-                const eventDate = new Date(dataDate);
-                eventDate.setDate(eventDate.getDate() + 1);
-                eventDate.setHours(6, 0, 0, 0);
+// Automatisch zum nächsten Event scrollen
+function scrollToNextEvent() {
+    const rows = Array.from(document.querySelectorAll('#eventTable tbody tr'));
+    const now = new Date();
 
-                if (!scrolled && now <= eventDate) {
-                    const offset = row.offsetTop - document.querySelector('th').offsetHeight;
-                    document.getElementById('tableContainer').scrollTo({ top: offset, behavior: 'smooth' });
-                    scrolled = true;
-                }
+    let nextEventRow = null;
+
+    for (const row of rows) {
+        const dataDate = row.getAttribute('data-date');
+        if (dataDate) {
+            const eventDate = new Date(dataDate);
+            eventDate.setDate(eventDate.getDate() + 1); // Setze auf den Folgetag
+            eventDate.setHours(6, 0, 0, 0); // 6:00 Uhr morgens
+
+            if (now <= eventDate) {
+                nextEventRow = row;
+                break; // Nächstes Event gefunden
             }
+        }
+    }
+
+    if (nextEventRow) {
+        const offsetTop = nextEventRow.offsetTop; // Position des nächsten Events
+        const tableContainer = document.getElementById('tableContainer');
+        tableContainer.scrollTo({
+            top: offsetTop - document.querySelector('th').offsetHeight, // Scrollen mit Berücksichtigung des Tabellenkopfs
+            behavior: 'smooth'
         });
+    }
+}
+
+// Rufe die Funktion nach dem Laden der Tabelle auf
+scrollToNextEvent();
     </script>
 </body>
 </html>
