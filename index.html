@@ -389,16 +389,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     const rows = await loadExcelFile(excelFileUrl);
-    const currentYear = new Date().getFullYear();
+
+const currentYear = new Date().getFullYear();
 const filteredRows = rows.filter(row => {
     const date = parseExcelDate(row.Datum);
-    return date.getFullYear() === currentYear;
+    return date.getFullYear() >= currentYear;
 });
+
 const sortedRows = sortRows(filteredRows);
 
-    renderTable(sortedRows);
-    scrollToNextEvent();
-    generateSchemaOrgMarkup(sortedRows);
+renderTable(sortedRows);
+scrollToNextEvent();
+generateSchemaOrgMarkup(sortedRows);
 });
     // Kontextmenü und Textauswahl verhindern
     document.addEventListener('contextmenu', e => e.preventDefault());
