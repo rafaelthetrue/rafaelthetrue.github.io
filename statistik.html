@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Statistik - ravebro.de" />
   <title>Statistik - ravebro.de</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body {
       max-width: 800px;
@@ -13,50 +12,58 @@
       line-height: 1.6;
       margin: 0 auto;
       padding: 20px;
+      padding-top: 0px;
       background-color: #f9f9f9;
       color: #333;
-    }
-    h1 {
       text-align: center;
+    }
+
+    h1 {
       color: #444;
       margin-top: 15px;
+      margin-bottom: 0px;
       font-size: 24px;
     }
+
     h2 {
       color: #444;
       margin-top: 35px;
+      margin-bottom: 10px;
       font-size: 20px;
     }
+
     table {
-      margin: 15px 0;
+      margin: 0 auto 30px auto;
       border-collapse: collapse;
       width: 100%;
-      max-width: 370px;
-    }
-    th, td {
-      padding: 4px 8px;
+      max-width: 400px;
       text-align: left;
     }
-    .table-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 40px;
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      font-size: 14px;
     }
-    .column {
-      flex: 1;
-      min-width: 320px;
+
+    th {
+      background-color: #f0f0f0;
+      font-weight: bold;
     }
+
     .menu-icon-container {
       margin: 15px auto;
       text-align: center;
       position: relative;
     }
+
     .menu-icon {
       font-size: 24px;
       cursor: pointer;
       display: inline-block;
       color: #333;
     }
+
     .menu {
       position: absolute;
       top: 100%;
@@ -68,6 +75,7 @@
       flex-direction: column;
       z-index: 1000;
     }
+
     .menu a {
       padding: 10px 20px;
       text-decoration: none;
@@ -75,16 +83,31 @@
       border-bottom: 1px solid #ddd;
       text-align: left;
     }
+
     .menu a:last-child {
       border-bottom: none;
     }
+
     .menu a:hover {
       background-color: #f4f4f4;
     }
-    .section-title {
-      font-size: 18px;
-      margin: 20px 0 5px;
-      color: #222;
+
+    @media (max-width: 600px) {
+      body {
+        font-size: 14px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      table {
+        font-size: 13px;
+      }
     }
   </style>
 </head>
@@ -102,139 +125,110 @@
   </div>
 
   <h2>Übersicht</h2>
-  <div class="table-container">
-    <div class="column">
-      <table id="summaryTable">
-        <tr><td>Raves (Jahr gesamt)</td><td id="totalRaves"></td></tr>
-        <tr><td>Davon vergangen</td><td id="pastRaves"></td></tr>
-        <tr><td>Davon bevorstehend</td><td id="upcomingRaves"></td></tr>
-        <tr><td>Ø Raves pro Woche</td><td id="avgPerWeek"></td></tr>
-        <tr><td>Ø Raves pro Monat</td><td id="avgPerMonth"></td></tr>
-      </table>
-    </div>
-    <div class="column">
-      <div class="section-title">Top 10 Städte</div>
-      <table id="topCitiesTable">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Stadt</th>
-            <th>Anzahl</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
+  <table id="summaryTable">
+    <tr><th>Statistik</th><th>Anzahl</th></tr>
+    <tr><td>Raves gesamt (2025)</td><td id="totalRaves">-</td></tr>
+    <tr><td>Vergangene Raves (2025)</td><td id="pastRaves">-</td></tr>
+    <tr><td>Bevorstehende Raves (2025)</td><td id="upcomingRaves">-</td></tr>
+    <tr><td>Durchschnitt Raves pro Woche</td><td id="avgPerWeek">-</td></tr>
+    <tr><td>Durchschnitt Raves pro Monat</td><td id="avgPerMonth">-</td></tr>
+  </table>
 
-  <div class="table-container">
-    <div class="column">
-      <div class="section-title">Top 5 Locations</div>
-      <table id="topLocationsTable">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Location</th>
-            <th>Anzahl</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
+  <h2><strong>Top 10 Städte</strong></h2>
+  <table id="topCities">
+    <thead>
+      <tr><th>Platz</th><th>Stadt</th><th>Anzahl</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
+  <h2><strong>Top 5 Locations</strong></h2>
+  <table id="topLocations">
+    <thead>
+      <tr><th>Platz</th><th>Location</th><th>Anzahl</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script>
-    const menu = document.getElementById('menu');
-    const menuIcon = document.getElementById('menuIcon');
-    menuIcon.addEventListener('click', () => {
-      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-    });
-    document.addEventListener('click', (e) => {
-      if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
-        menu.style.display = 'none';
-      }
-    });
-
-    async function loadExcelFile(url) {
-      const response = await fetch(url);
-      const arrayBuffer = await response.arrayBuffer();
-      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+    async function loadExcelData() {
+      const response = await fetch("events.xlsx");
+      const data = new Uint8Array(await response.arrayBuffer());
+      const workbook = XLSX.read(data, { type: "array" });
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       return XLSX.utils.sheet_to_json(sheet);
     }
 
     function parseExcelDate(value) {
       if (typeof value === "number") {
-        const epoch = new Date(Date.UTC(1899, 11, 30));
-        return new Date(epoch.getTime() + value * 86400000);
+        const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+        return new Date(excelEpoch.getTime() + value * 86400000);
       }
       return new Date(value);
     }
 
-    function countOccurrences(rows, field) {
+    function countByField(data, field, limit) {
       const counts = {};
-      for (const row of rows) {
+      for (const row of data) {
         const key = row[field];
-        if (!key) continue;
-        counts[key] = (counts[key] || 0) + 1;
+        if (key) counts[key] = (counts[key] || 0) + 1;
       }
-      return Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      return Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit);
     }
 
-    async function generateStatistics() {
-      const data = await loadExcelFile("events.xlsx");
+    function fillTable(tableId, entries) {
+      const tbody = document.querySelector(`#${tableId} tbody`);
+      tbody.innerHTML = "";
+      entries.forEach(([name, count], index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${index + 1}.</td><td>${name}</td><td>${count}</td>`;
+        tbody.appendChild(row);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const data = await loadExcelData();
       const now = new Date();
       const currentYear = now.getFullYear();
 
-      const filtered = data.filter(row => {
+      const thisYear = data.filter(row => {
         const date = parseExcelDate(row.Datum);
         return date.getFullYear() === currentYear;
       });
 
-      const past = filtered.filter(row => {
+      const past = thisYear.filter(row => {
         const date = parseExcelDate(row.Datum);
-        date.setDate(date.getDate() + 1);
-        date.setHours(6, 0, 0, 0);
-        return date < now;
+        const end = new Date(date);
+        end.setDate(end.getDate() + 1);
+        end.setHours(6, 0, 0, 0);
+        return now > end;
       });
 
-      const upcoming = filtered.length - past.length;
+      const future = thisYear.length - past.length;
+
       const pastDates = past.map(row => parseExcelDate(row.Datum));
+      const completedMonths = [...new Set(pastDates.map(d => d.getMonth()))].length;
+      const completedWeeks = Math.floor(
+        (Math.max(...pastDates.map(d => d.getTime())) -
+          Math.min(...pastDates.map(d => d.getTime()))) /
+        (1000 * 60 * 60 * 24 * 7)
+      ) + 1;
 
-      const completedMonths = [...new Set(pastDates.map(d => d.getMonth()))];
-      const completedWeeks = [...new Set(pastDates.map(d => {
-        const janFirst = new Date(d.getFullYear(), 0, 1);
-        return Math.floor((d - janFirst) / (7 * 24 * 60 * 60 * 1000));
-      }))];
+      const avgPerMonth = completedMonths > 0 ? Math.round(past.length / completedMonths) : 0;
+      const avgPerWeek = completedWeeks > 0 ? Math.round(past.length / completedWeeks) : 0;
 
-      document.getElementById("totalRaves").textContent = filtered.length;
+      document.getElementById("totalRaves").textContent = thisYear.length;
       document.getElementById("pastRaves").textContent = past.length;
-      document.getElementById("upcomingRaves").textContent = upcoming;
-      document.getElementById("avgPerMonth").textContent = completedMonths.length > 0
-        ? Math.round(past.length / completedMonths.length)
-        : "–";
-      document.getElementById("avgPerWeek").textContent = completedWeeks.length > 0
-        ? Math.round(past.length / completedWeeks.length)
-        : "–";
+      document.getElementById("upcomingRaves").textContent = future;
+      document.getElementById("avgPerMonth").textContent = avgPerMonth;
+      document.getElementById("avgPerWeek").textContent = avgPerWeek;
 
-      const cityStats = countOccurrences(filtered, "Stadt").slice(0, 10);
-      const cityTable = document.querySelector("#topCitiesTable tbody");
-      cityStats.forEach(([city, count], index) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${index + 1}.</td><td>${city}</td><td>${count}</td>`;
-        cityTable.appendChild(tr);
-      });
-
-      const locationStats = countOccurrences(filtered, "Location").slice(0, 5);
-      const locationTable = document.querySelector("#topLocationsTable tbody");
-      locationStats.forEach(([location, count], index) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${index + 1}.</td><td>${location}</td><td>${count}</td>`;
-        locationTable.appendChild(tr);
-      });
-    }
-
-    generateStatistics();
+      fillTable("topCities", countByField(thisYear, "Stadt", 10));
+      fillTable("topLocations", countByField(thisYear, "Location", 5));
+    });
   </script>
 </body>
 </html>
