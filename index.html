@@ -388,16 +388,16 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    const rows = await loadExcelFile(excelFileUrl);
-
+    const allRows = await loadExcelFile(excelFileUrl);
 const currentYear = new Date().getFullYear();
-const filteredRows = rows.filter(row => {
+
+// Nur Events ab dem aktuellen Jahr (einschließlich Zukunft)
+const filteredRows = allRows.filter(row => {
     const date = parseExcelDate(row.Datum);
-    return date.getFullYear() >= currentYear;
+    return !isNaN(date) && date.getFullYear() >= currentYear;
 });
 
 const sortedRows = sortRows(filteredRows);
-
 renderTable(sortedRows);
 scrollToNextEvent();
 generateSchemaOrgMarkup(sortedRows);
