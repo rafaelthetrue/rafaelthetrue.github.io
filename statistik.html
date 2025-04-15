@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Statistik - ravebro.de">
     <title>Statistik - ravebro.de</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body {
             max-width: 800px;
@@ -17,28 +18,19 @@
             color: #333;
             text-align: left;
         }
+        h1, h2 {
+            color: #444;
+        }
         h1 {
             text-align: center;
-            color: #444;
             margin-top: 15px;
             margin-bottom: 0px;
             font-size: 24px;
         }
         h2 {
-            color: #444;
             margin-top: 35px;
-            margin-bottom: 0px;
+            margin-bottom: 10px;
             font-size: 20px;
-        }
-        p {
-            margin: 10px 0;
-        }
-        a {
-            color: #007BFF;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
         }
         .menu-icon-container {
             margin: 15px auto;
@@ -75,52 +67,118 @@
         .menu a:hover {
             background-color: #f4f4f4;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        td, th {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
         @media (max-width: 600px) {
-        body {
-            font-size: 14px; /* Kleinere Schrift für mobile Endgeräte */
-        }
-        h1 {
-            font-size: 22px; /* Kleinere Überschrift */
-        }
-        h2 {
-            font-size: 18px; /* Kleinere Überschrift */
+            body { font-size: 14px; }
+            h1 { font-size: 22px; }
+            h2 { font-size: 18px; }
         }
     </style>
 </head>
 <body>
-    <h1>Statistik</h1>
+<h1>Statistik</h1>
 
-    <div class="menu-icon-container" id="menuIconContainer">
-        <div class="menu-icon" id="menuIcon">☰</div>
-        <div class="menu" id="menu">
-            <a href="index.html">Startseite</a>
-            <a href="statistik.html">Statistik</a>
-            <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
-            <a href="impressum.html">Impressum</a>
-        </div>
+<div class="menu-icon-container" id="menuIconContainer">
+    <div class="menu-icon" id="menuIcon">☰</div>
+    <div class="menu" id="menu">
+        <a href="index.html">Startseite</a>
+        <a href="statistik.html">Statistik</a>
+        <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+        <a href="impressum.html">Impressum</a>
     </div>
+</div>
 
+<h2>Übersicht</h2>
+<table id="summaryTable">
+    <tbody></tbody>
+</table>
 
-    <script>
-        const menu = document.getElementById('menu');
-        const menuIcon = document.getElementById('menuIcon');
+<h2>Top 5 Städte</h2>
+<table id="topCitiesTable">
+    <thead><tr><th>Platz</th><th>Stadt</th><th>Anzahl</th></tr></thead>
+    <tbody></tbody>
+</table>
 
-        menuIcon.addEventListener('click', () => {
-            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-        });
+<script>
+// Menü
+const menu = document.getElementById('menu');
+const menuIcon = document.getElementById('menuIcon');
+menuIcon.addEventListener('click', () => {
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+});
+document.addEventListener('click', (event) => {
+    if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+        menu.style.display = 'none';
+    }
+});
+document.querySelectorAll('.menu a').forEach(link => {
+    link.addEventListener('click', () => menu.style.display = 'none');
+});
 
-        document.addEventListener('click', (event) => {
-            if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
-                menu.style.display = 'none';
-            }
-        });
+// Statistik laden
+async function loadExcelStats() {
+    const response = await fetch("events.xlsx");
+    const arrayBuffer = await response.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer, { type: "array" });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const data = XLSX.utils.sheet_to_json(sheet);
 
-        const menuLinks = document.querySelectorAll('.menu a');
-        menuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                menu.style.display = 'none';
-            });
-        });
-    </script>
+    const now = new Date();
+    const year = now.getFullYear();
+    const past = [];
+    const future = [];
+    const cities = {};
+
+    data.forEach(row => {
+        const date = typeof row.Datum === "number"
+            ? new Date(Date.UTC(1899, 11, 30) + row.Datum * 86400000)
+            : new Date(row.Datum);
+
+        if (isNaN(date)) return;
+        if (date.getFullYear() !== year) return;
+
+        const isPast = new Date(date.getTime()).setDate(date.getDate() + 1) < now;
+        (isPast ? past : future).push(row);
+
+        const city = row.Stadt?.trim();
+        if (city) {
+            cities[city] = (cities[city] || 0) + 1;
+        }
+    });
+
+    const currentMonth = now.getMonth();
+    const avg = Math.round(past.filter(r => new Date(r.Datum).getMonth() < currentMonth).length / currentMonth || 1);
+
+    const summaryTable = document.querySelector("#summaryTable tbody");
+    summaryTable.innerHTML = `
+        <tr><td>Raves (gesamt)</td><td>${past.length + future.length}</td></tr>
+        <tr><td>Vergangene Raves</td><td>${past.length}</td></tr>
+        <tr><td>Bevorstehende Raves</td><td>${future.length}</td></tr>
+        <tr><td>Durchschnitt / Monat</td><td>${avg}</td></tr>
+    `;
+
+    const topCities = Object.entries(cities)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+    const cityTable = document.querySelector("#topCitiesTable tbody");
+    topCities.forEach(([city, count], index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${index + 1}</td><td>${city}</td><td>${count}</td>`;
+        cityTable.appendChild(tr);
+    });
+}
+
+loadExcelStats();
+</script>
 </body>
 </html>
