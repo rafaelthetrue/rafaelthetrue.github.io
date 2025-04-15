@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Statistik - ravebro.de">
     <title>Statistik - ravebro.de</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body {
             max-width: 800px;
@@ -25,15 +24,21 @@
             margin-bottom: 0px;
             font-size: 24px;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 16px;
+        h2 {
+            color: #444;
+            margin-top: 35px;
+            margin-bottom: 0px;
+            font-size: 20px;
         }
-        td {
-            padding: 8px 10px;
-            border: none;
+        p {
+            margin: 10px 0;
+        }
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
         }
         .menu-icon-container {
             margin: 15px auto;
@@ -70,6 +75,37 @@
         .menu a:hover {
             background-color: #f4f4f4;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            margin-top: 30px;
+        }
+        caption {
+            caption-side: top;
+            font-weight: bold;
+            font-size: 20px;
+            text-align: left;
+            margin-bottom: 5px;
+        }
+        th, td {
+            padding: 5px;
+            vertical-align: top;
+        }
+        th {
+            text-align: left;
+        }
+        @media (max-width: 600px) {
+            body {
+                font-size: 14px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            h2 {
+                font-size: 18px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -85,92 +121,26 @@
         </div>
     </div>
 
-    <table id="summaryTable"></table>
-    <table id="cityTable"></table>
+    <table>
+        <caption>Übersicht</caption>
+        <tr><td>Raves gesamt (laufendes Jahr)</td><td>337</td></tr>
+        <tr><td>Vergangene Raves (laufendes Jahr)</td><td>239</td></tr>
+        <tr><td>Bevorstehende Raves (laufendes Jahr)</td><td>98</td></tr>
+        <tr><td>Durchschnittliche Raves pro Woche</td><td>16</td></tr>
+        <tr><td>Durchschnittliche Raves pro Monat</td><td>65</td></tr>
+    </table>
+
+    <table>
+        <caption>Top 5 Städte mit den meisten Raves</caption>
+        <tr><th>Platz</th><th>Stadt</th><th>Anzahl</th></tr>
+        <tr><td>1</td><td>Köln</td><td>86</td></tr>
+        <tr><td>2</td><td>Dortmund</td><td>70</td></tr>
+        <tr><td>3</td><td>Düsseldorf</td><td>36</td></tr>
+        <tr><td>4</td><td>Bochum</td><td>36</td></tr>
+        <tr><td>5</td><td>Essen</td><td>28</td></tr>
+    </table>
 
     <script>
-        async function loadExcelFile(url) {
-            const response = await fetch(url);
-            const arrayBuffer = await response.arrayBuffer();
-            const workbook = XLSX.read(arrayBuffer, { type: "array" });
-            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-            return XLSX.utils.sheet_to_json(worksheet);
-        }
-
-        function parseExcelDate(value) {
-            if (typeof value === "number") {
-                const excelEpoch = new Date(Date.UTC(1899, 11, 30));
-                return new Date(excelEpoch.getTime() + value * 86400000);
-            }
-            return new Date(value);
-        }
-
-        function getStats(rows) {
-            const now = new Date();
-            const year = now.getFullYear();
-            const completedMonths = now.getMonth(); // 0-indexed: Januar = 0
-            const completedWeeks = Math.floor((new Date(year, now.getMonth(), now.getDate()) - new Date(year, 0, 1)) / (7 * 24 * 60 * 60 * 1000));
-            const stats = {
-                total: 0,
-                past: 0,
-                upcoming: 0,
-                monthlyCounts: 0,
-                weeklyCounts: 0,
-                cityCounts: {},
-            };
-
-            for (const row of rows) {
-                if (!row.Datum || !row.Stadt) continue;
-                const date = parseExcelDate(row.Datum);
-                if (isNaN(date) || date.getFullYear() !== year) continue;
-
-                stats.total++;
-
-                const checkDate = new Date(date);
-                checkDate.setDate(checkDate.getDate() + 1);
-                checkDate.setHours(6, 0, 0, 0);
-
-                if (now > checkDate) stats.past++;
-                else stats.upcoming++;
-
-                const city = row.Stadt.trim().toLowerCase();
-                stats.cityCounts[city] = (stats.cityCounts[city] || 0) + 1;
-            }
-
-            stats.monthlyCounts = completedMonths > 0 ? Math.round(stats.past / completedMonths) : 0;
-            stats.weeklyCounts = completedWeeks > 0 ? Math.round(stats.past / completedWeeks) : 0;
-            return stats;
-        }
-
-        function renderTables(stats) {
-            const summaryTable = document.getElementById("summaryTable");
-            summaryTable.innerHTML = `
-                <tr><td>Raves gesamt (2025):</td><td>${stats.total}</td></tr>
-                <tr><td>Vergangene Raves:</td><td>${stats.past}</td></tr>
-                <tr><td>Bevorstehende Raves:</td><td>${stats.upcoming}</td></tr>
-                <tr><td>Durchschnittliche Raves pro Monat:</td><td>${stats.monthlyCounts}</td></tr>
-                <tr><td>Durchschnittliche Raves pro Woche:</td><td>${stats.weeklyCounts}</td></tr>
-            `;
-
-            const cityTable = document.getElementById("cityTable");
-            const topCities = Object.entries(stats.cityCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
-
-            cityTable.innerHTML = `<tr><td colspan="2"><strong>Top 5 Städte mit den meisten Raves</strong></td></tr>`;
-            topCities.forEach(([city, count]) => {
-                cityTable.innerHTML += `<tr><td>${city.charAt(0).toUpperCase() + city.slice(1)}</td><td>${count}</td></tr>`;
-            });
-        }
-
-        async function main() {
-            const rows = await loadExcelFile("events.xlsx");
-            const stats = getStats(rows);
-            renderTables(stats);
-        }
-
-        main();
-
         const menu = document.getElementById('menu');
         const menuIcon = document.getElementById('menuIcon');
 
