@@ -31,7 +31,7 @@
             margin: 15px 0;
             border-collapse: collapse;
             width: 100%;
-            max-width: 350px;
+            max-width: 370px;
         }
         th, td {
             padding: 4px 8px;
@@ -109,7 +109,13 @@
         </div>
         <div class="column">
             <table id="topCitiesTable">
-                <thead><tr><th colspan="2">Top 10 Städte</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Stadt</th>
+                        <th>Anzahl</th>
+                    </tr>
+                </thead>
                 <tbody></tbody>
             </table>
         </div>
@@ -118,7 +124,13 @@
     <div class="table-container">
         <div class="column">
             <table id="topLocationsTable">
-                <thead><tr><th colspan="2">Top 5 Locations</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Location</th>
+                        <th>Anzahl</th>
+                    </tr>
+                </thead>
                 <tbody></tbody>
             </table>
         </div>
@@ -200,17 +212,17 @@
 
             const cityStats = countOccurrences(filtered, "Stadt").slice(0, 10);
             const cityTable = document.querySelector("#topCitiesTable tbody");
-            cityStats.forEach(([city, count]) => {
+            cityStats.forEach(([city, count], index) => {
                 const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${city}</td><td>${count}</td>`;
+                tr.innerHTML = `<td>${index + 1}.</td><td>${city}</td><td>${count}</td>`;
                 cityTable.appendChild(tr);
             });
 
             const locationStats = countOccurrences(filtered, "Location").slice(0, 5);
             const locationTable = document.querySelector("#topLocationsTable tbody");
-            locationStats.forEach(([location, count]) => {
+            locationStats.forEach(([location, count], index) => {
                 const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${location}</td><td>${count}</td>`;
+                tr.innerHTML = `<td>${index + 1}.</td><td>${location}</td><td>${count}</td>`;
                 locationTable.appendChild(tr);
             });
         }
