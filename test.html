@@ -208,6 +208,7 @@
         <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
         <div class="menu" id="menu">
             <a href="#" id="refreshPage">Aktualisieren</a>
+            <a href="statistik.html">Statistik</a>
             <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
             <a href="impressum.html">Impressum</a>
         </div>
@@ -225,7 +226,7 @@
             <thead>
                 <tr>
                     <th>Datum</th>
-                    <th>Event</th>
+                    <th>Event (Link)</th>
                     <th>Location</th>
                     <th>Stadt</th>
                 </tr>
@@ -273,7 +274,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    function renderTable(rows) {
+function renderTable(rows) {
         tableBody.innerHTML = ""; // Bestehende Inhalte löschen
 
         rows.forEach(row => {
@@ -387,12 +388,19 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    const rows = await loadExcelFile(excelFileUrl);
-    const sortedRows = sortRows(rows);
+    const allRows = await loadExcelFile(excelFileUrl);
+const currentYear = new Date().getFullYear();
 
-    renderTable(sortedRows);
-    scrollToNextEvent();
-    generateSchemaOrgMarkup(sortedRows);
+// Nur Events ab dem aktuellen Jahr (einschließlich Zukunft)
+const filteredRows = allRows.filter(row => {
+    const date = parseExcelDate(row.Datum);
+    return !isNaN(date) && date.getFullYear() >= currentYear;
+});
+
+const sortedRows = sortRows(filteredRows);
+renderTable(sortedRows);
+scrollToNextEvent();
+generateSchemaOrgMarkup(sortedRows);
 });
     // Kontextmenü und Textauswahl verhindern
     document.addEventListener('contextmenu', e => e.preventDefault());
