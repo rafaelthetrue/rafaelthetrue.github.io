@@ -389,7 +389,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     const rows = await loadExcelFile(excelFileUrl);
-    const sortedRows = sortRows(rows);
+    const currentYear = new Date().getFullYear();
+const filteredRows = rows.filter(row => {
+    const date = parseExcelDate(row.Datum);
+    return date.getFullYear() === currentYear;
+});
+const sortedRows = sortRows(filteredRows);
 
     renderTable(sortedRows);
     scrollToNextEvent();
