@@ -275,51 +275,56 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
 function renderTable(rows) {
-        tableBody.innerHTML = ""; // Bestehende Inhalte löschen
+    tableBody.innerHTML = ""; // Bestehende Inhalte löschen
+    const now = new Date();
+    const currentYear = now.getFullYear(); // Laufendes Jahr
 
-        rows.forEach(row => {
-            if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
+    rows.forEach(row => {
+        if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
 
-            const dateObj = parseExcelDate(row.Datum);
-            if (isNaN(dateObj)) return;
+        const dateObj = parseExcelDate(row.Datum);
+        if (isNaN(dateObj)) return;
 
-            const formattedDate = `${String(dateObj.getDate()).padStart(2, "0")}.${String(
-                dateObj.getMonth() + 1
-            ).padStart(2, "0")}`;
-            const weekday = dateObj.toLocaleDateString("de-DE", { weekday: "short" }) + ".";
+        // Nur Events ab dem laufenden Jahr anzeigen
+        if (dateObj.getFullYear() < currentYear) return;
 
-            const tr = document.createElement("tr");
-            tr.setAttribute("data-date", dateObj.toISOString());
+        const formattedDate = `${String(dateObj.getDate()).padStart(2, "0")}.${String(
+            dateObj.getMonth() + 1
+        ).padStart(2, "0")}`;
+        const weekday = dateObj.toLocaleDateString("de-DE", { weekday: "short" }) + ".";
 
-            const dateTd = document.createElement("td");
-            dateTd.classList.add("date-cell");
-            dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
-            tr.appendChild(dateTd);
+        const tr = document.createElement("tr");
+        tr.setAttribute("data-date", dateObj.toISOString());
 
-            const eventTd = document.createElement("td");
-            eventTd.innerHTML = `<a href="${row.Link || "#"}" target="_blank">${row.Event}</a>`;
-            tr.appendChild(eventTd);
+        const dateTd = document.createElement("td");
+        dateTd.classList.add("date-cell");
+        dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+        tr.appendChild(dateTd);
 
-            const locationTd = document.createElement("td");
-            locationTd.textContent = row.Location;
-            tr.appendChild(locationTd);
+        const eventTd = document.createElement("td");
+        eventTd.innerHTML = `<a href="${row.Link || "#"}" target="_blank">${row.Event}</a>`;
+        tr.appendChild(eventTd);
 
-            const cityTd = document.createElement("td");
-            cityTd.textContent = row.Stadt;
-            tr.appendChild(cityTd);
+        const locationTd = document.createElement("td");
+        locationTd.textContent = row.Location;
+        tr.appendChild(locationTd);
 
-            // Vergangene Events kennzeichnen
-            const eventDate = new Date(dateObj);
-            eventDate.setDate(eventDate.getDate() + 1);
-            eventDate.setHours(6, 0, 0, 0);
+        const cityTd = document.createElement("td");
+        cityTd.textContent = row.Stadt;
+        tr.appendChild(cityTd);
 
-            if (now > eventDate) {
-                tr.classList.add("past-event");
-            }
+        // Vergangene Events kennzeichnen
+        const eventDate = new Date(dateObj);
+        eventDate.setDate(eventDate.getDate() + 1);
+        eventDate.setHours(6, 0, 0, 0);
 
-            tableBody.appendChild(tr);
-        });
-    }
+        if (now > eventDate) {
+            tr.classList.add("past-event");
+        }
+
+        tableBody.appendChild(tr);
+    });
+}
 
     function scrollToNextEvent() {
         const rows = Array.from(document.querySelectorAll("#eventTable tbody tr"));
