@@ -1,233 +1,240 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Statistik - ravebro.de" />
-    <title>Statistik - ravebro.de</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <style>
-        body {
-            max-width: 800px;
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-            color: #333;
-        }
-        h1 {
-            text-align: center;
-            color: #444;
-            margin-top: 15px;
-            font-size: 24px;
-        }
-        h2 {
-            color: #444;
-            margin-top: 35px;
-            font-size: 20px;
-        }
-        table {
-            margin: 15px 0;
-            border-collapse: collapse;
-            width: 100%;
-            max-width: 370px;
-        }
-        th, td {
-            padding: 4px 8px;
-            text-align: left;
-        }
-        .table-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-        }
-        .column {
-            flex: 1;
-            min-width: 320px;
-        }
-        .menu-icon-container {
-            margin: 15px auto;
-            text-align: center;
-            position: relative;
-        }
-        .menu-icon {
-            font-size: 24px;
-            cursor: pointer;
-            display: inline-block;
-            color: #333;
-        }
-        .menu {
-            position: absolute;
-            top: 100%;
-            right: 50%;
-            background-color: white;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: none;
-            flex-direction: column;
-            z-index: 1000;
-        }
-        .menu a {
-            padding: 10px 20px;
-            text-decoration: none;
-            color: #333;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-        .menu a:last-child {
-            border-bottom: none;
-        }
-        .menu a:hover {
-            background-color: #f4f4f4;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Statistik - ravebro.de" />
+  <title>Statistik - ravebro.de</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body {
+      max-width: 800px;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #444;
+      margin-top: 15px;
+      font-size: 24px;
+    }
+    h2 {
+      color: #444;
+      margin-top: 35px;
+      font-size: 20px;
+    }
+    table {
+      margin: 15px 0;
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 370px;
+    }
+    th, td {
+      padding: 4px 8px;
+      text-align: left;
+    }
+    .table-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+    .column {
+      flex: 1;
+      min-width: 320px;
+    }
+    .menu-icon-container {
+      margin: 15px auto;
+      text-align: center;
+      position: relative;
+    }
+    .menu-icon {
+      font-size: 24px;
+      cursor: pointer;
+      display: inline-block;
+      color: #333;
+    }
+    .menu {
+      position: absolute;
+      top: 100%;
+      right: 50%;
+      background-color: white;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+    }
+    .menu a {
+      padding: 10px 20px;
+      text-decoration: none;
+      color: #333;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    .menu a:last-child {
+      border-bottom: none;
+    }
+    .menu a:hover {
+      background-color: #f4f4f4;
+    }
+    .section-title {
+      font-size: 18px;
+      margin: 20px 0 5px;
+      color: #222;
+    }
+  </style>
 </head>
 <body>
-    <h1>Statistik</h1>
+  <h1>Statistik</h1>
 
-    <div class="menu-icon-container" id="menuIconContainer">
-        <div class="menu-icon" id="menuIcon">☰</div>
-        <div class="menu" id="menu">
-            <a href="index.html">Startseite</a>
-            <a href="statistik.html">Statistik</a>
-            <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
-            <a href="impressum.html">Impressum</a>
-        </div>
+  <div class="menu-icon-container" id="menuIconContainer">
+    <div class="menu-icon" id="menuIcon">☰</div>
+    <div class="menu" id="menu">
+      <a href="index.html">Startseite</a>
+      <a href="statistik.html">Statistik</a>
+      <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+      <a href="impressum.html">Impressum</a>
     </div>
+  </div>
 
-    <h2>Übersicht</h2>
-    <div class="table-container">
-        <div class="column">
-            <table id="summaryTable">
-                <tr><td>Raves (Jahr gesamt)</td><td id="totalRaves"></td></tr>
-                <tr><td>Davon vergangen</td><td id="pastRaves"></td></tr>
-                <tr><td>Davon bevorstehend</td><td id="upcomingRaves"></td></tr>
-                <tr><td>Ø Raves pro Woche</td><td id="avgPerWeek"></td></tr>
-                <tr><td>Ø Raves pro Monat</td><td id="avgPerMonth"></td></tr>
-            </table>
-        </div>
-        <div class="column">
-            <table id="topCitiesTable">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Stadt</th>
-                        <th>Anzahl</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+  <h2>Übersicht</h2>
+  <div class="table-container">
+    <div class="column">
+      <table id="summaryTable">
+        <tr><td>Raves (Jahr gesamt)</td><td id="totalRaves"></td></tr>
+        <tr><td>Davon vergangen</td><td id="pastRaves"></td></tr>
+        <tr><td>Davon bevorstehend</td><td id="upcomingRaves"></td></tr>
+        <tr><td>Ø Raves pro Woche</td><td id="avgPerWeek"></td></tr>
+        <tr><td>Ø Raves pro Monat</td><td id="avgPerMonth"></td></tr>
+      </table>
     </div>
-
-    <div class="table-container">
-        <div class="column">
-            <table id="topLocationsTable">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Location</th>
-                        <th>Anzahl</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+    <div class="column">
+      <div class="section-title">Top 10 Städte</div>
+      <table id="topCitiesTable">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Stadt</th>
+            <th>Anzahl</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
+  </div>
 
-    <script>
-        const menu = document.getElementById('menu');
-        const menuIcon = document.getElementById('menuIcon');
-        menuIcon.addEventListener('click', () => {
-            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-        });
-        document.addEventListener('click', (e) => {
-            if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
-                menu.style.display = 'none';
-            }
-        });
+  <div class="table-container">
+    <div class="column">
+      <div class="section-title">Top 5 Locations</div>
+      <table id="topLocationsTable">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Location</th>
+            <th>Anzahl</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
 
-        async function loadExcelFile(url) {
-            const response = await fetch(url);
-            const arrayBuffer = await response.arrayBuffer();
-            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-            const sheet = workbook.Sheets[workbook.SheetNames[0]];
-            return XLSX.utils.sheet_to_json(sheet);
-        }
+  <script>
+    const menu = document.getElementById('menu');
+    const menuIcon = document.getElementById('menuIcon');
+    menuIcon.addEventListener('click', () => {
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    });
+    document.addEventListener('click', (e) => {
+      if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
 
-        function parseExcelDate(value) {
-            if (typeof value === "number") {
-                const epoch = new Date(Date.UTC(1899, 11, 30));
-                return new Date(epoch.getTime() + value * 86400000);
-            }
-            return new Date(value);
-        }
+    async function loadExcelFile(url) {
+      const response = await fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      return XLSX.utils.sheet_to_json(sheet);
+    }
 
-        function countOccurrences(rows, field) {
-            const counts = {};
-            for (const row of rows) {
-                const key = row[field];
-                if (!key) continue;
-                counts[key] = (counts[key] || 0) + 1;
-            }
-            return Object.entries(counts).sort((a, b) => b[1] - a[1]);
-        }
+    function parseExcelDate(value) {
+      if (typeof value === "number") {
+        const epoch = new Date(Date.UTC(1899, 11, 30));
+        return new Date(epoch.getTime() + value * 86400000);
+      }
+      return new Date(value);
+    }
 
-        async function generateStatistics() {
-            const data = await loadExcelFile("events.xlsx");
-            const now = new Date();
-            const currentYear = now.getFullYear();
+    function countOccurrences(rows, field) {
+      const counts = {};
+      for (const row of rows) {
+        const key = row[field];
+        if (!key) continue;
+        counts[key] = (counts[key] || 0) + 1;
+      }
+      return Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    }
 
-            const filtered = data.filter(row => {
-                const date = parseExcelDate(row.Datum);
-                return date.getFullYear() === currentYear;
-            });
+    async function generateStatistics() {
+      const data = await loadExcelFile("events.xlsx");
+      const now = new Date();
+      const currentYear = now.getFullYear();
 
-            const past = filtered.filter(row => {
-                const date = parseExcelDate(row.Datum);
-                date.setDate(date.getDate() + 1);
-                date.setHours(6, 0, 0, 0);
-                return date < now;
-            });
+      const filtered = data.filter(row => {
+        const date = parseExcelDate(row.Datum);
+        return date.getFullYear() === currentYear;
+      });
 
-            const upcoming = filtered.length - past.length;
-            const pastDates = past.map(row => parseExcelDate(row.Datum));
+      const past = filtered.filter(row => {
+        const date = parseExcelDate(row.Datum);
+        date.setDate(date.getDate() + 1);
+        date.setHours(6, 0, 0, 0);
+        return date < now;
+      });
 
-            const completedMonths = [...new Set(pastDates.map(d => d.getMonth()))];
-            const completedWeeks = [...new Set(pastDates.map(d => {
-                const janFirst = new Date(d.getFullYear(), 0, 1);
-                return Math.floor((d - janFirst) / (7 * 24 * 60 * 60 * 1000));
-            }))];
+      const upcoming = filtered.length - past.length;
+      const pastDates = past.map(row => parseExcelDate(row.Datum));
 
-            document.getElementById("totalRaves").textContent = filtered.length;
-            document.getElementById("pastRaves").textContent = past.length;
-            document.getElementById("upcomingRaves").textContent = upcoming;
-            document.getElementById("avgPerMonth").textContent = completedMonths.length > 0
-                ? Math.round(past.length / completedMonths.length)
-                : "–";
-            document.getElementById("avgPerWeek").textContent = completedWeeks.length > 0
-                ? Math.round(past.length / completedWeeks.length)
-                : "–";
+      const completedMonths = [...new Set(pastDates.map(d => d.getMonth()))];
+      const completedWeeks = [...new Set(pastDates.map(d => {
+        const janFirst = new Date(d.getFullYear(), 0, 1);
+        return Math.floor((d - janFirst) / (7 * 24 * 60 * 60 * 1000));
+      }))];
 
-            const cityStats = countOccurrences(filtered, "Stadt").slice(0, 10);
-            const cityTable = document.querySelector("#topCitiesTable tbody");
-            cityStats.forEach(([city, count], index) => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${index + 1}.</td><td>${city}</td><td>${count}</td>`;
-                cityTable.appendChild(tr);
-            });
+      document.getElementById("totalRaves").textContent = filtered.length;
+      document.getElementById("pastRaves").textContent = past.length;
+      document.getElementById("upcomingRaves").textContent = upcoming;
+      document.getElementById("avgPerMonth").textContent = completedMonths.length > 0
+        ? Math.round(past.length / completedMonths.length)
+        : "–";
+      document.getElementById("avgPerWeek").textContent = completedWeeks.length > 0
+        ? Math.round(past.length / completedWeeks.length)
+        : "–";
 
-            const locationStats = countOccurrences(filtered, "Location").slice(0, 5);
-            const locationTable = document.querySelector("#topLocationsTable tbody");
-            locationStats.forEach(([location, count], index) => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${index + 1}.</td><td>${location}</td><td>${count}</td>`;
-                locationTable.appendChild(tr);
-            });
-        }
+      const cityStats = countOccurrences(filtered, "Stadt").slice(0, 10);
+      const cityTable = document.querySelector("#topCitiesTable tbody");
+      cityStats.forEach(([city, count], index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${index + 1}.</td><td>${city}</td><td>${count}</td>`;
+        cityTable.appendChild(tr);
+      });
 
-        generateStatistics();
-    </script>
+      const locationStats = countOccurrences(filtered, "Location").slice(0, 5);
+      const locationTable = document.querySelector("#topLocationsTable tbody");
+      locationStats.forEach(([location, count], index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${index + 1}.</td><td>${location}</td><td>${count}</td>`;
+        locationTable.appendChild(tr);
+      });
+    }
+
+    generateStatistics();
+  </script>
 </body>
 </html>
