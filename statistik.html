@@ -18,19 +18,22 @@
             color: #333;
             text-align: left;
         }
-        h1, h2 {
-            color: #444;
-        }
         h1 {
             text-align: center;
+            color: #444;
             margin-top: 15px;
             margin-bottom: 0px;
             font-size: 24px;
         }
-        h2 {
-            margin-top: 35px;
-            margin-bottom: 10px;
-            font-size: 20px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        td {
+            padding: 8px 10px;
+            border: none;
         }
         .menu-icon-container {
             margin: 15px auto;
@@ -67,118 +70,126 @@
         .menu a:hover {
             background-color: #f4f4f4;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        td, th {
-            text-align: left;
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-        }
-        @media (max-width: 600px) {
-            body { font-size: 14px; }
-            h1 { font-size: 22px; }
-            h2 { font-size: 18px; }
-        }
     </style>
 </head>
 <body>
-<h1>Statistik</h1>
+    <h1>Statistik</h1>
 
-<div class="menu-icon-container" id="menuIconContainer">
-    <div class="menu-icon" id="menuIcon">☰</div>
-    <div class="menu" id="menu">
-        <a href="index.html">Startseite</a>
-        <a href="statistik.html">Statistik</a>
-        <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
-        <a href="impressum.html">Impressum</a>
+    <div class="menu-icon-container" id="menuIconContainer">
+        <div class="menu-icon" id="menuIcon">☰</div>
+        <div class="menu" id="menu">
+            <a href="index.html">Startseite</a>
+            <a href="statistik.html">Statistik</a>
+            <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+            <a href="impressum.html">Impressum</a>
+        </div>
     </div>
-</div>
 
-<h2>Übersicht</h2>
-<table id="summaryTable">
-    <tbody></tbody>
-</table>
+    <table id="summaryTable"></table>
+    <table id="cityTable"></table>
 
-<h2>Top 5 Städte</h2>
-<table id="topCitiesTable">
-    <thead><tr><th>Platz</th><th>Stadt</th><th>Anzahl</th></tr></thead>
-    <tbody></tbody>
-</table>
-
-<script>
-// Menü
-const menu = document.getElementById('menu');
-const menuIcon = document.getElementById('menuIcon');
-menuIcon.addEventListener('click', () => {
-    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-});
-document.addEventListener('click', (event) => {
-    if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
-        menu.style.display = 'none';
-    }
-});
-document.querySelectorAll('.menu a').forEach(link => {
-    link.addEventListener('click', () => menu.style.display = 'none');
-});
-
-// Statistik laden
-async function loadExcelStats() {
-    const response = await fetch("events.xlsx");
-    const arrayBuffer = await response.arrayBuffer();
-    const workbook = XLSX.read(arrayBuffer, { type: "array" });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = XLSX.utils.sheet_to_json(sheet);
-
-    const now = new Date();
-    const year = now.getFullYear();
-    const past = [];
-    const future = [];
-    const cities = {};
-
-    data.forEach(row => {
-        const date = typeof row.Datum === "number"
-            ? new Date(Date.UTC(1899, 11, 30) + row.Datum * 86400000)
-            : new Date(row.Datum);
-
-        if (isNaN(date)) return;
-        if (date.getFullYear() !== year) return;
-
-        const isPast = new Date(date.getTime()).setDate(date.getDate() + 1) < now;
-        (isPast ? past : future).push(row);
-
-        const city = row.Stadt?.trim();
-        if (city) {
-            cities[city] = (cities[city] || 0) + 1;
+    <script>
+        async function loadExcelFile(url) {
+            const response = await fetch(url);
+            const arrayBuffer = await response.arrayBuffer();
+            const workbook = XLSX.read(arrayBuffer, { type: "array" });
+            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+            return XLSX.utils.sheet_to_json(worksheet);
         }
-    });
 
-    const currentMonth = now.getMonth();
-    const avg = Math.round(past.filter(r => new Date(r.Datum).getMonth() < currentMonth).length / currentMonth || 1);
+        function parseExcelDate(value) {
+            if (typeof value === "number") {
+                const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+                return new Date(excelEpoch.getTime() + value * 86400000);
+            }
+            return new Date(value);
+        }
 
-    const summaryTable = document.querySelector("#summaryTable tbody");
-    summaryTable.innerHTML = `
-        <tr><td>Raves (gesamt)</td><td>${past.length + future.length}</td></tr>
-        <tr><td>Vergangene Raves</td><td>${past.length}</td></tr>
-        <tr><td>Bevorstehende Raves</td><td>${future.length}</td></tr>
-        <tr><td>Durchschnitt / Monat</td><td>${avg}</td></tr>
-    `;
+        function getStats(rows) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const completedMonths = now.getMonth(); // 0-indexed: Januar = 0
+            const completedWeeks = Math.floor((new Date(year, now.getMonth(), now.getDate()) - new Date(year, 0, 1)) / (7 * 24 * 60 * 60 * 1000));
+            const stats = {
+                total: 0,
+                past: 0,
+                upcoming: 0,
+                monthlyCounts: 0,
+                weeklyCounts: 0,
+                cityCounts: {},
+            };
 
-    const topCities = Object.entries(cities)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5);
+            for (const row of rows) {
+                if (!row.Datum || !row.Stadt) continue;
+                const date = parseExcelDate(row.Datum);
+                if (isNaN(date) || date.getFullYear() !== year) continue;
 
-    const cityTable = document.querySelector("#topCitiesTable tbody");
-    topCities.forEach(([city, count], index) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${index + 1}</td><td>${city}</td><td>${count}</td>`;
-        cityTable.appendChild(tr);
-    });
-}
+                stats.total++;
 
-loadExcelStats();
-</script>
+                const checkDate = new Date(date);
+                checkDate.setDate(checkDate.getDate() + 1);
+                checkDate.setHours(6, 0, 0, 0);
+
+                if (now > checkDate) stats.past++;
+                else stats.upcoming++;
+
+                const city = row.Stadt.trim().toLowerCase();
+                stats.cityCounts[city] = (stats.cityCounts[city] || 0) + 1;
+            }
+
+            stats.monthlyCounts = completedMonths > 0 ? Math.round(stats.past / completedMonths) : 0;
+            stats.weeklyCounts = completedWeeks > 0 ? Math.round(stats.past / completedWeeks) : 0;
+            return stats;
+        }
+
+        function renderTables(stats) {
+            const summaryTable = document.getElementById("summaryTable");
+            summaryTable.innerHTML = `
+                <tr><td>Raves gesamt (2025):</td><td>${stats.total}</td></tr>
+                <tr><td>Vergangene Raves:</td><td>${stats.past}</td></tr>
+                <tr><td>Bevorstehende Raves:</td><td>${stats.upcoming}</td></tr>
+                <tr><td>Durchschnittliche Raves pro Monat:</td><td>${stats.monthlyCounts}</td></tr>
+                <tr><td>Durchschnittliche Raves pro Woche:</td><td>${stats.weeklyCounts}</td></tr>
+            `;
+
+            const cityTable = document.getElementById("cityTable");
+            const topCities = Object.entries(stats.cityCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            cityTable.innerHTML = `<tr><td colspan="2"><strong>Top 5 Städte mit den meisten Raves</strong></td></tr>`;
+            topCities.forEach(([city, count]) => {
+                cityTable.innerHTML += `<tr><td>${city.charAt(0).toUpperCase() + city.slice(1)}</td><td>${count}</td></tr>`;
+            });
+        }
+
+        async function main() {
+            const rows = await loadExcelFile("events.xlsx");
+            const stats = getStats(rows);
+            renderTables(stats);
+        }
+
+        main();
+
+        const menu = document.getElementById('menu');
+        const menuIcon = document.getElementById('menuIcon');
+
+        menuIcon.addEventListener('click', () => {
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+                menu.style.display = 'none';
+            }
+        });
+
+        const menuLinks = document.querySelectorAll('.menu a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.style.display = 'none';
+            });
+        });
+    </script>
 </body>
 </html>
