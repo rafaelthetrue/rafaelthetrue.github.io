@@ -190,45 +190,50 @@
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
-      const data = await loadExcelData();
-      const now = new Date();
-      const currentYear = now.getFullYear();
+  const data = await loadExcelData();
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth(); // Achtung: Januar = 0
 
-      const thisYear = data.filter(row => {
-        const date = parseExcelDate(row.Datum);
-        return date.getFullYear() === currentYear;
-      });
+  // Nur Events dieses Jahres
+  const thisYear = data.filter(row => {
+    const date = parseExcelDate(row.Datum);
+    return date.getFullYear() === currentYear;
+  });
 
-      const past = thisYear.filter(row => {
-        const date = parseExcelDate(row.Datum);
-        const end = new Date(date);
-        end.setDate(end.getDate() + 1);
-        end.setHours(6, 0, 0, 0);
-        return now > end;
-      });
+  // Vergangene Events bis jetzt (Stichtag 6 Uhr am Folgetag)
+  const past = thisYear.filter(row => {
+    const date = parseExcelDate(row.Datum);
+    const end = new Date(date);
+    end.setDate(end.getDate() + 1);
+    end.setHours(6, 0, 0, 0);
+    return now > end;
+  });
 
-      const future = thisYear.length - past.length;
+  // Bevorstehende Events = Rest
+  const future = thisYear.length - past.length;
 
-      const pastDates = past.map(row => parseExcelDate(row.Datum));
-      const completedMonths = [...new Set(pastDates.map(d => d.getMonth()))].length;
-      const completedWeeks = Math.floor(
-        (Math.max(...pastDates.map(d => d.getTime())) -
-          Math.min(...pastDates.map(d => d.getTime()))) /
-        (1000 * 60 * 60 * 24 * 7)
-      ) + 1;
+  // Abgeschlossene Monate: z. B. April → 3 (Jan, Feb, März)
+  const completedMonths = currentMonth;
+  const avgPerMonth = completedMonths > 0 ? Math.round(past.length / completedMonths) : 0;
 
-      const avgPerMonth = completedMonths > 0 ? Math.round(past.length / completedMonths) : 0;
-      const avgPerWeek = completedWeeks > 0 ? Math.round(past.length / completedWeeks) : 0;
+  // Abgeschlossene Wochen seit Jahresbeginn
+  const startOfYear = new Date(currentYear, 0, 1);
+  const diffInDays = (now - startOfYear) / (1000 * 60 * 60 * 24);
+  const completedWeeks = Math.floor(diffInDays / 7);
+  const avgPerWeek = completedWeeks > 0 ? Math.round(past.length / completedWeeks) : 0;
 
-      document.getElementById("totalRaves").textContent = thisYear.length;
-      document.getElementById("pastRaves").textContent = past.length;
-      document.getElementById("upcomingRaves").textContent = future;
-      document.getElementById("avgPerMonth").textContent = avgPerMonth;
-      document.getElementById("avgPerWeek").textContent = avgPerWeek;
+  // Werte in die Tabelle einsetzen
+  document.getElementById("totalRaves").textContent = thisYear.length;
+  document.getElementById("pastRaves").textContent = past.length;
+  document.getElementById("upcomingRaves").textContent = future;
+  document.getElementById("avgPerMonth").textContent = avgPerMonth;
+  document.getElementById("avgPerWeek").textContent = avgPerWeek;
 
-      fillTable("topCities", countByField(thisYear, "Stadt", 10));
-      fillTable("topLocations", countByField(thisYear, "Location", 5));
-    });
+  // Top Städte & Locations
+  fillTable("topCities", countByField(thisYear, "Stadt", 10));
+  fillTable("topLocations", countByField(thisYear, "Location", 5));
+});
             const menu = document.getElementById('menu');
         const menuIcon = document.getElementById('menuIcon');
 
