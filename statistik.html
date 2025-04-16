@@ -133,128 +133,157 @@
     <tbody></tbody>
   </table>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script>
-    async function loadExcelData() {
-      const response = await fetch("events.xlsx");
-      const data = new Uint8Array(await response.arrayBuffer());
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      return XLSX.utils.sheet_to_json(sheet);
-    }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+  async function loadExcelData() {
+    const response = await fetch("events.xlsx");
+    const data = new Uint8Array(await response.arrayBuffer());
+    const workbook = XLSX.read(data, { type: "array" });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    return XLSX.utils.sheet_to_json(sheet);
+  }
 
-    function parseExcelDate(value) {
-      if (typeof value === "number") {
-        const excelEpoch = new Date(Date.UTC(1899, 11, 30));
-        return new Date(excelEpoch.getTime() + value * 86400000);
+  function parseExcelDate(value) {
+    if (typeof value === "number") {
+      const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+      return new Date(excelEpoch.getTime() + value * 86400000);
+    }
+    return new Date(value);
+  }
+
+  function cleanLocationName(name) {
+    return name
+      .replace(/\bclub\b/gi, "") // „Club“ als eigenes Wort
+      .replace(/club[-+]/gi, "") // „Club-“ oder „Club+“
+      .replace(/[-+]?club$/i, "") // am Ende des Namens
+      .replace(/\s+/g, " ") // doppelte Leerzeichen
+      .trim();
+  }
+
+  function extractLocations(locationStr) {
+    if (!locationStr || /check event link/i.test(locationStr)) return [];
+    return locationStr
+      .split(/\s*(?:,|\+|&| und )\s*/i)
+      .map(loc => cleanLocationName(loc))
+      .filter(Boolean);
+  }
+
+  function countByField(data, field, limit, isLocation = false) {
+    const counts = {};
+    for (const row of data) {
+      const values = isLocation
+        ? extractLocations(row[field])
+        : [row[field]?.trim()];
+      for (const val of values) {
+        if (!val) continue;
+        counts[val] = (counts[val] || 0) + 1;
       }
-      return new Date(value);
     }
 
-    function countByField(data, field, limit) {
-  const counts = {};
-  for (const row of data) {
-    let value = row[field];
-    if (!value) continue;
+    const grouped = {};
+    for (const [name, count] of Object.entries(counts)) {
+      if (!grouped[count]) grouped[count] = [];
+      grouped[count].push(name);
+    }
 
-    // Sonderbehandlung für Locations mit mehreren Einträgen
-    let parts = field === "Location"
-      ? value.split(/,|&|und|plus/i)
-      : [value];
+    const sorted = Object.entries(grouped)
+      .sort((a, b) => b[0] - a[0]) // nach Anzahl absteigend
+      .flatMap(([count, names]) =>
+        [[names.sort((a, b) => a.localeCompare(b)).join(", "), Number(count)]]
+      );
 
-    parts.forEach(part => {
-      let clean = part
-        .trim()
-        .replace(/\bclub\b/i, "")         // Wort "Club" entfernen
-        .replace(/\s+/g, " ")             // Mehrfache Leerzeichen bereinigen
-        .trim();
+    return sorted.slice(0, limit);
+  }
 
-      if (!clean || clean.toLowerCase() === "check event link") return;
+  function fillTable(tableId, entries) {
+    const tbody = document.querySelector(`#${tableId} tbody`);
+    tbody.innerHTML = "";
+    let currentRank = 1;
+    let lastCount = null;
 
-      counts[clean] = (counts[clean] || 0) + 1;
+    entries.forEach(([names, count], index) => {
+      const isTie = count === lastCount;
+      const rankDisplay = isTie ? "" : `${currentRank}.`;
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${rankDisplay}</td><td>${names}</td><td>${count}</td>`;
+      tbody.appendChild(row);
+      if (!isTie) currentRank++;
+      lastCount = count;
     });
   }
 
-  return Object.entries(counts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, limit);
-}
+  document.addEventListener("DOMContentLoaded", async () => {
+    const data = await loadExcelData();
+    const now = new Date();
+    const currentYear = now.getFullYear();
 
-    function fillTable(tableId, entries) {
-      const tbody = document.querySelector(`#${tableId} tbody`);
-      tbody.innerHTML = "";
-      entries.forEach(([name, count], index) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${index + 1}.</td><td>${name}</td><td>${count}</td>`;
-        tbody.appendChild(row);
-      });
+    // Ende der laufenden Woche (Sonntag)
+    const daysUntilSunday = (7 - now.getDay()) % 7;
+    const endOfWeek = new Date(now);
+    endOfWeek.setDate(now.getDate() + daysUntilSunday);
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    // Filter: Events dieses Jahr
+    const thisYear = data.filter(row => {
+      const date = parseExcelDate(row.Datum);
+      return date.getFullYear() === currentYear;
+    });
+
+    // Events vom 01.01. bis Ende dieser Woche
+    const periodEvents = thisYear.filter(row => {
+      const date = parseExcelDate(row.Datum);
+      return date <= endOfWeek;
+    });
+
+    // Vergangene Events (Stichtag: Folgetag 06:00 Uhr)
+    const past = periodEvents.filter(row => {
+      const date = parseExcelDate(row.Datum);
+      const end = new Date(date);
+      end.setDate(end.getDate() + 1);
+      end.setHours(6, 0, 0, 0);
+      return now > end;
+    });
+
+    const future = thisYear.length - past.length;
+
+    // Zeitraum: 01.01 bis Ende dieser Woche
+    const startOfYear = new Date(currentYear, 0, 1);
+    const daysInPeriod = Math.floor((endOfWeek - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+    const avgPerDay = daysInPeriod > 0 ? periodEvents.length / daysInPeriod : 0;
+    const avgPerWeek = Math.round(avgPerDay * 7);
+    const avgPerMonth = Math.round(avgPerWeek * 4.345);
+
+    // Zahlen eintragen
+    document.getElementById("totalRaves").textContent = thisYear.length;
+    document.getElementById("pastRaves").textContent = past.length;
+    document.getElementById("upcomingRaves").textContent = future;
+    document.getElementById("avgPerWeek").textContent = avgPerWeek;
+    document.getElementById("avgPerMonth").textContent = avgPerMonth;
+
+    // Tabellen füllen
+    fillTable("topCities", countByField(thisYear, "Stadt", 10));
+    fillTable("topLocations", countByField(thisYear, "Location", 5, true));
+  });
+
+  // Menü-Toggle
+  const menu = document.getElementById('menu');
+  const menuIcon = document.getElementById('menuIcon');
+
+  menuIcon.addEventListener('click', () => {
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+      menu.style.display = 'none';
     }
-
-document.addEventListener("DOMContentLoaded", async () => {
-  const data = await loadExcelData();
-  const now = new Date();
-  const currentYear = now.getFullYear();
-
-  const thisYear = data.filter(row => {
-    const date = parseExcelDate(row.Datum);
-    return date.getFullYear() === currentYear;
   });
 
-  const past = thisYear.filter(row => {
-    const date = parseExcelDate(row.Datum);
-    const end = new Date(date);
-    end.setDate(end.getDate() + 1);
-    end.setHours(6, 0, 0, 0);
-    return now > end;
+  document.querySelectorAll('.menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      menu.style.display = 'none';
+    });
   });
-
-  const future = thisYear.length - past.length;
-
-  // Ziel: Zeitraum von 01.01. bis kommenden Sonntag (dieser Woche)
-  const startOfYear = new Date(currentYear, 0, 1);
-  const lastDay = new Date();
-  const day = lastDay.getDay(); // Sonntag = 0, Montag = 1, ...
-  const diffToSunday = (7 - day) % 7;
-  lastDay.setDate(lastDay.getDate() + diffToSunday);
-
-  const fullRangeRaves = past.filter(row => {
-    const date = parseExcelDate(row.Datum);
-    return date >= startOfYear && date <= lastDay;
-  });
-
-  const days = Math.ceil((lastDay - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
-  const ravesPerDay = fullRangeRaves.length / days;
-  const avgPerWeek = Math.round(ravesPerDay * 7);
-  const avgPerMonth = Math.round(avgPerWeek * 4.345);
-
-  // Ausgabe
-  document.getElementById("totalRaves").textContent = thisYear.length;
-  document.getElementById("pastRaves").textContent = past.length;
-  document.getElementById("upcomingRaves").textContent = future;
-  document.getElementById("avgPerMonth").textContent = avgPerMonth;
-  document.getElementById("avgPerWeek").textContent = avgPerWeek;
-
-  fillTable("topCities", countByField(thisYear, "Stadt", 10));
-  fillTable("topLocations", countByField(thisYear, "Location", 10));
-});
-
-    // Menüfunktion
-    const menu = document.getElementById('menu');
-    const menuIcon = document.getElementById('menuIcon');
-    menuIcon.addEventListener('click', () => {
-      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-    });
-    document.addEventListener('click', (event) => {
-      if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
-        menu.style.display = 'none';
-      }
-    });
-    const menuLinks = document.querySelectorAll('.menu a');
-    menuLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        menu.style.display = 'none';
-      });
-    });
-  </script>
+</script>
 </body>
 </html>
