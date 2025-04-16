@@ -11,27 +11,23 @@
       font-family: Arial, sans-serif;
       line-height: 1.6;
       margin: 0 auto;
-      padding: 20px;
-      padding-top: 0px;
+      padding: 20px 20px 40px 20px;
       background-color: #f9f9f9;
       color: #333;
       text-align: center;
     }
-
     h1 {
       color: #444;
       margin-top: 15px;
       margin-bottom: 0px;
       font-size: 24px;
     }
-
     h2 {
       color: #444;
       margin-top: 35px;
       margin-bottom: 10px;
       font-size: 20px;
     }
-
     table {
       margin: 0 auto 30px auto;
       border-collapse: collapse;
@@ -39,31 +35,26 @@
       max-width: 400px;
       text-align: left;
     }
-
     th, td {
       border: 1px solid #ccc;
       padding: 8px 12px;
       font-size: 14px;
     }
-
     th {
       background-color: #f0f0f0;
       font-weight: bold;
     }
-
     .menu-icon-container {
       margin: 15px auto;
       text-align: center;
       position: relative;
     }
-
     .menu-icon {
       font-size: 24px;
       cursor: pointer;
       display: inline-block;
       color: #333;
     }
-
     .menu {
       position: absolute;
       top: 100%;
@@ -75,7 +66,6 @@
       flex-direction: column;
       z-index: 1000;
     }
-
     .menu a {
       padding: 10px 20px;
       text-decoration: none;
@@ -83,28 +73,22 @@
       border-bottom: 1px solid #ddd;
       text-align: left;
     }
-
     .menu a:last-child {
       border-bottom: none;
     }
-
     .menu a:hover {
       background-color: #f4f4f4;
     }
-
     @media (max-width: 600px) {
       body {
         font-size: 14px;
       }
-
       h1 {
         font-size: 22px;
       }
-
       h2 {
         font-size: 18px;
       }
-
       table {
         font-size: 13px;
       }
@@ -124,7 +108,6 @@
     </div>
   </div>
 
-  <h2></h2>
   <table id="summaryTable">
     <tr><th>Statistik</th><th>Raves</th></tr>
     <tr><td>Raves auf ravebro.de</td><td id="totalRaves">-</td></tr>
@@ -170,10 +153,20 @@
 
     function countByField(data, field, limit) {
       const counts = {};
+      const splitRegex = /,|\s+und\s+|\s*&\s*|\s*plus\s*|\s*\+\s*/i;
+
       for (const row of data) {
-        const key = row[field];
-        if (key) counts[key] = (counts[key] || 0) + 1;
+        const raw = row[field];
+        if (!raw) continue;
+
+        const parts = raw.split(splitRegex).map(p => p.trim()).filter(Boolean);
+        for (const part of parts) {
+          const normalized = part.toLowerCase();
+          if (normalized === "check event link") continue;
+          counts[part] = (counts[part] || 0) + 1;
+        }
       }
+
       return Object.entries(counts)
         .sort((a, b) => b[1] - a[1])
         .slice(0, limit);
@@ -194,24 +187,12 @@
       const now = new Date();
       const currentYear = now.getFullYear();
 
-      // Ende der laufenden Woche (Sonntag)
-      const daysUntilSunday = (7 - now.getDay()) % 7;
-      const endOfWeek = new Date(now);
-      endOfWeek.setDate(now.getDate() + daysUntilSunday);
-      endOfWeek.setHours(23, 59, 59, 999);
-
-      // Filter: Events dieses Jahr
       const thisYear = data.filter(row => {
         const date = parseExcelDate(row.Datum);
         return date.getFullYear() === currentYear;
       });
 
-      const periodEvents = thisYear.filter(row => {
-        const date = parseExcelDate(row.Datum);
-        return date <= endOfWeek;
-      });
-
-      const past = periodEvents.filter(row => {
+      const past = thisYear.filter(row => {
         const date = parseExcelDate(row.Datum);
         const end = new Date(date);
         end.setDate(end.getDate() + 1);
@@ -221,36 +202,45 @@
 
       const future = thisYear.length - past.length;
 
-      // Berechnung über den Zeitraum: 01.01 bis Ende der Woche
+      // Wochenbasierter Zeitraum
+      const today = new Date();
+      const dayOfWeek = today.getDay(); // 0=Sonntag, 1=Montag...
+      const daysUntilSunday = 7 - (dayOfWeek === 0 ? 7 : dayOfWeek);
+      const endOfWeek = new Date(today);
+      endOfWeek.setDate(today.getDate() + daysUntilSunday);
+
       const startOfYear = new Date(currentYear, 0, 1);
-      const daysInPeriod = Math.floor((endOfWeek - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
-      const avgPerDay = daysInPeriod > 0 ? periodEvents.length / daysInPeriod : 0;
+      const pastDates = past.map(row => parseExcelDate(row.Datum));
+      const includedDates = pastDates.filter(date => date >= startOfYear && date <= endOfWeek);
+
+      const daysSpan = (endOfWeek - startOfYear) / (1000 * 60 * 60 * 24);
+      const avgPerDay = daysSpan > 0 ? includedDates.length / daysSpan : 0;
       const avgPerWeek = Math.round(avgPerDay * 7);
       const avgPerMonth = Math.round(avgPerWeek * 4.345);
 
+      // Werte in die Tabelle einsetzen
       document.getElementById("totalRaves").textContent = thisYear.length;
       document.getElementById("pastRaves").textContent = past.length;
       document.getElementById("upcomingRaves").textContent = future;
       document.getElementById("avgPerWeek").textContent = avgPerWeek;
       document.getElementById("avgPerMonth").textContent = avgPerMonth;
 
+      // Tabellen füllen
       fillTable("topCities", countByField(thisYear, "Stadt", 10));
       fillTable("topLocations", countByField(thisYear, "Location", 5));
     });
 
+    // Menüfunktion
     const menu = document.getElementById('menu');
     const menuIcon = document.getElementById('menuIcon');
-
     menuIcon.addEventListener('click', () => {
       menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
     });
-
     document.addEventListener('click', (event) => {
       if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
         menu.style.display = 'none';
       }
     });
-
     const menuLinks = document.querySelectorAll('.menu a');
     menuLinks.forEach(link => {
       link.addEventListener('click', () => {
