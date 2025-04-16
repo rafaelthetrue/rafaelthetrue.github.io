@@ -152,89 +152,84 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script>
-    async function loadExcelData() {
-      const response = await fetch("events.xlsx");
-      const data = new Uint8Array(await response.arrayBuffer());
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      return XLSX.utils.sheet_to_json(sheet);
+  async function loadExcelData() {
+    const response = await fetch("events.xlsx");
+    const data = new Uint8Array(await response.arrayBuffer());
+    const workbook = XLSX.read(data, { type: "array" });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    return XLSX.utils.sheet_to_json(sheet);
+  }
+
+  function parseExcelDate(value) {
+    if (typeof value === "number") {
+      const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+      return new Date(excelEpoch.getTime() + value * 86400000);
     }
+    return new Date(value);
+  }
 
-    function parseExcelDate(value) {
-      if (typeof value === "number") {
-        const excelEpoch = new Date(Date.UTC(1899, 11, 30));
-        return new Date(excelEpoch.getTime() + value * 86400000);
-      }
-      return new Date(value);
+  function countByField(data, field, limit) {
+    const counts = {};
+    for (const row of data) {
+      const key = row[field];
+      if (key) counts[key] = (counts[key] || 0) + 1;
     }
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, limit);
+  }
 
-    function countByField(data, field, limit) {
-      const counts = {};
-      for (const row of data) {
-        const key = row[field];
-        if (key) counts[key] = (counts[key] || 0) + 1;
-      }
-      return Object.entries(counts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, limit);
-    }
-
-    function fillTable(tableId, entries) {
-      const tbody = document.querySelector(`#${tableId} tbody`);
-      tbody.innerHTML = "";
-      entries.forEach(([name, count], index) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${index + 1}.</td><td>${name}</td><td>${count}</td>`;
-        tbody.appendChild(row);
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded", async () => {
-      const data = await loadExcelData();
-      const now = new Date();
-      const currentYear = now.getFullYear();
-
-      // Nur Events dieses Jahres
-      const thisYear = data.filter(row => {
-        const date = parseExcelDate(row.Datum);
-        return date.getFullYear() === currentYear;
-      });
-
-      // Vergangene Events bis jetzt (Stichtag 6 Uhr am Folgetag)
-      const past = thisYear.filter(row => {
-        const date = parseExcelDate(row.Datum);
-        const end = new Date(date);
-        end.setDate(end.getDate() + 1);
-        end.setHours(6, 0, 0, 0);
-        return now > end;
-      });
-
-      // Bevorstehende Events = Rest
-      const future = thisYear.length - past.length;
-
-      // Zeitraum: 1. Januar bis Ende des letzten abgeschlossenen Monats
-      const startOfYear = new Date(currentYear, 0, 1);
-      const lastCompleteMonth = new Date(now.getFullYear(), now.getMonth(), 0); // z. B. 31.03. bei April
-
-      const pastDates = past.map(row => parseExcelDate(row.Datum)).filter(date => date <= lastCompleteMonth);
-
-      const daysInRange = (lastCompleteMonth - startOfYear) / (1000 * 60 * 60 * 24);
-      const completedWeeks = daysInRange / 7;
-
-      const avgPerWeek = completedWeeks > 0 ? Math.round(pastDates.length / completedWeeks) : 0;
-      const avgPerMonth = currentYear > 0 ? Math.round(pastDates.length / (lastCompleteMonth.getMonth() + 1)) : 0;
-
-      // Werte in die Tabelle einsetzen
-      document.getElementById("totalRaves").textContent = thisYear.length;
-      document.getElementById("pastRaves").textContent = past.length;
-      document.getElementById("upcomingRaves").textContent = future;
-      document.getElementById("avgPerWeek").textContent = avgPerWeek;
-      document.getElementById("avgPerMonth").textContent = avgPerMonth;
-
-      // Top Städte & Locations
-      fillTable("topCities", countByField(thisYear, "Stadt", 10));
-      fillTable("topLocations", countByField(thisYear, "Location", 5));
+  function fillTable(tableId, entries) {
+    const tbody = document.querySelector(`#${tableId} tbody`);
+    tbody.innerHTML = "";
+    entries.forEach(([name, count], index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${index + 1}.</td><td>${name}</td><td>${count}</td>`;
+      tbody.appendChild(row);
     });
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const data = await loadExcelData();
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const startOfYear = new Date(currentYear, 0, 1); // 01.01.<aktuelles Jahr>
+
+    // Alle Events aus dem aktuellen Jahr
+    const thisYear = data.filter(row => {
+      const date = parseExcelDate(row.Datum);
+      return date.getFullYear() === currentYear;
+    });
+
+    // Vergangene Events bis heute (inkl. 6 Uhr Stichtag)
+    const past = thisYear.filter(row => {
+      const date = parseExcelDate(row.Datum);
+      const end = new Date(date);
+      end.setDate(end.getDate() + 1);
+      end.setHours(6, 0, 0, 0);
+      return now > end;
+    });
+
+    const future = thisYear.length - past.length;
+
+    // Fließende Tagesberechnung
+    const totalDays = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+    const ravesPerDay = totalDays > 0 ? past.length / totalDays : 0;
+    const avgPerWeek = Math.round(ravesPerDay * 7);
+    const avgPerMonth = Math.round(ravesPerDay * 7 * 4.345); // 4.345 Ø Wochen pro Monat
+
+    // Kennzahlen in Tabelle einsetzen
+    document.getElementById("totalRaves").textContent = thisYear.length;
+    document.getElementById("pastRaves").textContent = past.length;
+    document.getElementById("upcomingRaves").textContent = future;
+    document.getElementById("avgPerWeek").textContent = avgPerWeek;
+    document.getElementById("avgPerMonth").textContent = avgPerMonth;
+
+    // Top-Städte & Locations
+    fillTable("topCities", countByField(thisYear, "Stadt", 10));
+    fillTable("topLocations", countByField(thisYear, "Location", 5));
+  });
+
 
     // Menü-Funktionalität
     const menu = document.getElementById('menu');
