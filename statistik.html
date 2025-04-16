@@ -213,16 +213,18 @@
   // Bevorstehende Events = Rest
   const future = thisYear.length - past.length;
 
-  // Abgeschlossene Monate: z. B. April → 3 (Jan, Feb, März)
-  const completedMonths = currentMonth;
-  const avgPerMonth = completedMonths > 0 ? Math.round(past.length / completedMonths) : 0;
+    const pastDates = past.map(row => parseExcelDate(row.Datum));
+  const minDate = new Date(Math.min(...pastDates.map(d => d.getTime())));
 
-  // Abgeschlossene Wochen seit Jahresbeginn
-  const startOfYear = new Date(currentYear, 0, 1);
-  const diffInDays = (now - startOfYear) / (1000 * 60 * 60 * 24);
-  const completedWeeks = Math.floor(diffInDays / 7);
-  const avgPerWeek = completedWeeks > 0 ? Math.round(past.length / completedWeeks) : 0;
+  const today = new Date();
+  const lastCompleteMonth = new Date(today.getFullYear(), today.getMonth(), 0); // z. B. 31.03. wenn heute April
+  const filteredDates = pastDates.filter(date => date <= lastCompleteMonth);
 
+  const daysSpan = (lastCompleteMonth - minDate) / (1000 * 60 * 60 * 24);
+  const weeks = daysSpan / 7;
+
+  const avgPerWeek = weeks > 0 ? Math.round(filteredDates.length / weeks) : 0;
+  const avgPerMonth = Math.round(avgPerWeek * 4.345); // Ø Wochen pro Monat
   // Werte in die Tabelle einsetzen
   document.getElementById("totalRaves").textContent = thisYear.length;
   document.getElementById("pastRaves").textContent = past.length;
