@@ -17,18 +17,21 @@
       color: #333;
       text-align: center;
     }
+
     h1 {
       color: #444;
       margin-top: 15px;
       margin-bottom: 0px;
       font-size: 24px;
     }
+
     h2 {
       color: #444;
       margin-top: 35px;
       margin-bottom: 10px;
       font-size: 20px;
     }
+
     table {
       margin: 0 auto 30px auto;
       border-collapse: collapse;
@@ -36,26 +39,31 @@
       max-width: 400px;
       text-align: left;
     }
+
     th, td {
       border: 1px solid #ccc;
       padding: 8px 12px;
       font-size: 14px;
     }
+
     th {
       background-color: #f0f0f0;
       font-weight: bold;
     }
+
     .menu-icon-container {
       margin: 15px auto;
       text-align: center;
       position: relative;
     }
+
     .menu-icon {
       font-size: 24px;
       cursor: pointer;
       display: inline-block;
       color: #333;
     }
+
     .menu {
       position: absolute;
       top: 100%;
@@ -67,6 +75,7 @@
       flex-direction: column;
       z-index: 1000;
     }
+
     .menu a {
       padding: 10px 20px;
       text-decoration: none;
@@ -74,17 +83,31 @@
       border-bottom: 1px solid #ddd;
       text-align: left;
     }
+
     .menu a:last-child {
       border-bottom: none;
     }
+
     .menu a:hover {
       background-color: #f4f4f4;
     }
+
     @media (max-width: 600px) {
-      body { font-size: 14px; }
-      h1 { font-size: 22px; }
-      h2 { font-size: 18px; }
-      table { font-size: 13px; }
+      body {
+        font-size: 14px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      table {
+        font-size: 13px;
+      }
     }
   </style>
 </head>
@@ -101,6 +124,7 @@
     </div>
   </div>
 
+  <h2></h2>
   <table id="summaryTable">
     <tr><th>Statistik</th><th>Raves</th></tr>
     <tr><td>Raves auf ravebro.de</td><td id="totalRaves">-</td></tr>
@@ -170,11 +194,13 @@
       const now = new Date();
       const currentYear = now.getFullYear();
 
+      // Nur Events dieses Jahres
       const thisYear = data.filter(row => {
         const date = parseExcelDate(row.Datum);
         return date.getFullYear() === currentYear;
       });
 
+      // Vergangene Events bis jetzt (Stichtag 6 Uhr am Folgetag)
       const past = thisYear.filter(row => {
         const date = parseExcelDate(row.Datum);
         const end = new Date(date);
@@ -183,45 +209,47 @@
         return now > end;
       });
 
+      // Bevorstehende Events = Rest
       const future = thisYear.length - past.length;
 
-      const pastDates = past.map(row => parseExcelDate(row.Datum));
-      if (pastDates.length === 0) return;
+      // Zeitraum: 1. Januar bis Ende des letzten abgeschlossenen Monats
+      const startOfYear = new Date(currentYear, 0, 1);
+      const lastCompleteMonth = new Date(now.getFullYear(), now.getMonth(), 0); // z. B. 31.03. bei April
 
-      const start = new Date(currentYear, 0, 1);
-      const lastCompleteMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-      const filteredDates = pastDates.filter(d => d <= lastCompleteMonth);
+      const pastDates = past.map(row => parseExcelDate(row.Datum)).filter(date => date <= lastCompleteMonth);
 
-      const minDate = new Date(Math.min(...filteredDates.map(d => d.getTime())));
-      const maxDate = new Date(Math.max(...filteredDates.map(d => d.getTime())));
+      const daysInRange = (lastCompleteMonth - startOfYear) / (1000 * 60 * 60 * 24);
+      const completedWeeks = daysInRange / 7;
 
-      const totalDays = (maxDate - minDate) / (1000 * 60 * 60 * 24);
-      const weeks = totalDays / 7;
-      const months = (maxDate.getMonth() - minDate.getMonth() + 1);
+      const avgPerWeek = completedWeeks > 0 ? Math.round(pastDates.length / completedWeeks) : 0;
+      const avgPerMonth = currentYear > 0 ? Math.round(pastDates.length / (lastCompleteMonth.getMonth() + 1)) : 0;
 
-      const avgPerWeek = weeks > 0 ? Math.round(filteredDates.length / weeks) : 0;
-      const avgPerMonth = months > 0 ? Math.round(filteredDates.length / months) : 0;
-
+      // Werte in die Tabelle einsetzen
       document.getElementById("totalRaves").textContent = thisYear.length;
       document.getElementById("pastRaves").textContent = past.length;
       document.getElementById("upcomingRaves").textContent = future;
       document.getElementById("avgPerWeek").textContent = avgPerWeek;
       document.getElementById("avgPerMonth").textContent = avgPerMonth;
 
+      // Top Städte & Locations
       fillTable("topCities", countByField(thisYear, "Stadt", 10));
       fillTable("topLocations", countByField(thisYear, "Location", 5));
     });
 
+    // Menü-Funktionalität
     const menu = document.getElementById('menu');
     const menuIcon = document.getElementById('menuIcon');
+
     menuIcon.addEventListener('click', () => {
       menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
     });
+
     document.addEventListener('click', (event) => {
       if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
         menu.style.display = 'none';
       }
     });
+
     const menuLinks = document.querySelectorAll('.menu a');
     menuLinks.forEach(link => {
       link.addEventListener('click', () => {
