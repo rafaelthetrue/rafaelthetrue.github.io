@@ -182,53 +182,53 @@
       });
     }
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      const data = await loadExcelData();
-      const now = new Date();
-      const currentYear = now.getFullYear();
+document.addEventListener("DOMContentLoaded", async () => {
+  const data = await loadExcelData();
+  const now = new Date();
+  const currentYear = now.getFullYear();
 
-      const thisYear = data.filter(row => {
-        const date = parseExcelDate(row.Datum);
-        return date.getFullYear() === currentYear;
-      });
+  const thisYear = data.filter(row => {
+    const date = parseExcelDate(row.Datum);
+    return date.getFullYear() === currentYear;
+  });
 
-      const past = thisYear.filter(row => {
-        const date = parseExcelDate(row.Datum);
-        const end = new Date(date);
-        end.setDate(end.getDate() + 1);
-        end.setHours(6, 0, 0, 0);
-        return now > end;
-      });
+  const past = thisYear.filter(row => {
+    const date = parseExcelDate(row.Datum);
+    const end = new Date(date);
+    end.setDate(end.getDate() + 1);
+    end.setHours(6, 0, 0, 0);
+    return now > end;
+  });
 
-      const future = thisYear.length - past.length;
+  const future = thisYear.length - past.length;
 
-      // Wochenbasierter Zeitraum
-      const today = new Date();
-      const dayOfWeek = today.getDay(); // 0=Sonntag, 1=Montag...
-      const daysUntilSunday = 7 - (dayOfWeek === 0 ? 7 : dayOfWeek);
-      const endOfWeek = new Date(today);
-      endOfWeek.setDate(today.getDate() + daysUntilSunday);
+  // Ziel: Zeitraum von 01.01. bis kommenden Sonntag (dieser Woche)
+  const startOfYear = new Date(currentYear, 0, 1);
+  const lastDay = new Date();
+  const day = lastDay.getDay(); // Sonntag = 0, Montag = 1, ...
+  const diffToSunday = (7 - day) % 7;
+  lastDay.setDate(lastDay.getDate() + diffToSunday);
 
-      const startOfYear = new Date(currentYear, 0, 1);
-      const pastDates = past.map(row => parseExcelDate(row.Datum));
-      const includedDates = pastDates.filter(date => date >= startOfYear && date <= endOfWeek);
+  const fullRangeRaves = past.filter(row => {
+    const date = parseExcelDate(row.Datum);
+    return date >= startOfYear && date <= lastDay;
+  });
 
-      const daysSpan = (endOfWeek - startOfYear) / (1000 * 60 * 60 * 24);
-      const avgPerDay = daysSpan > 0 ? includedDates.length / daysSpan : 0;
-      const avgPerWeek = Math.round(avgPerDay * 7);
-      const avgPerMonth = Math.round(avgPerWeek * 4.345);
+  const days = Math.ceil((lastDay - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+  const ravesPerDay = fullRangeRaves.length / days;
+  const avgPerWeek = Math.round(ravesPerDay * 7);
+  const avgPerMonth = Math.round(avgPerWeek * 4.345);
 
-      // Werte in die Tabelle einsetzen
-      document.getElementById("totalRaves").textContent = thisYear.length;
-      document.getElementById("pastRaves").textContent = past.length;
-      document.getElementById("upcomingRaves").textContent = future;
-      document.getElementById("avgPerWeek").textContent = avgPerWeek;
-      document.getElementById("avgPerMonth").textContent = avgPerMonth;
+  // Ausgabe
+  document.getElementById("totalRaves").textContent = thisYear.length;
+  document.getElementById("pastRaves").textContent = past.length;
+  document.getElementById("upcomingRaves").textContent = future;
+  document.getElementById("avgPerMonth").textContent = avgPerMonth;
+  document.getElementById("avgPerWeek").textContent = avgPerWeek;
 
-      // Tabellen füllen
-      fillTable("topCities", countByField(thisYear, "Stadt", 10));
-      fillTable("topLocations", countByField(thisYear, "Location", 5));
-    });
+  fillTable("topCities", countByField(thisYear, "Stadt", 10));
+  fillTable("topLocations", countByField(thisYear, "Location", 5));
+});
 
     // Menüfunktion
     const menu = document.getElementById('menu');
