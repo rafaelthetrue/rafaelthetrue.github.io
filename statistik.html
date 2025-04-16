@@ -152,25 +152,33 @@
     }
 
     function countByField(data, field, limit) {
-      const counts = {};
-      const splitRegex = /,|\s+und\s+|\s*&\s*|\s*plus\s*|\s*\+\s*/i;
+  const counts = {};
+  for (const row of data) {
+    let value = row[field];
+    if (!value) continue;
 
-      for (const row of data) {
-        const raw = row[field];
-        if (!raw) continue;
+    // Sonderbehandlung für Locations mit mehreren Einträgen
+    let parts = field === "Location"
+      ? value.split(/,|&|und|plus/i)
+      : [value];
 
-        const parts = raw.split(splitRegex).map(p => p.trim()).filter(Boolean);
-        for (const part of parts) {
-          const normalized = part.toLowerCase();
-          if (normalized === "check event link") continue;
-          counts[part] = (counts[part] || 0) + 1;
-        }
-      }
+    parts.forEach(part => {
+      let clean = part
+        .trim()
+        .replace(/\bclub\b/i, "")         // Wort "Club" entfernen
+        .replace(/\s+/g, " ")             // Mehrfache Leerzeichen bereinigen
+        .trim();
 
-      return Object.entries(counts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, limit);
-    }
+      if (!clean || clean.toLowerCase() === "check event link") return;
+
+      counts[clean] = (counts[clean] || 0) + 1;
+    });
+  }
+
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit);
+}
 
     function fillTable(tableId, entries) {
       const tbody = document.querySelector(`#${tableId} tbody`);
