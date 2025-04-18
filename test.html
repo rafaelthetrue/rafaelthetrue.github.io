@@ -566,11 +566,11 @@ document.addEventListener('click', e => {
 
     // Menü schließen, wenn ein Link angeklickt wird
     const menuLinks = document.querySelectorAll('.menu a');
-    menuLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            menu.style.display = 'none';
-        });
+menuLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        menu.classList.remove('show');
     });
+});
     // Funktion für "Aktualisieren"
         const refreshPage = document.getElementById('refreshPage');
         refreshPage.addEventListener('click', (e) => {
