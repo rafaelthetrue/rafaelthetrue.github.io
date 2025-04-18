@@ -295,31 +295,31 @@
   display: none; /* Unsichtbar beim Laden */
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 2000;
   justify-content: center;
   align-items: center;
 }
 
+/* Container für Inhalt */
 #statsPopupInner {
+  position: relative;
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 20px 20px 30px 20px;
+  padding: 50px 20px 30px 20px; /* oben mehr Platz fürs X */
   max-width: 90vw;
   max-height: 90vh;
   overflow-y: auto;
-  position: relative;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
+/* Schließen-Button */
 #statsPopupClose {
   position: absolute;
-  top: 10px;
-  right: 12px;
-  font-size: 20px;
+  top: 12px;
+  right: 16px;
+  font-size: 22px;
   cursor: pointer;
   color: #666;
   z-index: 10;
