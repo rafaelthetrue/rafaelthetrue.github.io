@@ -65,11 +65,12 @@
             max-width: 800px;
         }
         .menu-icon {
-            font-size: 24px;
-            cursor: pointer;
-            display: inline-block;
-            color: #333;
-        }
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+}
         .menu {
             position: absolute;
             top: 100%;
@@ -251,6 +252,12 @@
 
 /* Statistik-Icon (3 vertikale Balken) */
 .stats-icon {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-end;
+  width: 24px;
+  height: 24px;
   gap: 3px;
 }
 
