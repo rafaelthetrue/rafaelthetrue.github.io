@@ -23,6 +23,7 @@
     <meta name="theme-color" content="#f9f9f9">
     <title>Techno Raves 2025 (Termine, Events & Locations) - ravebro.de</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script defer data-domain="ravebro.de" src="https://plausible.io/js/script.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -275,56 +276,51 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
 function renderTable(rows) {
-    tableBody.innerHTML = ""; // Bestehende Inhalte löschen
-    const now = new Date();
-    const currentYear = now.getFullYear(); // Laufendes Jahr
+        tableBody.innerHTML = ""; // Bestehende Inhalte löschen
 
-    rows.forEach(row => {
-        if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
+        rows.forEach(row => {
+            if (!row.Datum || !row.Event || !row.Location || !row.Stadt) return;
 
-        const dateObj = parseExcelDate(row.Datum);
-        if (isNaN(dateObj)) return;
+            const dateObj = parseExcelDate(row.Datum);
+            if (isNaN(dateObj)) return;
 
-        // Nur Events ab dem laufenden Jahr anzeigen
-        if (dateObj.getFullYear() < currentYear) return;
+            const formattedDate = `${String(dateObj.getDate()).padStart(2, "0")}.${String(
+                dateObj.getMonth() + 1
+            ).padStart(2, "0")}`;
+            const weekday = dateObj.toLocaleDateString("de-DE", { weekday: "short" }) + ".";
 
-        const formattedDate = `${String(dateObj.getDate()).padStart(2, "0")}.${String(
-            dateObj.getMonth() + 1
-        ).padStart(2, "0")}`;
-        const weekday = dateObj.toLocaleDateString("de-DE", { weekday: "short" }) + ".";
+            const tr = document.createElement("tr");
+            tr.setAttribute("data-date", dateObj.toISOString());
 
-        const tr = document.createElement("tr");
-        tr.setAttribute("data-date", dateObj.toISOString());
+            const dateTd = document.createElement("td");
+            dateTd.classList.add("date-cell");
+            dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
+            tr.appendChild(dateTd);
 
-        const dateTd = document.createElement("td");
-        dateTd.classList.add("date-cell");
-        dateTd.innerHTML = `${formattedDate}<br><span>${weekday}</span>`;
-        tr.appendChild(dateTd);
+            const eventTd = document.createElement("td");
+            eventTd.innerHTML = `<a href="${row.Link || "#"}" target="_blank">${row.Event}</a>`;
+            tr.appendChild(eventTd);
 
-        const eventTd = document.createElement("td");
-        eventTd.innerHTML = `<a href="${row.Link || "#"}" target="_blank">${row.Event}</a>`;
-        tr.appendChild(eventTd);
+            const locationTd = document.createElement("td");
+            locationTd.textContent = row.Location;
+            tr.appendChild(locationTd);
 
-        const locationTd = document.createElement("td");
-        locationTd.textContent = row.Location;
-        tr.appendChild(locationTd);
+            const cityTd = document.createElement("td");
+            cityTd.textContent = row.Stadt;
+            tr.appendChild(cityTd);
 
-        const cityTd = document.createElement("td");
-        cityTd.textContent = row.Stadt;
-        tr.appendChild(cityTd);
+            // Vergangene Events kennzeichnen
+            const eventDate = new Date(dateObj);
+            eventDate.setDate(eventDate.getDate() + 1);
+            eventDate.setHours(6, 0, 0, 0);
 
-        // Vergangene Events kennzeichnen
-        const eventDate = new Date(dateObj);
-        eventDate.setDate(eventDate.getDate() + 1);
-        eventDate.setHours(6, 0, 0, 0);
+            if (now > eventDate) {
+                tr.classList.add("past-event");
+            }
 
-        if (now > eventDate) {
-            tr.classList.add("past-event");
-        }
-
-        tableBody.appendChild(tr);
-    });
-}
+            tableBody.appendChild(tr);
+        });
+    }
 
     function scrollToNextEvent() {
         const rows = Array.from(document.querySelectorAll("#eventTable tbody tr"));
