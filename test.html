@@ -388,10 +388,10 @@
             <tbody></tbody>
         </table>
     </div>
-    <!-- Popup HTML außerhalb von <script> -->
+<!-- Popup HTML außerhalb von <script> -->
 <div id="statsPopup">
     <div id="statsPopupClose">✕</div>
-    <iframe src="statistik.html" title="Statistik"></iframe>
+    <div id="statsPopupContent"></div> <!-- Neu: hier kommt der Inhalt rein -->
 </div>
     <script>
 document.addEventListener("DOMContentLoaded", async function () {
@@ -634,6 +634,28 @@ menuLinks.forEach(link => {
     const statsIcon = document.getElementById('statsIcon');
     const statsPopup = document.getElementById('statsPopup');
     const statsPopupClose = document.getElementById('statsPopupClose');
+    // Nur die erste Tabelle aus statistik.html laden
+statsIcon.addEventListener('click', async () => {
+    try {
+        const response = await fetch("statistik.html");
+        const text = await response.text();
+
+        // Temporäres DOM-Element zum Parsen
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, "text/html");
+
+        // Die erste Tabelle (summaryTable) extrahieren
+        const summaryTable = doc.querySelector("#summaryTable");
+        if (summaryTable) {
+            const statsPopupContent = document.getElementById("statsPopupContent");
+            statsPopupContent.innerHTML = ""; // alten Inhalt löschen
+            statsPopupContent.appendChild(summaryTable.cloneNode(true));
+            statsPopup.style.display = "block";
+        }
+    } catch (error) {
+        console.error("Fehler beim Laden der Statistik:", error);
+    }
+});
 
     statsIcon.addEventListener('click', () => {
         statsPopup.style.display = 'block';
