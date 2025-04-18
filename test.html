@@ -601,10 +601,12 @@ generateSchemaOrgMarkup(sortedRows);
             const cells = Array.from(row.getElementsByTagName('td'));
             const match = cells.some(cell => cell.textContent.toLowerCase().includes(filter));
             row.style.display = match ? '' : 'none';
+            
+        document.getElementById('search').addEventListener('keyup', searchTable);
         
-          const statsIcon = document.getElementById('statsIcon');
-  const statsPopup = document.getElementById('statsPopup');
-  const statsPopupClose = document.getElementById('statsPopupClose');
+        const statsIcon = document.getElementById('statsIcon');
+        const statsPopup = document.getElementById('statsPopup');
+        const statsPopupClose = document.getElementById('statsPopupClose');
 
   statsIcon.addEventListener('click', () => {
     statsPopup.style.display = 'block';
@@ -619,12 +621,7 @@ generateSchemaOrgMarkup(sortedRows);
       statsPopup.style.display = 'none';
     }
   });
-        
-        });
-    }
-    document.getElementById('search').addEventListener('keyup', searchTable);
-    
-    </script> 
+</script> 
     
     <div id="statsPopup">
     <div id="statsPopupClose">✕</div>
