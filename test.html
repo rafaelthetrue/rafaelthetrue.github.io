@@ -277,6 +277,26 @@
 .stats-icon .bar2 { height: 12px; }
 .stats-icon .bar3 { height: 9px; }
 
+.zigzag-arrow {
+  width: 12px;
+  height: 12px;
+  position: relative;
+  transform: rotate(-45deg); /* sorgt für diagonale Steigung */
+  border-left: 2px solid black;
+  border-bottom: 2px solid black;
+}
+
+.zigzag-arrow::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  width: 12px;
+  height: 12px;
+  border-left: 2px solid black;
+  border-bottom: 2px solid black;
+}
+
 /* Popup-Styling */
 #statsPopup {
   display: none;
@@ -346,8 +366,9 @@
   </div>
 </div>
   <div class="icon-wrapper icon-right">
-    <div class="icon top-icon" id="topRavesIcon" title="Top Raves"></div>
-  </div>
+<div class="icon top-icon" id="topRavesIcon" title="Top Raves">
+  <div class="zigzag-arrow"></div>
+</div>
 </div>
     <div class="search-container">
         <input 
