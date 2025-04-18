@@ -294,20 +294,11 @@
 #statsPopup {
   display: none;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: auto;
-  max-width: 90vw;
-  max-height: 90vh;
-  background-color: white;
-  border: 1px solid #ccc;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3); /* optionaler Overlay-Hintergrund */
   z-index: 2000;
-  padding: 20px 20px 30px 20px; /* extra Padding unten für Abstand zum X */
-  border-radius: 8px;
-  overflow-y: auto;
-  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Mobile Ansicht: kleinere Höhe */
@@ -317,6 +308,18 @@
     width: 75%;
     max-width: 340px;
   }
+}
+
+#statsPopupInner {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  max-width: 90vw;
+  max-height: 90vh;
+  padding: 20px 20px 30px 20px;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 #statsPopupClose {
@@ -391,8 +394,10 @@
     </div>
 <!-- Popup HTML außerhalb von <script> -->
 <div id="statsPopup">
+  <div id="statsPopupInner">
     <div id="statsPopupClose">✕</div>
     <div id="statsPopupContent"></div>
+  </div>
 </div>
     <script>
 document.addEventListener("DOMContentLoaded", async function () {
@@ -698,7 +703,7 @@ statsIcon.addEventListener('click', async () => {
 
         const statsPopupContent = document.getElementById("statsPopupContent");
         statsPopupContent.innerHTML = tableHTML;
-        statsPopup.style.display = 'block';
+        statsPopup.style.display = 'flex';
 
     } catch (error) {
         console.error("Fehler beim Laden der Statistikdaten:", error);
