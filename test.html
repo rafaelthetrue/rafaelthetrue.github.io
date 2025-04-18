@@ -284,25 +284,9 @@
   width: 24px;
   height: 24px;
 }
-
-.zigzag-arrow {
-  width: 12px;
-  height: 12px;
-  position: relative;
-  transform: rotate(-45deg); /* sorgt für diagonale Steigung */
-  border-left: 2px solid black;
-  border-bottom: 2px solid black;
-}
-
-.zigzag-arrow::after {
-  content: "";
-  position: absolute;
-  left: 6px;
-  bottom: 6px;
-  width: 12px;
-  height: 12px;
-  border-left: 2px solid black;
-  border-bottom: 2px solid black;
+.zigzag-icon {
+  width: 24px;
+  height: 24px;
 }
 
 /* Popup-Styling */
@@ -375,7 +359,10 @@
 </div>
   <div class="icon-wrapper icon-right">
 <div class="icon top-icon" id="topRavesIcon" title="Top Raves">
-  <div class="zigzag-arrow"></div>
+  <svg class="zigzag-icon" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="4 16 10 10 8 8 14 2" />
+    <polyline points="14 2 14 8 20 8" />
+  </svg>
 </div>
 </div>
 </div>
