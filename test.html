@@ -391,7 +391,7 @@
 <!-- Popup HTML außerhalb von <script> -->
 <div id="statsPopup">
     <div id="statsPopupClose">✕</div>
-    <div id="statsPopupContent"></div> <!-- Neu: hier kommt der Inhalt rein -->
+    <div id="statsPopupContent"></div>
 </div>
     <script>
 document.addEventListener("DOMContentLoaded", async function () {
@@ -664,6 +664,76 @@ statsIcon.addEventListener('click', async () => {
     statsPopupClose.addEventListener('click', () => {
         statsPopup.style.display = 'none';
     });
+
+// Statistik-Popup dynamisch mit berechneter Tabelle befüllen
+statsIcon.addEventListener('click', async () => {
+    try {
+        const response = await fetch("events.xlsx");
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const data = XLSX.utils.sheet_to_json(sheet);
+
+        const now = new Date();
+        const currentYear = now.getFullYear();
+
+        const daysUntilSunday = (7 - now.getDay()) % 7;
+        const endOfWeek = new Date(now);
+        endOfWeek.setDate(now.getDate() + daysUntilSunday);
+        endOfWeek.setHours(23, 59, 59, 999);
+
+        const parseExcelDate = value => {
+            if (typeof value === "number") {
+                const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+                return new Date(excelEpoch.getTime() + value * 86400000);
+            }
+            return new Date(value);
+        };
+
+        const thisYear = data.filter(row => {
+            const date = parseExcelDate(row.Datum);
+            return date.getFullYear() === currentYear;
+        });
+
+        const periodEvents = thisYear.filter(row => {
+            const date = parseExcelDate(row.Datum);
+            return date <= endOfWeek;
+        });
+
+        const past = periodEvents.filter(row => {
+            const date = parseExcelDate(row.Datum);
+            const end = new Date(date);
+            end.setDate(end.getDate() + 1);
+            end.setHours(6, 0, 0, 0);
+            return now > end;
+        });
+
+        const future = thisYear.length - past.length;
+        const startOfYear = new Date(currentYear, 0, 1);
+        const daysInPeriod = Math.floor((endOfWeek - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+        const avgPerDay = daysInPeriod > 0 ? periodEvents.length / daysInPeriod : 0;
+        const avgPerWeek = Math.round(avgPerDay * 7);
+        const avgPerMonth = Math.round(avgPerWeek * 4.345);
+
+        const tableHTML = `
+        <h2><strong>Rave-Statistik ${currentYear}</strong></h2>
+        <table style="margin: 0 auto 30px auto; border-collapse: collapse; width: 100%; max-width: 400px; text-align: left;">
+            <tr><th style="background-color: #f0f0f0;">Statistik</th><th style="background-color: #f0f0f0;">Raves</th></tr>
+            <tr><td>Raves auf ravebro.de</td><td>${thisYear.length}</td></tr>
+            <tr><td>- vergangene</td><td>${past.length}</td></tr>
+            <tr><td>- bevorstehende</td><td>${future}</td></tr>
+            <tr><td>Raves pro Woche</td><td>${avgPerWeek}</td></tr>
+            <tr><td>Raves pro Monat</td><td>${avgPerMonth}</td></tr>
+        </table>`;
+
+        const statsPopupContent = document.getElementById("statsPopupContent");
+        statsPopupContent.innerHTML = tableHTML;
+        statsPopup.style.display = 'block';
+
+    } catch (error) {
+        console.error("Fehler beim Laden der Statistikdaten:", error);
+    }
+});
 
     window.addEventListener('click', (e) => {
         if (e.target === statsPopup) {
