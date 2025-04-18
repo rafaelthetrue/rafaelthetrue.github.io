@@ -48,17 +48,17 @@ if details_response.ok:
 
 # Neue Tabelle bauen
 table_rows = ""
-for e in top_events:
+for i, e in enumerate(top_events, start=1):
     name = e["name"]
     props = event_details.get(name, {})
     date = props.get("date", "-")
     location = props.get("location", "-")
-    table_rows += f"<tr><td>{date}</td><td>{name}</td><td>{location}</td></tr>\n"
+    table_rows += f"<tr><td>{i}</td><td>{date}</td><td>{name}</td><td>{location}</td></tr>\n"
 
 table_html = f"""
 <h3 style="text-align:center; font-weight:bold;">Top 10 meistgeklickte bevorstehende Events</h3>
 <table style="margin: 10px auto 20px auto; border-collapse: collapse; text-align: left; max-width: 600px; width: 100%;">
-<thead><tr><th>Datum</th><th>Event</th><th>Location</th></tr></thead>
+<thead><tr><th>Platz</th><th>Datum</th><th>Event</th><th>Location</th></tr></thead>
 <tbody>
 {table_rows}
 </tbody>
@@ -77,7 +77,7 @@ for existing in soup.find_all("h3"):
             next_table.decompose()
         existing.decompose()
 
-# Top-Raves-Tabelle vor der "Top 10 Städte"-Tabelle einfügen
+# Neue Tabelle vor "Top 10 Städte" einfügen
 for header in soup.find_all("h3"):
     if "Top 10 Städte" in header.text:
         header.insert_before(BeautifulSoup(table_html, "html.parser"))
