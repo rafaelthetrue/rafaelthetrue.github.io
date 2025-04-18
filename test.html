@@ -540,7 +540,6 @@ const sortedRows = sortRows(filteredRows);
 renderTable(sortedRows);
 scrollToNextEvent();
 generateSchemaOrgMarkup(sortedRows);
-});
     // Kontextmenü und Textauswahl verhindern
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('selectstart', e => e.preventDefault());
@@ -627,9 +626,8 @@ generateSchemaOrgMarkup(sortedRows);
     window.addEventListener('click', (e) => {
         if (e.target === statsPopup) {
             statsPopup.style.display = 'none';
-        }
-    });
-}); // Ende von DOMContentLoaded
+    }
+});
 </script>
-</body>
+</body> 
 </html>
