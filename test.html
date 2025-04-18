@@ -558,11 +558,11 @@ generateSchemaOrgMarkup(sortedRows);
 menuIcon.addEventListener('click', () => {
     menu.classList.toggle('show');
 });
-    document.addEventListener('click', e => {
-        if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
-            menu.style.display = 'none';
-        }
-    });
+document.addEventListener('click', e => {
+    if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
+        menu.classList.remove('show');
+    }
+});
 
     // Menü schließen, wenn ein Link angeklickt wird
     const menuLinks = document.querySelectorAll('.menu a');
