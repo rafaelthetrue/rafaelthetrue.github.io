@@ -292,7 +292,7 @@
 
 /* Popup-Styling */
 #statsPopup {
-  display: none; /* Unsichtbar beim Laden */
+  display: none; 
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.4);
@@ -301,18 +301,28 @@
   align-items: center;
 }
 
-/* Container für Inhalt */
 #statsPopupInner {
   position: relative;
   background-color: white;
   border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 30px
+  border-radius: 10px;
+  padding: 30px;
   max-width: 90vw;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  font-size: 16px;
+  font-size: 16px; /* Gut lesbare Größe */
+  box-sizing: border-box;
+}
+
+#statsPopupClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #666;
+  z-index: 10;
 }
 
 #statsPopupInner,
@@ -322,17 +332,6 @@
   font-size: 16px;
   line-height: 1.5;
 }
-
-/* Schließen-Button */
-#statsPopupClose {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  font-size: 22px;
-  cursor: pointer;
-  color: #666;
-}
-
     </style>
 </head>
 <body>
