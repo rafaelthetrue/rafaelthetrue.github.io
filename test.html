@@ -294,29 +294,24 @@
 #statsPopup {
   display: none;
   position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.3); /* optionaler Overlay-Hintergrund */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
   z-index: 2000;
+  display: flex;
   justify-content: center;
   align-items: center;
-}
-
-/* Mobile Ansicht: kleinere Höhe */
-@media (max-width: 600px) {
-  #statsPopup {
-    top: 12%;
-    width: 75%;
-    max-width: 340px;
-  }
 }
 
 #statsPopupInner {
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 8px;
+  padding: 20px 20px 30px 20px;
   max-width: 90vw;
   max-height: 90vh;
-  padding: 20px 20px 30px 20px;
   overflow-y: auto;
   position: relative;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -330,12 +325,6 @@
   cursor: pointer;
   color: #666;
   z-index: 10;
-}
-
-#statsPopup iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
 }
 
     </style>
@@ -392,13 +381,15 @@
             <tbody></tbody>
         </table>
     </div>
-<!-- Popup HTML außerhalb von <script> -->
+    
+<!-- Popup Overlay -->
 <div id="statsPopup">
   <div id="statsPopupInner">
     <div id="statsPopupClose">✕</div>
     <div id="statsPopupContent"></div>
   </div>
 </div>
+
     <script>
 document.addEventListener("DOMContentLoaded", async function () {
     const tableBody = document.querySelector("#eventTable tbody");
