@@ -458,7 +458,23 @@ function renderTable(rows) {
             tr.appendChild(dateTd);
 
             const eventTd = document.createElement("td");
-            eventTd.innerHTML = `<a href="${row.Link || "#"}" target="_blank">${row.Event}</a>`;
+            const eventLink = document.createElement("a");
+eventLink.href = row.Link || "#";
+eventLink.target = "_blank";
+eventLink.textContent = row.Event;
+
+// Klick-Tracking mit Plausible
+eventLink.addEventListener("click", () => {
+    plausible("event-klick", {
+        props: {
+            name: row.Event,
+            date: formattedDate,
+            location: row.Location
+        }
+    });
+});
+
+eventTd.appendChild(eventLink);
             tr.appendChild(eventTd);
 
             const locationTd = document.createElement("td");
