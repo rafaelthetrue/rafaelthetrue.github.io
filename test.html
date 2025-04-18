@@ -72,17 +72,20 @@
   width: 24px;
   height: 24px;
 }
-        .menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: white;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: none;
-            flex-direction: column;
-            z-index: 1000;
-        }
+.menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+}
+.menu.show {
+    display: flex;
+}
         .menu a {
             padding: 10px 20px;
             text-decoration: none;
@@ -552,9 +555,9 @@ generateSchemaOrgMarkup(sortedRows);
     // Menü-Toggle
     const menu = document.getElementById('menu');
     const menuIcon = document.getElementById('menuIcon');
-    menuIcon.addEventListener('click', () => {
-        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-    });
+menuIcon.addEventListener('click', () => {
+    menu.classList.toggle('show');
+});
     document.addEventListener('click', e => {
         if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
             menu.style.display = 'none';
