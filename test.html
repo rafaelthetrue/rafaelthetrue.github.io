@@ -368,6 +368,11 @@
             <tbody></tbody>
         </table>
     </div>
+    <!-- Popup HTML außerhalb von <script> -->
+<div id="statsPopup">
+    <div id="statsPopupClose">✕</div>
+    <iframe src="statistik.html" title="Statistik"></iframe>
+</div>
     <script>
 document.addEventListener("DOMContentLoaded", async function () {
     const tableBody = document.querySelector("#eventTable tbody");
@@ -626,11 +631,5 @@ generateSchemaOrgMarkup(sortedRows);
     });
 }); // Ende von DOMContentLoaded
 </script>
-
-<!-- Popup HTML außerhalb von <script> -->
-<div id="statsPopup">
-    <div id="statsPopupClose">✕</div>
-    <iframe src="statistik.html" title="Statistik"></iframe>
-</div>
 </body>
 </html>
