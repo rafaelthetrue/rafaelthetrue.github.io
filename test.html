@@ -294,19 +294,20 @@
 #statsPopup {
   display: none;
   position: fixed;
-  top: 5%;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   width: auto;
-  max-width: 90%;
+  max-width: 90vw;
+  max-height: 90vh;
   background-color: white;
   border: 1px solid #ccc;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   z-index: 2000;
-  padding: 20px;
+  padding: 20px 20px 30px 20px; /* extra Padding unten für Abstand zum X */
   border-radius: 8px;
-  overflow-y: visible;
-  max-height: 90vh; /* Falls es doch mal länger wird */
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 /* Mobile Ansicht: kleinere Höhe */
@@ -319,12 +320,13 @@
 }
 
 #statsPopupClose {
-    position: absolute;
-    top: 8px;
-    right: 12px;
-    font-size: 20px;
-    cursor: pointer;
-    color: #666;
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+  z-index: 10;
 }
 
 #statsPopup iframe {
