@@ -601,29 +601,34 @@ generateSchemaOrgMarkup(sortedRows);
             const cells = Array.from(row.getElementsByTagName('td'));
             const match = cells.some(cell => cell.textContent.toLowerCase().includes(filter));
             row.style.display = match ? '' : 'none';
-            
-        document.getElementById('search').addEventListener('keyup', searchTable);
-        
-        const statsIcon = document.getElementById('statsIcon');
-        const statsPopup = document.getElementById('statsPopup');
-        const statsPopupClose = document.getElementById('statsPopupClose');
-
-  statsIcon.addEventListener('click', () => {
-    statsPopup.style.display = 'block';
-  });
-
-  statsPopupClose.addEventListener('click', () => {
-    statsPopup.style.display = 'none';
-  });
-
-  window.addEventListener('click', (e) => {
-    if (e.target === statsPopup) {
-      statsPopup.style.display = 'none';
+        });
     }
-  });
-</script> 
-    
-    <div id="statsPopup">
+
+    document.getElementById('search').addEventListener('keyup', searchTable);
+
+    // Statistik-Popup öffnen/schließen
+    const statsIcon = document.getElementById('statsIcon');
+    const statsPopup = document.getElementById('statsPopup');
+    const statsPopupClose = document.getElementById('statsPopupClose');
+
+    statsIcon.addEventListener('click', () => {
+        statsPopup.style.display = 'block';
+    });
+
+    statsPopupClose.addEventListener('click', () => {
+        statsPopup.style.display = 'none';
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === statsPopup) {
+            statsPopup.style.display = 'none';
+        }
+    });
+}); // Ende von DOMContentLoaded
+</script>
+
+<!-- Popup HTML außerhalb von <script> -->
+<div id="statsPopup">
     <div id="statsPopupClose">✕</div>
     <iframe src="statistik.html" title="Statistik"></iframe>
 </div>
