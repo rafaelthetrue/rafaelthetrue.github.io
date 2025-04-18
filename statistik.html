@@ -59,6 +59,10 @@
             display: inline-block;
             color: #333;
         }
+        .menu-icon.disabled {
+            pointer-events: none;
+            opacity: 0.4;
+        }
         .menu {
             position: absolute;
             top: 100%;
@@ -284,6 +288,12 @@
       menu.style.display = 'none';
     });
   });
+  // Deaktivieren im iFrame
+if (window.self !== window.top && menuIcon) {
+  menuIcon.classList.add('disabled');
+  menuIcon.style.pointerEvents = 'none';
+  menuIcon.style.opacity = '0.4';
+}
 </script>
 </body>
 </html>
