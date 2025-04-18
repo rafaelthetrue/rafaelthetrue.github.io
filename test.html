@@ -629,6 +629,10 @@ menuLinks.forEach(link => {
     const statsIcon = document.getElementById('statsIcon');
     const statsPopup = document.getElementById('statsPopup');
     const statsPopupClose = document.getElementById('statsPopupClose');
+    
+    statsPopupClose.addEventListener('click', () => {
+    statsPopup.style.display = 'none';
+});
 
 // Statistik-Popup dynamisch mit berechneter Tabelle befüllen
 statsIcon.addEventListener('click', async () => {
