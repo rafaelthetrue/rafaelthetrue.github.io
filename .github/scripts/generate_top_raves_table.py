@@ -15,7 +15,7 @@ events_df = pd.read_excel("events.xlsx")
 events_df = events_df[events_df["Datum"] >= pd.Timestamp.today().normalize()]
 events_df["Event_clean"] = events_df["Event"].str.strip().str.lower()
 
-# Plausible API Abfrage – mit dimension event:name
+# API-Abfrage
 payload = {
     "site_id": SITE_ID,
     "metrics": ["visitors"],
@@ -29,7 +29,7 @@ headers = {
 }
 
 print("Sende Anfrage an:", API_URL)
-response = requests.post(API_URL, headers=headers, json=payload)
+response = requests.get(API_URL, headers=headers, params=payload)
 print("Status Code:", response.status_code)
 print("Antwort:", response.text)
 response.raise_for_status()
@@ -38,7 +38,7 @@ data = response.json()
 # Top 10 extrahieren
 top_events = sorted(data["results"], key=lambda x: x["visitors"], reverse=True)[:10]
 
-# Eventinfos aus Excel ergänzen
+# Eventinfos ergänzen
 def get_event_info(name):
     name_clean = name.strip().lower()
     match = events_df[events_df["Event_clean"] == name_clean]
@@ -49,12 +49,12 @@ def get_event_info(name):
         }
     return {"date": "-", "location": "-"}
 
-event_details = {e["event:props:event"]: get_event_info(e["event:props:event"]) for e in top_events}
+event_details = {e["name"]: get_event_info(e["name"]) for e in top_events}
 
-# HTML-Tabelle erzeugen
+# HTML-Tabelle
 table_rows = ""
 for i, e in enumerate(top_events, start=1):
-    name = e["event:props:event"]
+    name = e["name"]
     props = event_details.get(name, {})
     date = props["date"]
     location = props["location"]
