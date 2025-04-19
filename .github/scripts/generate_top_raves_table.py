@@ -14,7 +14,7 @@ payload = {
     "site_id": SITE_ID,
     "metrics": ["visitors"],
     "date_range": "30d",
-    "group_by": "event:name"
+    "compare": ["event:name"]
 }
 
 headers = {
