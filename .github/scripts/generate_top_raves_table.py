@@ -24,6 +24,7 @@ payload = {
     "site_id": SITE_ID,
     "metrics": "visitors",
     "property": "event:props:event",
+    "period": "custom",  # <--- wichtig
     "date": f"{start_date},{end_date}",
     "filters": "event:props:event!=null"
 }
