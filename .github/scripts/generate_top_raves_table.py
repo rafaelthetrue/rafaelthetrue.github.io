@@ -12,7 +12,7 @@ API_URL = "https://plausible.io/api/v1/stats/breakdown"
 params = {
     "site_id": SITE_ID,
     "period": "30d",
-    "property": "event:name",
+    "property": "name",
     "limit": 1000
 }
 
