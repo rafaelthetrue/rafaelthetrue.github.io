@@ -35,11 +35,14 @@ top_events = sorted(data["results"], key=lambda x: x["visitors"], reverse=True)[
 
 # Zusätzliche Details abfragen
 event_details = {}
-details_response = requests.get(
-    "https://plausible.io/api/v1/stats/event-data",
-    params={"site_id": SITE_ID, "event_name": "event-klick", "limit": 1000},
-    headers=headers
-)
+details_url = "https://plausible.io/api/v1/stats/event-data"
+details_params = {"site_id": SITE_ID, "event_name": "event-klick", "limit": 1000}
+print("Frage Detaildaten ab:", details_url)
+print("Mit Parametern:", details_params)
+
+details_response = requests.get(details_url, params=details_params, headers=headers)
+print("Detailantwort-Status:", details_response.status_code)
+print("Detailantwort-Text:", details_response.text)
 for item in details_response.json().get("results", []):
     props = item["event"].get("props", {})
     print("Event-Props gefunden:", props)  # <-- Logging!
