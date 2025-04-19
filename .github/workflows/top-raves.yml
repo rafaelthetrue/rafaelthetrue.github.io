@@ -22,7 +22,7 @@ jobs:
         run: pip install requests pandas
 
       - name: Run script to update statistik.html
-        run: python python .github/scripts/generate_top_raves_table.py
+        run: python .github/scripts/generate_top_raves_table.py
         env:
           PLAUSIBLE_API_KEY: ${{ secrets.PLAUSIBLE_API_KEY }}
           PLAUSIBLE_SITE_ID: ravebro.de
