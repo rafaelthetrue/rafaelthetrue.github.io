@@ -40,15 +40,16 @@ details_response = requests.get(
     params={"site_id": SITE_ID, "event_name": "event-klick", "limit": 1000},
     headers=headers
 )
-if details_response.ok:
-    for item in details_response.json().get("results", []):
-        event_name = item["event"]["props"].get("name")
-        if event_name in [e["name"] for e in top_events]:
-            event_details[event_name] = {
-                "date": item["event"]["props"].get("date", "-"),
-                "location": item["event"]["props"].get("location", "-")
-            }
+for item in details_response.json().get("results", []):
+    props = item["event"].get("props", {})
+    print("Event-Props gefunden:", props)  # <-- Logging!
 
+    event_name = props.get("name")
+    if event_name in [e["name"] for e in top_events]:
+        event_details[event_name] = {
+            "date": props.get("date", "-"),
+            "location": props.get("location", "-")
+        }
 # Tabelle generieren
 table_rows = ""
 for i, e in enumerate(top_events, start=1):
