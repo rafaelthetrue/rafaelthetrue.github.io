@@ -6,22 +6,22 @@ from bs4 import BeautifulSoup
 # Konfiguration
 API_KEY = os.environ.get("PLAUSIBLE_API_KEY")
 SITE_ID = os.environ.get("PLAUSIBLE_SITE_ID")
-API_URL = "https://plausible.io/api/v1/stats/breakdown"
+API_URL = "https://plausible.io/api/v1/stats/event-data"
 
-# Logging
-print("Sende Anfrage an:", API_URL)
-
+# Anfrage-Parameter
 params = {
     "site_id": SITE_ID,
     "period": "30d",
-    "property": "event:name",
-    "filters": "event:name==event-klick"
+    "event_name": "event-klick",
+    "limit": 1000
 }
 
 headers = {
     "Authorization": f"Bearer {API_KEY}"
 }
 
+# Anfrage an Plausible API
+print("Sende Anfrage an:", API_URL)
 print("Mit Parametern:", params)
 
 response = requests.get(API_URL, params=params, headers=headers)
