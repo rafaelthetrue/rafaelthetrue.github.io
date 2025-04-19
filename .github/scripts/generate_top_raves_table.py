@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 # Konfiguration
 API_KEY = os.environ.get("PLAUSIBLE_API_KEY")
 SITE_ID = os.environ.get("PLAUSIBLE_SITE_ID")
-API_URL = "https://plausible.io/api/v2/breakdown"
+API_URL = "https://plausible.io/api/v1/stats/breakdown"
 
 # Excel einlesen
 events_df = pd.read_excel("events.xlsx")
