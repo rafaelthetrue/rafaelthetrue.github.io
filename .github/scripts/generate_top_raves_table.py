@@ -29,7 +29,7 @@ headers = {
 }
 
 print("Sende Anfrage an:", API_URL)
-response = requests.get(API_URL, headers=headers, params=payload)
+response = requests.post(API_URL, headers=headers, json=payload)
 print("Status Code:", response.status_code)
 print("Antwort:", response.text)
 response.raise_for_status()
