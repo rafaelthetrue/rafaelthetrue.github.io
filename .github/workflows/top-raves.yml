@@ -9,6 +9,9 @@ jobs:
   update-table:
     runs-on: ubuntu-latest
 
+    env:
+      PLAUSIBLE_API_KEY: ${{ secrets.PLAUSIBLE_API_KEY }}
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
