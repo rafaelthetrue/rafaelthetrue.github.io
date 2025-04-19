@@ -12,7 +12,7 @@ params = {
     "site_id": SITE_ID,
     "period": "30d",
     "property": "event:name",
-    "filters": "event:name==event-klick",
+    "event": "event-klick",
     "limit": 1000
 }
 
