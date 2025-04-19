@@ -16,11 +16,15 @@ events_df = events_df[events_df["Datum"] >= pd.Timestamp.today().normalize()]
 events_df["Event_clean"] = events_df["Event"].str.strip().str.lower()
 
 # API-Abfrage
+from datetime import datetime, timedelta
+start_date = (datetime.today() - timedelta(days=30)).strftime("%Y-%m-%d")
+end_date = datetime.today().strftime("%Y-%m-%d")
+
 payload = {
     "site_id": SITE_ID,
     "metrics": "visitors",
     "property": "event:props:event",
-    "date_range": "30d",
+    "date": f"{start_date},{end_date}",
     "filters": "event:props:event!=null"
 }
 
@@ -35,8 +39,11 @@ print("Antwort:", response.text)
 response.raise_for_status()
 data = response.json()
 
-# Top 10 extrahieren
-top_events = sorted(data["results"], key=lambda x: x["visitors"], reverse=True)[:10]
+# Top 10 extrahieren, "(none)"-Einträge entfernen
+top_events = [
+    e for e in sorted(data["results"], key=lambda x: x["visitors"], reverse=True)
+    if e["event"] != "(none)"
+][:10]
 
 # Eventinfos ergänzen
 def get_event_info(name):
