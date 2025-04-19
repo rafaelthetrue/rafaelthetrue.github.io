@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 # Konfiguration
 API_KEY = os.environ.get("PLAUSIBLE_API_KEY")
 SITE_ID = os.environ.get("PLAUSIBLE_SITE_ID")
-API_URL = "https://plausible.io/api/v1/stats/events-breakdown"
+API_URL = "https://plausible.io/api/v1/stats/breakdown"
 
 # Excel einlesen
 events_df = pd.read_excel("events.xlsx")
@@ -18,7 +18,7 @@ events_df["Event_clean"] = events_df["Event"].str.strip().str.lower()
 # API-Abfrage
 payload = {
     "site_id": SITE_ID,
-    "metrics": ["visitors"],
+    "metrics": "visitors",
     "property": "event:props:event",
     "date_range": "30d",
     "filters": "event:props:event!=null"
@@ -29,7 +29,7 @@ headers = {
 }
 
 print("Sende Anfrage an:", API_URL)
-response = requests.post(API_URL, headers=headers, json=payload)
+response = requests.get(API_URL, headers=headers, params=payload)
 print("Status Code:", response.status_code)
 print("Antwort:", response.text)
 response.raise_for_status()
