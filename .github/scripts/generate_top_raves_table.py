@@ -1,5 +1,7 @@
 import requests
+import datetime
 import os
+from bs4 import BeautifulSoup
 
 API_KEY = os.environ.get("PLAUSIBLE_API_KEY")
 SITE_ID = os.environ.get("PLAUSIBLE_SITE_ID")
