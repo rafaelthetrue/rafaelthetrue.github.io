@@ -33,26 +33,10 @@ data = response.json()
 
 top_events = sorted(data["results"], key=lambda x: x["visitors"], reverse=True)[:10]
 
-# Zusätzliche Details abfragen
-event_details = {}
-details_url = "https://plausible.io/api/v1/stats/event-data"
-details_params = {"site_id": SITE_ID, "event_name": "event-klick", "limit": 1000}
-print("Frage Detaildaten ab:", details_url)
-print("Mit Parametern:", details_params)
-
-details_response = requests.get(details_url, params=details_params, headers=headers)
-print("Detailantwort-Status:", details_response.status_code)
-print("Detailantwort-Text:", details_response.text)
-for item in details_response.json().get("results", []):
-    props = item["event"].get("props", {})
-    print("Event-Props gefunden:", props)  # <-- Logging!
-
-    event_name = props.get("name")
-    if event_name in [e["name"] for e in top_events]:
-        event_details[event_name] = {
-            "date": props.get("date", "-"),
-            "location": props.get("location", "-")
-        }
+# Platzhalter-Daten für Datum und Location (nicht verfügbar über API)
+event_details = {
+    e["name"]: {"date": "-", "location": "-"} for e in top_events
+}
 # Tabelle generieren
 table_rows = ""
 for i, e in enumerate(top_events, start=1):
