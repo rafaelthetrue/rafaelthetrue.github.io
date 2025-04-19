@@ -1,6 +1,7 @@
 import requests
 import datetime
 import os
+import pandas as pd
 from bs4 import BeautifulSoup
 
 # Konfiguration
@@ -31,11 +32,26 @@ print("Antwort:", response.text)
 response.raise_for_status()
 data = response.json()
 
+# Excel-Daten einlesen
+events_df = pd.read_excel("events.xlsx")
+
+# Nur zukünftige Events (Datum >= heute)
+events_df = events_df[events_df["Datum"] >= pd.Timestamp.today().normalize()]
+
+# Hilfsfunktion zum Nachschlagen von Datum und Location anhand des Eventnamens
+def get_event_info(name):
+    match = events_df[events_df["Event"] == name]
+    if not match.empty:
+        return {
+            "date": match.iloc[0]["Datum"].strftime("%Y-%m-%d"),
+            "location": match.iloc[0]["Location"]
+        }
+    return {"date": "-", "location": "-"}
+
 top_events = sorted(data["results"], key=lambda x: x["visitors"], reverse=True)[:10]
 
-# Platzhalter-Daten für Datum und Location (nicht verfügbar über API)
 event_details = {
-    e["name"]: {"date": "-", "location": "-"} for e in top_events
+    e["name"]: get_event_info(e["name"]) for e in top_events
 }
 # Tabelle generieren
 table_rows = ""
