@@ -2,38 +2,32 @@ name: Update Top 10 Raves
 
 on:
   schedule:
-    - cron: '0 18 * * *'  # täglich um 18:00 Uhr
-  workflow_dispatch:      # manuelles Auslösen möglich
+    - cron: "0 18 * * *"
+  workflow_dispatch:
 
 jobs:
-  update-top-raves:
+  update-table:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.x
+          python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests pandas
+        run: pip install requests beautifulsoup4
 
-      - name: Run script to update statistik.html
+      - name: Run script to update Top 10 Raves
         run: python .github/scripts/generate_top_raves_table.py
-        env:
-          PLAUSIBLE_API_KEY: ${{ secrets.PLAUSIBLE_API_KEY }}
-          PLAUSIBLE_SITE_ID: ravebro.de
 
       - name: Commit and push changes
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git remote set-url origin https://x-access-token:${GIT_AUTH_TOKEN}@github.com/${{ github.repository }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add statistik.html
-          git commit -m "Update Top 10 Raves via Plausible API"
+          git commit -m "Update Top 10 Raves"
           git push
-        env:
-          GIT_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
