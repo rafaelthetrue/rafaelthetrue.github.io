@@ -6,17 +6,16 @@ import os
 # Konfiguration
 API_KEY = os.environ.get("PLAUSIBLE_API_KEY")
 SITE_ID = os.environ.get("PLAUSIBLE_SITE_ID")
-API_URL = f"https://plausible.io/api/v1/stats/breakdown"
+API_URL = "https://plausible.io/api/v1/stats/breakdown"
 
 # Aktuelles Datum
 today = datetime.date.today()
 
-# Daten abrufen
+# Daten abrufen – jetzt ohne "filters"
 params = {
     "site_id": SITE_ID,
     "period": "30d",
-    "property": "event:name",
-    "filters": "event:name==event-klick"
+    "property": "event:name"
 }
 
 headers = {
@@ -39,11 +38,12 @@ details_response = requests.get(
 )
 if details_response.ok:
     for item in details_response.json().get("results", []):
-        event_name = item["event"]["props"].get("name")
+        props = item["event"]["props"]
+        event_name = props.get("name")
         if event_name in [e["name"] for e in top_events]:
             event_details[event_name] = {
-                "date": item["event"]["props"].get("date", ""),
-                "location": item["event"]["props"].get("location", "")
+                "date": props.get("date", "-"),
+                "location": props.get("location", "-")
             }
 
 # Neue Tabelle bauen
