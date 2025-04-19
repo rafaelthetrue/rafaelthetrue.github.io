@@ -7,13 +7,14 @@ from bs4 import BeautifulSoup
 # Konfiguration
 API_KEY = os.environ.get("PLAUSIBLE_API_KEY")
 SITE_ID = os.environ.get("PLAUSIBLE_SITE_ID")
-API_URL = "https://plausible.io/api/v1/stats/breakdown"
+API_URL = "https://plausible.io/api/v2/query"
 
-params = {
+# POST-Body:
+payload = {
     "site_id": SITE_ID,
-    "period": "30d",
+    "metrics": ["visitors"],
+    "date_range": "30d",
     "property": "event:name",
-    "filters": "event:name==event-klick",
     "limit": 1000
 }
 
@@ -23,9 +24,10 @@ headers = {
 
 # Anfrage an Plausible API
 print("Sende Anfrage an:", API_URL)
-print("Mit Parametern:", params)
+print("Mit Payload:", payload)
 
-response = requests.get(API_URL, params=params, headers=headers)
+# POST
+response = requests.post(API_URL, json=payload, headers=headers)
 print("Status Code:", response.status_code)
 print("Antwort:", response.text)
 
