@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 # Konfiguration
 API_KEY = os.environ.get("PLAUSIBLE_API_KEY")
 SITE_ID = os.environ.get("PLAUSIBLE_SITE_ID")
-API_URL = "https://plausible.io/api/v2/query"
+API_URL = "https://plausible.io/api/v2/breakdown"
 
 # Excel einlesen
 events_df = pd.read_excel("events.xlsx")
@@ -19,9 +19,9 @@ events_df["Event_clean"] = events_df["Event"].str.strip().str.lower()
 payload = {
     "site_id": SITE_ID,
     "metrics": ["visitors"],
+    "property": "event:props:event",
     "date_range": "30d",
-    "filters": ["event:props:event!=", ""],
-    "properties": ["event:props:event"]
+    "filters": "event:props:event!=null"
 }
 
 headers = {
