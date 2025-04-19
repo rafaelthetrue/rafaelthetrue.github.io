@@ -14,8 +14,7 @@ payload = {
     "site_id": SITE_ID,
     "metrics": ["visitors"],
     "date_range": "30d",
-    "property": "event:name",
-    "limit": 1000
+    "group_by": "event:name"
 }
 
 headers = {
@@ -61,12 +60,12 @@ def get_event_info(name):
 top_events = sorted(data["results"], key=lambda x: x["visitors"], reverse=True)[:10]
 
 event_details = {
-    e["name"]: get_event_info(e["name"]) for e in top_events
+    e["event:name"]: get_event_info(e["event:name"]) for e in top_events
 }
 # Tabelle generieren
 table_rows = ""
 for i, e in enumerate(top_events, start=1):
-    name = e["name"]
+    name = e["event:name"]
     props = event_details.get(name, {})
     date = props.get("date", "-")
     location = props.get("location", "-")
