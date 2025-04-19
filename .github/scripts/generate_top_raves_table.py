@@ -3,9 +3,13 @@ import datetime
 import os
 from bs4 import BeautifulSoup
 
+# Konfiguration
 API_KEY = os.environ.get("PLAUSIBLE_API_KEY")
 SITE_ID = os.environ.get("PLAUSIBLE_SITE_ID")
 API_URL = "https://plausible.io/api/v1/stats/breakdown"
+
+# Logging
+print("Sende Anfrage an:", API_URL)
 
 params = {
     "site_id": SITE_ID,
@@ -18,20 +22,18 @@ headers = {
     "Authorization": f"Bearer {API_KEY}"
 }
 
-print("Sende Anfrage an:", API_URL)
 print("Mit Parametern:", params)
 
 response = requests.get(API_URL, params=params, headers=headers)
 print("Status Code:", response.status_code)
 print("Antwort:", response.text)
 
-response.raise_for_status()  # wird explizit Fehler werfen, wenn API-Fehler vorliegt
+response.raise_for_status()
 data = response.json()
 
-# Top 10 Eventnamen holen
 top_events = sorted(data["results"], key=lambda x: x["visitors"], reverse=True)[:10]
 
-# Rohdaten für Datum + Location (aus event props)
+# Zusätzliche Details abfragen
 event_details = {}
 details_response = requests.get(
     "https://plausible.io/api/v1/stats/event-data",
@@ -40,15 +42,14 @@ details_response = requests.get(
 )
 if details_response.ok:
     for item in details_response.json().get("results", []):
-        props = item["event"]["props"]
-        event_name = props.get("name")
+        event_name = item["event"]["props"].get("name")
         if event_name in [e["name"] for e in top_events]:
             event_details[event_name] = {
-                "date": props.get("date", "-"),
-                "location": props.get("location", "-")
+                "date": item["event"]["props"].get("date", "-"),
+                "location": item["event"]["props"].get("location", "-")
             }
 
-# Neue Tabelle bauen
+# Tabelle generieren
 table_rows = ""
 for i, e in enumerate(top_events, start=1):
     name = e["name"]
@@ -67,11 +68,11 @@ table_html = f"""
 </table>
 """
 
-# statistik.html öffnen und bearbeiten
+# statistik.html aktualisieren
 with open("statistik.html", "r", encoding="utf-8") as f:
     soup = BeautifulSoup(f, "html.parser")
 
-# Bestehende Top-Raves-Tabelle entfernen, falls vorhanden
+# Alte Tabelle entfernen
 for existing in soup.find_all("h3"):
     if "Top 10 meistgeklickte" in existing.text:
         next_table = existing.find_next("table")
@@ -79,12 +80,12 @@ for existing in soup.find_all("h3"):
             next_table.decompose()
         existing.decompose()
 
-# Neue Tabelle vor "Top 10 Städte" einfügen
+# Neue Tabelle vor „Top 10 Städte“ einfügen
 for header in soup.find_all("h3"):
     if "Top 10 Städte" in header.text:
         header.insert_before(BeautifulSoup(table_html, "html.parser"))
         break
 
-# Datei speichern
+# Speichern
 with open("statistik.html", "w", encoding="utf-8") as f:
     f.write(str(soup))
