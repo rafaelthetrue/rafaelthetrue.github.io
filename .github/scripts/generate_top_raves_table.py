@@ -32,15 +32,23 @@ print("Antwort:", response.text)
 response.raise_for_status()
 data = response.json()
 
+print("Top Events aus Plausible:")
+for r in data.get("results", []):
+    print("-", r)
+
 # Excel-Daten einlesen
 events_df = pd.read_excel("events.xlsx")
 
 # Nur zukünftige Events (Datum >= heute)
 events_df = events_df[events_df["Datum"] >= pd.Timestamp.today().normalize()]
 
+# Event-Namen in Excel-Datei bereinigen für robusten Vergleich
+events_df["Event_clean"] = events_df["Event"].str.strip().str.lower()
+
 # Hilfsfunktion zum Nachschlagen von Datum und Location anhand des Eventnamens
 def get_event_info(name):
-    match = events_df[events_df["Event"] == name]
+    name_clean = name.strip().lower()
+    match = events_df[events_df["Event_clean"] == name_clean]
     if not match.empty:
         return {
             "date": match.iloc[0]["Datum"].strftime("%Y-%m-%d"),
