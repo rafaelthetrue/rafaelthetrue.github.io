@@ -1,29 +1,29 @@
 import requests
-import datetime
-from bs4 import BeautifulSoup
 import os
 
-# Konfiguration
 API_KEY = os.environ.get("PLAUSIBLE_API_KEY")
 SITE_ID = os.environ.get("PLAUSIBLE_SITE_ID")
 API_URL = "https://plausible.io/api/v1/stats/breakdown"
 
-# Aktuelles Datum
-today = datetime.date.today()
-
-# Daten abrufen – jetzt ohne "filters"
 params = {
     "site_id": SITE_ID,
     "period": "30d",
-    "property": "event:name"
+    "property": "event:name",
+    "filters": "event:name==event-klick"
 }
 
 headers = {
     "Authorization": f"Bearer {API_KEY}"
 }
 
+print("Sende Anfrage an:", API_URL)
+print("Mit Parametern:", params)
+
 response = requests.get(API_URL, params=params, headers=headers)
-response.raise_for_status()
+print("Status Code:", response.status_code)
+print("Antwort:", response.text)
+
+response.raise_for_status()  # wird explizit Fehler werfen, wenn API-Fehler vorliegt
 data = response.json()
 
 # Top 10 Eventnamen holen
