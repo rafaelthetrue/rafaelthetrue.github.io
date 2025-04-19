@@ -20,8 +20,8 @@ payload = {
     "site_id": SITE_ID,
     "metrics": ["visitors"],
     "date_range": "30d",
-    "properties": ["event:props:event"],
-    "filters": "event:props:event!="  # Nur Events mit event-name
+    "filters": ["event:props:event!=", ""],
+    "properties": ["event:props:event"]
 }
 
 headers = {
