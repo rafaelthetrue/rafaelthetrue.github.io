@@ -62,7 +62,7 @@ event_details = {e["name"]: get_event_info(e["name"]) for e in top_events}
 # HTML-Tabelle
 table_rows = ""
 for i, e in enumerate(top_events, start=1):
-    name = e["event"]
+    name = e["name"]
     props = event_details.get(name, {})
     date = props["date"]
     location = props["location"]
