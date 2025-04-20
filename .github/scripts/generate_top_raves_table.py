@@ -23,10 +23,10 @@ end_date = datetime.today().strftime("%Y-%m-%d")
 payload = {
     "site_id": SITE_ID,
     "metrics": "visitors",
-    "property": "event:props:event",
+    "property": "event:props:name",
     "period": "custom",  # <--- wichtig
     "date": f"{start_date},{end_date}",
-    "filters": "event:props:event!=null"
+    "filters": "event:props:name!=null"
 }
 
 headers = {
