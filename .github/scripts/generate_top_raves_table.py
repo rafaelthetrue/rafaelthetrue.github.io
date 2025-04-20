@@ -17,7 +17,7 @@ events_df["Event_clean"] = events_df["Event"].str.strip().str.lower()
 
 # API-Abfrage
 from datetime import datetime, timedelta
-start_date = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+start_date = (datetime.today() - timedelta(days=28)).strftime("%Y-%m-%d")
 end_date = datetime.today().strftime("%Y-%m-%d")
 
 payload = {
