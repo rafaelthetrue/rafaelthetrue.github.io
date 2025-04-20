@@ -43,7 +43,7 @@ data = response.json()
 # Top 10 extrahieren, "(none)"-Einträge entfernen
 top_events = [
     e for e in sorted(data["results"], key=lambda x: x["visitors"], reverse=True)
-    if e["event"] != "(none)"
+    if e["name"] != "(none)"
 ][:10]
 
 # Eventinfos ergänzen
@@ -57,7 +57,7 @@ def get_event_info(name):
         }
     return {"date": "-", "location": "-"}
 
-event_details = {e["event"]: get_event_info(e["event"]) for e in top_events}
+event_details = {e["name"]: get_event_info(e["name"]) for e in top_events}
 
 # HTML-Tabelle
 table_rows = ""
