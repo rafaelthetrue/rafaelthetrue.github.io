@@ -70,7 +70,6 @@ for i, e in enumerate(top_events, start=1):
 
 table_html = f"""
 <h2 style="text-align:center; font-weight:bold;">Top 10 Raves</h2>
-<table style="margin: 10px auto 20px auto; border-collapse: collapse; text-align: left; max-width: 600px; width: 100%;">
 <thead><tr><th>Platz</th><th>Datum</th><th>Event</th><th>Location</th></tr></thead>
 <tbody>
 {table_rows}
