@@ -332,6 +332,40 @@
   font-size: 14px;
   line-height: 1.5;
 }
+
+#topRavesPopup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+}
+
+#topRavesPopupInner {
+  position: relative;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 30px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+#topRavesPopupClose {
+  position: absolute;
+  top: 4px;
+  right: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  color: #666;
+  z-index: 10;
+}
     </style>
 </head>
 <body>
@@ -392,6 +426,14 @@
   <div id="statsPopupInner">
     <div id="statsPopupClose">✕</div>
     <div id="statsPopupContent"></div>
+  </div>
+</div>
+
+<!-- Zweites Popup Overlay -->
+<div id="topRavesPopup">
+  <div id="topRavesPopupInner">
+    <div id="topRavesPopupClose">✕</div>
+    <div id="topRavesPopupContent"></div>
   </div>
 </div>
 
@@ -655,6 +697,45 @@ menuLinks.forEach(link => {
     
     statsPopupClose.addEventListener('click', () => {
     statsPopup.style.display = 'none';
+});
+
+// Top-Raves-Popup öffnen/schließen
+const topRavesIcon = document.getElementById("topRavesIcon");
+const topRavesPopup = document.getElementById("topRavesPopup");
+const topRavesPopupClose = document.getElementById("topRavesPopupClose");
+
+topRavesPopupClose.addEventListener("click", () => {
+  topRavesPopup.style.display = "none";
+});
+
+topRavesIcon.addEventListener("click", async () => {
+  try {
+    const response = await fetch("statistik.html");
+    const html = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    const headings = [...doc.querySelectorAll("h2, h3")];
+    const relevantSections = [];
+
+    let collect = false;
+    for (const h of headings) {
+      if (h.textContent.includes("Top 10 Städte")) collect = true;
+      if (collect) relevantSections.push(h.outerHTML, h.nextElementSibling?.outerHTML || "");
+    }
+
+    document.getElementById("topRavesPopupContent").innerHTML = relevantSections.join("");
+    topRavesPopup.style.display = "flex";
+  } catch (err) {
+    console.error("Fehler beim Laden der Top-Raves-Daten:", err);
+  }
+});
+
+// Klick außerhalb des Popups schließt es
+window.addEventListener("click", (e) => {
+  if (e.target === topRavesPopup) {
+    topRavesPopup.style.display = "none";
+  }
 });
 
 // Statistik-Popup dynamisch mit berechneter Tabelle befüllen
