@@ -82,12 +82,14 @@ table_html = f"""
 with open("statistik.html", "r", encoding="utf-8") as f:
     soup = BeautifulSoup(f, "html.parser")
 
+# Alte Tabelle entfernen (falls vorhanden)
 for header in soup.find_all(["h2", "h3"]):
-    if "Top 10 meistgeklickte" in existing.text:
-        table = existing.find_next("table")
+    if "Top 10 meistgeklickte" in header.text:
+        table = header.find_next("table")
         if table:
             table.decompose()
-        existing.decompose()
+        header.decompose()
+        break
 
 for header in soup.find_all(["h2", "h3"]):
     if "Top 10 Städte" in header.text:
