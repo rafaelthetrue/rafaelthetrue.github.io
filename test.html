@@ -718,11 +718,11 @@ topRavesIcon.addEventListener("click", async () => {
     const headings = [...doc.querySelectorAll("h2, h3")];
     const relevantSections = [];
 
-    let collect = false;
-    for (const h of headings) {
-      if (h.textContent.includes("Top 10 Städte")) collect = true;
-      if (collect) relevantSections.push(h.outerHTML, h.nextElementSibling?.outerHTML || "");
-    }
+let collect = false;
+for (const h of headings) {
+  if (h.textContent.includes("Top 10 Raves")) collect = true;
+  if (collect) relevantSections.push(h.outerHTML, h.nextElementSibling?.outerHTML || "");
+}
 
     document.getElementById("topRavesPopupContent").innerHTML = relevantSections.join("");
     topRavesPopup.style.display = "flex";
