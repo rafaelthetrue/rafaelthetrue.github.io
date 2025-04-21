@@ -344,8 +344,7 @@
 }
 
 #topRavesPopupInner {
-  display: flex;
-  flex-direction: column;
+  position: relative;
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -358,16 +357,6 @@
   box-sizing: border-box;
 }
 
-.popup-header {
-  position: sticky;
-  top: 0;
-  background-color: white;
-  z-index: 10;
-  padding: 10px 10px 0 0; /* Oben und rechts Padding für das Schließen-Symbol */
-  display: flex;
-  justify-content: flex-end;
-}
-
 #topRavesPopupInner h2 {
   text-align: center;
   font-weight: bold;
@@ -377,19 +366,13 @@
 }
 
 #topRavesPopupClose {
+  position: absolute;
+  top: 4px;
+  right: 10px;
   font-size: 18px;
   cursor: pointer;
   color: #666;
-  padding: 4px 8px;
-  transition: color 0.2s;
-}
-
-#topRavesPopupClose:hover {
-  color: #000;
-}
-
-.popup-content {
-  padding: 0 30px 30px 30px; /* Links, rechts und unten Padding für den Inhalt */
+  z-index: 10;
 }
 
 #topRavesPopupInner th {
