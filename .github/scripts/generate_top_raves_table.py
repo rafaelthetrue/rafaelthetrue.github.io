@@ -40,6 +40,17 @@ print("Antwort:", response.text)
 response.raise_for_status()
 data = response.json()
 
+# Eventinfos ergänzen
+def get_event_info(name):
+    name_clean = name.strip().lower()
+    match = events_df[events_df["Event_clean"] == name_clean]
+    if not match.empty:
+        return {
+            "date": match.iloc[0]["Datum"].strftime("%Y-%m-%d"),
+            "location": match.iloc[0]["Location"]
+        }
+    return {"date": "-", "location": "-"}
+
 # Eventinfos vorbereiten
 def is_upcoming(event):
     info = get_event_info(event["name"])
@@ -57,7 +68,6 @@ filtered_events = [
 # Sortieren nach Besucherzahl, dann Top 10 nehmen
 top_events = sorted(filtered_events, key=lambda x: x["visitors"], reverse=True)[:10]
 
-# Eventinfos ergänzen
 event_details = {e["name"]: get_event_info(e["name"]) for e in top_events}
 
 # HTML-Tabelle
