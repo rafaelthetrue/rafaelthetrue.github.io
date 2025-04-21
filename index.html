@@ -23,7 +23,7 @@
     <meta name="theme-color" content="#f9f9f9">
     <title>Techno Raves 2025 (Termine, Events & Locations) - ravebro.de</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script defer data-domain="ravebro.de" src="https://plausible.io/js/script.js"></script>
+    <script defer data-domain="ravebro.de" src="https://plausible.io/js/script.pageview-props.tagged-events.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -64,23 +64,28 @@
             position: relative;
             max-width: 800px;
         }
-        .menu-icon {
-            font-size: 24px;
-            cursor: pointer;
-            display: inline-block;
-            color: #333;
-        }
-        .menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: white;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: none;
-            flex-direction: column;
-            z-index: 1000;
-        }
+.menu-icon {
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+}
+.menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+}
+.menu.show {
+    display: flex;
+}
         .menu a {
             padding: 10px 20px;
             text-decoration: none;
@@ -198,6 +203,187 @@
         max-width: 120px; /* Maximale Breite der Spalte, um Layout zu schützen */
     }
 }
+.icon-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  max-width: 800px;
+  margin: 10px auto;
+  position: relative;
+  height: 40px;
+}
+
+/* Fester Abstand in mobiler und Desktop-Ansicht */
+.icon-wrapper {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-left {
+  left: calc(50% - 90px); /* Desktop: Abstand vom mittleren Menü-Icon */
+}
+.icon-right {
+  right: calc(50% - 90px); /* Desktop: Abstand vom mittleren Menü-Icon */
+}
+.icon-center {
+  position: relative;
+}
+
+/* In der mobilen Ansicht verkleinern wir den Abstand */
+@media (max-width: 600px) {
+  .icon-left {
+    left: calc(50% - 90px);
+  }
+  .icon-right {
+    right: calc(50% - 90px);
+  }
+}
+
+/* Gemeinsames Icon-Design */
+.icon {
+  width: 24px;
+  height: 24px;
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Statistik-Icon (3 vertikale Balken) */
+.stats-icon {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-end;
+  width: 24px;
+  height: 24px;
+  gap: 3px;
+  padding-bottom: 8px;
+}
+
+.stats-icon .bar {
+  width: 3px;
+  background-color: #333;
+  border-radius: 1px;
+}
+
+.stats-icon .bar1 { height: 6px; }
+.stats-icon .bar2 { height: 12px; }
+.stats-icon .bar3 { height: 9px; }
+
+.top-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+}
+.trend-arrow {
+  width: 24px;
+  height: 24px;
+  margin-top: 4px;
+}
+
+/* Popup-Styling */
+#statsPopup {
+  display: none; 
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+}
+
+#statsPopupInner {
+  position: relative;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 30px;
+  max-width: 90vw;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  font-size: 16px; /* Gut lesbare Größe */
+  box-sizing: border-box;
+}
+
+#statsPopupClose {
+  position: absolute;
+  top: 4px;
+  right: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  color: #666;
+  z-index: 10;
+}
+
+#statsPopupInner,
+#statsPopupInner table,
+#statsPopupInner th,
+#statsPopupInner td {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#topRavesPopup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+}
+
+#topRavesPopupInner {
+  position: relative;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 0px 30px 30px 30px;
+  max-width: 90vw;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+#topRavesPopupInner h2 {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+#topRavesPopupClose {
+  position: absolute;
+  top: 4px;
+  right: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  color: #666;
+  z-index: 10;
+}
+
+#topRavesPopupInner th {
+  position: static !important;
+  top: auto !important;
+}
+
+#statsPopupInner th {
+  position: static !important;
+  top: auto !important;
+}
     </style>
 </head>
 <body>
@@ -205,15 +391,32 @@
         <h1>Techno Raves 2025</h1>
         <h2>Termine, Events & Locations in NRW</h2>
     </div>
-    <div class="menu-icon-container" id="menuIconContainer">
-        <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</div>
-        <div class="menu" id="menu">
-            <a href="#" id="refreshPage">Aktualisieren</a>
-            <a href="statistik.html">Statistik</a>
-            <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
-            <a href="impressum.html">Impressum</a>
-        </div>
+<div class="icon-bar">
+  <div class="icon-wrapper icon-left">
+    <div class="icon stats-icon" id="statsIcon" title="Statistik anzeigen">
+      <div class="bar bar1"></div>
+      <div class="bar bar2"></div>
+      <div class="bar bar3"></div>
     </div>
+  </div>
+<div class="icon-wrapper icon-center" id="menuWrapper">
+  <div class="icon menu-icon" id="menuIcon">☰</div>
+  <div class="menu" id="menu">
+      <a href="#" id="refreshPage">Aktualisieren</a>
+      <a href="statistik.html">Statistik</a>
+      <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+      <a href="impressum.html">Impressum</a>
+  </div>
+</div>
+  <div class="icon-wrapper icon-right">
+<div class="icon top-icon" id="topRavesIcon" title="Top Raves">
+<svg class="trend-arrow" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(0, 10)">
+  <polyline points="4,16 9,11 13,15 20,8" />
+  <polyline points="17,8 20,8 20,11" />
+</svg>
+</div>
+</div>
+</div>
     <div class="search-container">
         <input 
             type="text" 
@@ -235,6 +438,23 @@
             <tbody></tbody>
         </table>
     </div>
+    
+<!-- Popup Overlay -->
+<div id="statsPopup">
+  <div id="statsPopupInner">
+    <div id="statsPopupClose">✕</div>
+    <div id="statsPopupContent"></div>
+  </div>
+</div>
+
+<!-- Zweites Popup Overlay -->
+<div id="topRavesPopup">
+  <div id="topRavesPopupInner">
+    <div id="topRavesPopupClose">✕</div>
+    <div id="topRavesPopupContent"></div>
+  </div>
+</div>
+
     <script>
 document.addEventListener("DOMContentLoaded", async function () {
     const tableBody = document.querySelector("#eventTable tbody");
@@ -298,7 +518,23 @@ function renderTable(rows) {
             tr.appendChild(dateTd);
 
             const eventTd = document.createElement("td");
-            eventTd.innerHTML = `<a href="${row.Link || "#"}" target="_blank">${row.Event}</a>`;
+            const eventLink = document.createElement("a");
+eventLink.href = row.Link || "#";
+eventLink.target = "_blank";
+eventLink.textContent = row.Event;
+
+// Klick-Tracking mit Plausible
+eventLink.addEventListener("click", () => {
+    plausible("event-klick", {
+        props: {
+            name: row.Event,
+            date: formattedDate,
+            location: row.Location
+        }
+    });
+});
+
+eventTd.appendChild(eventLink);
             tr.appendChild(eventTd);
 
             const locationTd = document.createElement("td");
@@ -402,7 +638,6 @@ const sortedRows = sortRows(filteredRows);
 renderTable(sortedRows);
 scrollToNextEvent();
 generateSchemaOrgMarkup(sortedRows);
-});
     // Kontextmenü und Textauswahl verhindern
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('selectstart', e => e.preventDefault());
@@ -415,22 +650,22 @@ generateSchemaOrgMarkup(sortedRows);
     // Menü-Toggle
     const menu = document.getElementById('menu');
     const menuIcon = document.getElementById('menuIcon');
-    menuIcon.addEventListener('click', () => {
-        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-    });
-    document.addEventListener('click', e => {
-        if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
-            menu.style.display = 'none';
-        }
-    });
+menuIcon.addEventListener('click', () => {
+    menu.classList.toggle('show');
+});
+document.addEventListener('click', e => {
+    if (!menu.contains(e.target) && !menuIcon.contains(e.target)) {
+        menu.classList.remove('show');
+    }
+});
 
     // Menü schließen, wenn ein Link angeklickt wird
     const menuLinks = document.querySelectorAll('.menu a');
-    menuLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            menu.style.display = 'none';
-        });
+menuLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        menu.classList.remove('show');
     });
+});
     // Funktion für "Aktualisieren"
         const refreshPage = document.getElementById('refreshPage');
         refreshPage.addEventListener('click', (e) => {
@@ -470,7 +705,225 @@ generateSchemaOrgMarkup(sortedRows);
             row.style.display = match ? '' : 'none';
         });
     }
+
     document.getElementById('search').addEventListener('keyup', searchTable);
-    </script>
-</body>
+
+    // Statistik-Popup öffnen/schließen
+    const statsIcon = document.getElementById('statsIcon');
+    const statsPopup = document.getElementById('statsPopup');
+    const statsPopupClose = document.getElementById('statsPopupClose');
+    
+    statsPopupClose.addEventListener('click', () => {
+    statsPopup.style.display = 'none';
+});
+
+// Top-Raves-Popup öffnen/schließen
+const topRavesIcon = document.getElementById("topRavesIcon");
+const topRavesPopup = document.getElementById("topRavesPopup");
+const topRavesPopupClose = document.getElementById("topRavesPopupClose");
+
+topRavesPopupClose.addEventListener("click", () => {
+  topRavesPopup.style.display = "none";
+});
+
+topRavesIcon.addEventListener("click", async () => {
+  try {
+    const response = await fetch("statistik.html");
+    const html = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    // Kopiere die erste feste Tabelle (Top 10 Raves)
+    const headings = [...doc.querySelectorAll("h2, h3")];
+    const sections = [];
+    let collect = false;
+
+    for (const h of headings) {
+      if (h.textContent.includes("Top 10 Raves")) collect = true;
+      if (collect) sections.push(h.outerHTML, h.nextElementSibling?.outerHTML || "");
+    }
+
+    const container = document.getElementById("topRavesPopupContent");
+    container.innerHTML = sections.join("");
+
+    // Excel-Daten laden
+    const excelResponse = await fetch("events.xlsx");
+    const arrayBuffer = await excelResponse.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer, { type: "array" });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const data = XLSX.utils.sheet_to_json(sheet);
+
+    function parseExcelDate(value) {
+      if (typeof value === "number") {
+        const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+        return new Date(excelEpoch.getTime() + value * 86400000);
+      }
+      return new Date(value);
+    }
+
+    function cleanLocationName(name) {
+      return name
+        .replace(/\bclub\b/gi, "")
+        .replace(/club[-+]/gi, "")
+        .replace(/[-+]?club$/i, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function extractLocations(locationStr) {
+      if (!locationStr || /check event link/i.test(locationStr)) return [];
+      return locationStr
+        .split(/\s*(?:,|\+|&| und )\s*/i)
+        .map(loc => cleanLocationName(loc))
+        .filter(Boolean);
+    }
+
+    function countByField(data, field, limit, isLocation = false) {
+      const counts = {};
+      for (const row of data) {
+        const values = isLocation
+          ? extractLocations(row[field])
+          : [row[field]?.trim()];
+        for (const val of values) {
+          if (!val) continue;
+          counts[val] = (counts[val] || 0) + 1;
+        }
+      }
+
+      const grouped = {};
+      for (const [name, count] of Object.entries(counts)) {
+        if (!grouped[count]) grouped[count] = [];
+        grouped[count].push(name);
+      }
+
+      const sorted = Object.entries(grouped)
+        .sort((a, b) => b[0] - a[0])
+        .flatMap(([count, names]) =>
+          [[names.sort((a, b) => a.localeCompare(b)).join(", "), Number(count)]]
+        );
+
+      return sorted.slice(0, limit);
+    }
+
+    function fillTableInPopup(tableId, entries) {
+      const tbody = document.querySelector(`#topRavesPopupContent #${tableId} tbody`);
+      if (!tbody) return;
+      tbody.innerHTML = "";
+      let currentRank = 1;
+      let lastCount = null;
+
+      entries.forEach(([names, count]) => {
+        const isTie = count === lastCount;
+        const rankDisplay = isTie ? "" : `${currentRank}.`;
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${rankDisplay}</td><td>${names}</td><td>${count}</td>`;
+        tbody.appendChild(row);
+        if (!isTie) currentRank++;
+        lastCount = count;
+      });
+    }
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const thisYear = data.filter(row => {
+      const date = parseExcelDate(row.Datum);
+      return date.getFullYear() === currentYear;
+    });
+
+    const topCities = countByField(thisYear, "Stadt", 10);
+    const topLocations = countByField(thisYear, "Location", 10, true);
+
+    fillTableInPopup("topCities", topCities);
+    fillTableInPopup("topLocations", topLocations);
+
+    topRavesPopup.style.display = "flex";
+  } catch (err) {
+    console.error("Fehler beim Laden der Top-Raves-Daten:", err);
+  }
+});
+
+// Klick außerhalb des Popups schließt es
+window.addEventListener("click", (e) => {
+  if (e.target === topRavesPopup) {
+    topRavesPopup.style.display = "none";
+  }
+});
+
+// Statistik-Popup dynamisch mit berechneter Tabelle befüllen
+statsIcon.addEventListener('click', async () => {
+    try {
+        const response = await fetch("events.xlsx");
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const data = XLSX.utils.sheet_to_json(sheet);
+
+        const now = new Date();
+        const currentYear = now.getFullYear();
+
+        const daysUntilSunday = (7 - now.getDay()) % 7;
+        const endOfWeek = new Date(now);
+        endOfWeek.setDate(now.getDate() + daysUntilSunday);
+        endOfWeek.setHours(23, 59, 59, 999);
+
+        const parseExcelDate = value => {
+            if (typeof value === "number") {
+                const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+                return new Date(excelEpoch.getTime() + value * 86400000);
+            }
+            return new Date(value);
+        };
+
+        const thisYear = data.filter(row => {
+            const date = parseExcelDate(row.Datum);
+            return date.getFullYear() === currentYear;
+        });
+
+        const periodEvents = thisYear.filter(row => {
+            const date = parseExcelDate(row.Datum);
+            return date <= endOfWeek;
+        });
+
+        const past = periodEvents.filter(row => {
+            const date = parseExcelDate(row.Datum);
+            const end = new Date(date);
+            end.setDate(end.getDate() + 1);
+            end.setHours(6, 0, 0, 0);
+            return now > end;
+        });
+
+        const future = thisYear.length - past.length;
+        const startOfYear = new Date(currentYear, 0, 1);
+        const daysInPeriod = Math.floor((endOfWeek - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+        const avgPerDay = daysInPeriod > 0 ? periodEvents.length / daysInPeriod : 0;
+        const avgPerWeek = Math.round(avgPerDay * 7);
+        const avgPerMonth = Math.round(avgPerWeek * 4.345);
+
+        const tableHTML = `
+        <table style="margin: 10 auto 30px auto; border-collapse: collapse; width: 100%; max-width: 400px; text-align: left;">
+            <tr><th style="background-color: #f0f0f0;">Statistik</th><th style="background-color: #f0f0f0;">Raves</th></tr>
+            <tr><td>Raves auf ravebro.de</td><td>${thisYear.length}</td></tr>
+            <tr><td>- vergangene</td><td>${past.length}</td></tr>
+            <tr><td>- bevorstehende</td><td>${future}</td></tr>
+            <tr><td>Raves pro Woche</td><td>${avgPerWeek}</td></tr>
+            <tr><td>Raves pro Monat</td><td>${avgPerMonth}</td></tr>
+        </table>`;
+
+        const statsPopupContent = document.getElementById("statsPopupContent");
+        statsPopupContent.innerHTML = tableHTML;
+        statsPopup.style.display = 'flex';
+
+    } catch (error) {
+        console.error("Fehler beim Laden der Statistikdaten:", error);
+    }
+});
+
+    window.addEventListener('click', (e) => {
+        if (e.target === statsPopup) {
+            statsPopup.style.display = 'none';
+    }
+});
+});
+</script>
+</body> 
 </html>
