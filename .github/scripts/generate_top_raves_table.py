@@ -59,6 +59,15 @@ def get_event_info(name):
 
 event_details = {e["name"]: get_event_info(e["name"]) for e in top_events}
 
+# Nur Events mit gültigem Datum in der Zukunft
+top_events = [
+    e for e in top_events
+    if event_details[e["name"]]["date"] != "-" and
+       datetime.strptime(event_details[e["name"]]["date"], "%Y-%m-%d") >= datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
+]
+
+event_details = {e["name"]: get_event_info(e["name"]) for e in top_events}
+
 # HTML-Tabelle
 table_rows = ""
 for i, e in enumerate(top_events, start=1):
