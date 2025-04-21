@@ -94,5 +94,16 @@ for header in soup.find_all("h3"):
         header.insert_before(BeautifulSoup(table_html, "html.parser"))
         break
 
-with open("statistik.html", "w", encoding="utf-8") as f:
-    f.write(str(soup))
+new_content = str(soup)
+
+# Bestehenden Dateiinhalt lesen
+with open("statistik.html", "r", encoding="utf-8") as f:
+    old_content = f.read()
+
+# Nur überschreiben, wenn sich etwas geändert hat
+if new_content != old_content:
+    with open("statistik.html", "w", encoding="utf-8") as f:
+        f.write(new_content)
+    print("Datei aktualisiert.")
+else:
+    print("Keine Änderung in statistik.html.")
