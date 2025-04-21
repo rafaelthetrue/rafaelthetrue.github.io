@@ -66,7 +66,7 @@ for i, e in enumerate(top_events, start=1):
     props = event_details.get(name, {})
     date = props["date"]
     location = props["location"]
-    table_rows += f"<tr><td>{i}</td><td>{date}</td><td>{name}</td><td>{location}</td></tr>\n"
+    table_rows += f"<tr><td>{i}.</td><td>{date}</td><td>{name}</td><td>{location}</td></tr>\n"
 
 table_html = f"""
 <h2 style="text-align:center; font-weight:bold;">Top 10 Raves</h2>
