@@ -638,6 +638,7 @@ const sortedRows = sortRows(filteredRows);
 renderTable(sortedRows);
 scrollToNextEvent();
 generateSchemaOrgMarkup(sortedRows);
+
     // Kontextmenü und Textauswahl verhindern
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('selectstart', e => e.preventDefault());
@@ -672,13 +673,14 @@ menuLinks.forEach(link => {
         e.preventDefault(); // Verhindert die Standardaktion des Links
         window.location.reload(true); // Erzwingt das Neuladen ohne Cache
         });
+        
     // Dynamische Anpassung der Tabellenhöhe
     function adjustTableHeight() {
         const headerHeight = document.querySelector(".header").offsetHeight;
         const searchHeight = document.querySelector(".search-container").offsetHeight;
         const viewportHeight = window.innerHeight;
         const tableContainer = document.getElementById("tableContainer");
-        tableContainer.style.height = `${0.88 * (viewportHeight - headerHeight - searchHeight)}px`;
+        tableContainer.style.height = `${0.87 * (viewportHeight - headerHeight - searchHeight)}px`;
     }
 
     // Höhe der Tabelle anpassen und bei Fenstergrößenänderungen neu berechnen
