@@ -69,7 +69,7 @@ for i, e in enumerate(top_events, start=1):
     table_rows += f"<tr><td>{i}</td><td>{date}</td><td>{name}</td><td>{location}</td></tr>\n"
 
 table_html = f"""
-<h3 style="text-align:center; font-weight:bold;">Top 10 Raves</h3>
+<h2 style="text-align:center; font-weight:bold;">Top 10 Raves</h2>
 <table style="margin: 10px auto 20px auto; border-collapse: collapse; text-align: left; max-width: 600px; width: 100%;">
 <thead><tr><th>Platz</th><th>Datum</th><th>Event</th><th>Location</th></tr></thead>
 <tbody>
