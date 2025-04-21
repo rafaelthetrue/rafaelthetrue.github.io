@@ -40,32 +40,24 @@ print("Antwort:", response.text)
 response.raise_for_status()
 data = response.json()
 
-# Top 10 extrahieren, "(none)"-Einträge entfernen
-top_events = [
-    e for e in sorted(data["results"], key=lambda x: x["visitors"], reverse=True)
-    if e["name"] != "(none)"
-][:10]
+# Eventinfos vorbereiten
+def is_upcoming(event):
+    info = get_event_info(event["name"])
+    if info["date"] == "-":
+        return False
+    event_date = datetime.strptime(info["date"], "%Y-%m-%d")
+    return event_date >= datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
 
-# Eventinfos ergänzen
-def get_event_info(name):
-    name_clean = name.strip().lower()
-    match = events_df[events_df["Event_clean"] == name_clean]
-    if not match.empty:
-        return {
-            "date": match.iloc[0]["Datum"].strftime("%Y-%m-%d"),
-            "location": match.iloc[0]["Location"]
-        }
-    return {"date": "-", "location": "-"}
-
-event_details = {e["name"]: get_event_info(e["name"]) for e in top_events}
-
-# Nur Events mit gültigem Datum in der Zukunft
-top_events = [
-    e for e in top_events
-    if event_details[e["name"]]["date"] != "-" and
-       datetime.strptime(event_details[e["name"]]["date"], "%Y-%m-%d") >= datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
+# Nur zukünftige Events berücksichtigen und sortieren
+filtered_events = [
+    e for e in data["results"]
+    if e["name"] != "(none)" and is_upcoming(e)
 ]
 
+# Sortieren nach Besucherzahl, dann Top 10 nehmen
+top_events = sorted(filtered_events, key=lambda x: x["visitors"], reverse=True)[:10]
+
+# Eventinfos ergänzen
 event_details = {e["name"]: get_event_info(e["name"]) for e in top_events}
 
 # HTML-Tabelle
