@@ -715,16 +715,109 @@ topRavesIcon.addEventListener("click", async () => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
 
+    // Kopiere die erste feste Tabelle (Top 10 Raves)
     const headings = [...doc.querySelectorAll("h2, h3")];
-    const relevantSections = [];
+    const sections = [];
+    let collect = false;
 
-let collect = false;
-for (const h of headings) {
-  if (h.textContent.includes("Top 10 Raves")) collect = true;
-  if (collect) relevantSections.push(h.outerHTML, h.nextElementSibling?.outerHTML || "");
-}
+    for (const h of headings) {
+      if (h.textContent.includes("Top 10 Raves")) collect = true;
+      if (collect) sections.push(h.outerHTML, h.nextElementSibling?.outerHTML || "");
+    }
 
-    document.getElementById("topRavesPopupContent").innerHTML = relevantSections.join("");
+    const container = document.getElementById("topRavesPopupContent");
+    container.innerHTML = sections.join("");
+
+    // Excel-Daten laden
+    const excelResponse = await fetch("events.xlsx");
+    const arrayBuffer = await excelResponse.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer, { type: "array" });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const data = XLSX.utils.sheet_to_json(sheet);
+
+    function parseExcelDate(value) {
+      if (typeof value === "number") {
+        const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+        return new Date(excelEpoch.getTime() + value * 86400000);
+      }
+      return new Date(value);
+    }
+
+    function cleanLocationName(name) {
+      return name
+        .replace(/\bclub\b/gi, "")
+        .replace(/club[-+]/gi, "")
+        .replace(/[-+]?club$/i, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function extractLocations(locationStr) {
+      if (!locationStr || /check event link/i.test(locationStr)) return [];
+      return locationStr
+        .split(/\s*(?:,|\+|&| und )\s*/i)
+        .map(loc => cleanLocationName(loc))
+        .filter(Boolean);
+    }
+
+    function countByField(data, field, limit, isLocation = false) {
+      const counts = {};
+      for (const row of data) {
+        const values = isLocation
+          ? extractLocations(row[field])
+          : [row[field]?.trim()];
+        for (const val of values) {
+          if (!val) continue;
+          counts[val] = (counts[val] || 0) + 1;
+        }
+      }
+
+      const grouped = {};
+      for (const [name, count] of Object.entries(counts)) {
+        if (!grouped[count]) grouped[count] = [];
+        grouped[count].push(name);
+      }
+
+      const sorted = Object.entries(grouped)
+        .sort((a, b) => b[0] - a[0])
+        .flatMap(([count, names]) =>
+          [[names.sort((a, b) => a.localeCompare(b)).join(", "), Number(count)]]
+        );
+
+      return sorted.slice(0, limit);
+    }
+
+    function fillTableInPopup(tableId, entries) {
+      const tbody = document.querySelector(`#topRavesPopupContent #${tableId} tbody`);
+      if (!tbody) return;
+      tbody.innerHTML = "";
+      let currentRank = 1;
+      let lastCount = null;
+
+      entries.forEach(([names, count]) => {
+        const isTie = count === lastCount;
+        const rankDisplay = isTie ? "" : `${currentRank}.`;
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${rankDisplay}</td><td>${names}</td><td>${count}</td>`;
+        tbody.appendChild(row);
+        if (!isTie) currentRank++;
+        lastCount = count;
+      });
+    }
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const thisYear = data.filter(row => {
+      const date = parseExcelDate(row.Datum);
+      return date.getFullYear() === currentYear;
+    });
+
+    const topCities = countByField(thisYear, "Stadt", 10);
+    const topLocations = countByField(thisYear, "Location", 10, true);
+
+    fillTableInPopup("topCities", topCities);
+    fillTableInPopup("topLocations", topLocations);
+
     topRavesPopup.style.display = "flex";
   } catch (err) {
     console.error("Fehler beim Laden der Top-Raves-Daten:", err);
