@@ -68,7 +68,8 @@ for i, e in enumerate(top_events, start=1):
     date_obj = datetime.strptime(props["date"], "%Y-%m-%d") if props["date"] != "-" else None
     if date_obj:
         formatted_date = date_obj.strftime("%d.%m")
-        weekday = date_obj.strftime("%a") + "."
+        weekday_short = ["Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa.", "So."]
+        weekday = weekday_short[date_obj.weekday()]
         date_html = f'{formatted_date}<br><span>{weekday}</span>'
     else:
         date_html = "-"
