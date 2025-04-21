@@ -64,7 +64,7 @@ table_rows = ""
 for i, e in enumerate(top_events, start=1):
     name = e["name"]
     props = event_details.get(name, {})
-    from datetime import datetime
+from datetime import datetime
 
 date_obj = datetime.strptime(props["date"], "%Y-%m-%d") if props["date"] != "-" else None
 if date_obj:
@@ -73,8 +73,9 @@ if date_obj:
     date_html = f'{formatted_date}<br><span>{weekday}</span>'
 else:
     date_html = "-"
-    location = props["location"]
-    table_rows += f"<tr><td>{i}.</td><td class='date-cell'>{date_html}</td><td>{name}</td><td>{location}</td></tr>\n"
+
+location = props["location"]
+table_rows += f"<tr><td>{i}.</td><td class='date-cell'>{date_html}</td><td>{name}</td><td>{location}</td></tr>\n"
 
 table_html = f"""
 <h2 style="text-align:center; font-weight:bold;">Top 10 Raves</h2>
