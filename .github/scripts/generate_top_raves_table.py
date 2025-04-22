@@ -119,6 +119,10 @@ for header in soup.find_all(["h2", "h3"]):
         header.decompose()
         break
 
+# Alle bestehenden Info-Popups mit id="info-popup" entfernen
+for popup in soup.find_all("div", {"id": "info-popup"}):
+    popup.decompose()
+
 for header in soup.find_all(["h2", "h3"]):
     if "Top 10 Städte" in header.text:
         header.insert_before(BeautifulSoup(table_html, "html.parser"))
