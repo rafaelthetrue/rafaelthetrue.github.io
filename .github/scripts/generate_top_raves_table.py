@@ -96,7 +96,7 @@ table_html = f"""
   </span>
 </h2>
 <div id="info-popup" class="info-popup" style="display:none; margin-bottom:15px; font-size:13px; color:#333; background:#f9f9f9; padding:10px; border:1px solid #ccc; border-radius:6px;">
-  Die Top Raves werden durch die Besucher und ihren Klicks auf ravebro.de bestimmt. Die Liste wird zweimal täglich aktualisiert: um 7:00 Uhr und 19:00 Uhr.
+  Die Top 10 Raves werden durch unsere Besucher und ihre Klicks auf ravebro.de bestimmt. Die Liste wird zweimal täglich aktualisiert (7 & 19 Uhr).
 </div>
 <table>
 <thead><tr><th>Platz</th><th>Datum</th><th>Event</th><th>Location</th></tr></thead>
