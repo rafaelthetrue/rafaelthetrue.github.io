@@ -754,10 +754,7 @@ for (const el of doc.body.children) {
   }
 }
 
-    const container = document.getElementById("topRavesPopupContent");
-    container.innerHTML = sections.join("");
-
-    // Excel-Daten laden
+        // Excel-Daten laden
     const excelResponse = await fetch("events.xlsx");
     const arrayBuffer = await excelResponse.arrayBuffer();
     const workbook = XLSX.read(arrayBuffer, { type: "array" });
