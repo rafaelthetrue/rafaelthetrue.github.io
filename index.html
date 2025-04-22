@@ -935,6 +935,16 @@ statsIcon.addEventListener('click', async () => {
     }
 });
 });
+function toggleInfoPopup(event) {
+  event.stopPropagation();
+  const popup = document.getElementById("info-popup");
+  if (popup) popup.style.display = (popup.style.display === "none" || !popup.style.display) ? "block" : "none";
+}
+document.addEventListener("click", () => {
+  const popup = document.getElementById("info-popup");
+  if (popup) popup.style.display = "none";
+});
+
 </script>
 </body> 
 </html>
