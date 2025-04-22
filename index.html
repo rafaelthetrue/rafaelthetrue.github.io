@@ -740,17 +740,13 @@ container.innerHTML = "";
 let collect = false;
 for (const el of doc.body.children) {
   if (el.tagName === "H2" || el.tagName === "H3") {
-    collect = el.textContent.includes("Top 10 Raves");
+    if (el.textContent.includes("Top 10 Raves")) {
+      collect = true;
+    }
   }
 
   if (collect) {
     container.appendChild(el.cloneNode(true));
-    if (
-      el.nextElementSibling &&
-      (el.nextElementSibling.tagName === "H2" || el.nextElementSibling.tagName === "H3")
-    ) {
-      break;
-    }
   }
 }
 
