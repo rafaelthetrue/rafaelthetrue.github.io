@@ -92,7 +92,7 @@ table_html = f"""
 <h2 style="text-align:center; font-weight:bold;">
   Top 10 Raves
   <span class="info-container" onclick="toggleInfoPopup(event)" style="cursor:pointer; margin-left:8px;">
-    <span class="info-icon" style="display:inline-block; width:16px; height:16px; border:1px solid #666; border-radius:50%; text-align:center; font-size:12px; line-height:16px; color:#666;">i</span>
+    <span class="info-icon">i</span>
   </span>
 </h2>
 <div id="info-popup" class="info-popup" style="display:none; margin-bottom:15px; font-size:13px; color:#333; background:#f9f9f9; padding:10px; border:1px solid #ccc; border-radius:6px;">
