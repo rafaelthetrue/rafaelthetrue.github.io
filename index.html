@@ -734,13 +734,25 @@ topRavesIcon.addEventListener("click", async () => {
 
     // Kopiere die erste feste Tabelle (Top 10 Raves)
     const headings = [...doc.querySelectorAll("h2, h3")];
-    const sections = [];
-    let collect = false;
+const container = document.getElementById("topRavesPopupContent");
+container.innerHTML = "";
 
-    for (const h of headings) {
-      if (h.textContent.includes("Top 10 Raves")) collect = true;
-      if (collect) sections.push(h.outerHTML, h.nextElementSibling?.outerHTML || "");
+let collect = false;
+for (const el of doc.body.children) {
+  if (el.tagName === "H2" || el.tagName === "H3") {
+    collect = el.textContent.includes("Top 10 Raves");
+  }
+
+  if (collect) {
+    container.appendChild(el.cloneNode(true));
+    if (
+      el.nextElementSibling &&
+      (el.nextElementSibling.tagName === "H2" || el.nextElementSibling.tagName === "H3")
+    ) {
+      break;
     }
+  }
+}
 
     const container = document.getElementById("topRavesPopupContent");
     container.innerHTML = sections.join("");
