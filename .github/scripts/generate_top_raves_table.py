@@ -89,7 +89,15 @@ for i, e in enumerate(top_events, start=1):
     table_rows += f"<tr><td>{i}.</td><td class='date-cell'>{date_html}</td><td>{name}</td><td>{location}</td></tr>\n"
 
 table_html = f"""
-<h2 style="text-align:center; font-weight:bold;">Top 10 Raves</h2>
+<h2 style="text-align:center; font-weight:bold;">
+  Top 10 Raves
+  <span class="info-container" onclick="toggleInfoPopup(event)" style="cursor:pointer; margin-left:8px;">
+    <span class="info-icon" style="display:inline-block; width:16px; height:16px; border:1px solid #666; border-radius:50%; text-align:center; font-size:12px; line-height:16px; color:#666;">i</span>
+  </span>
+</h2>
+<div id="info-popup" class="info-popup" style="display:none; margin-bottom:15px; font-size:13px; color:#333; background:#f9f9f9; padding:10px; border:1px solid #ccc; border-radius:6px;">
+  Die Top Raves werden durch die Besucher und ihren Klicks auf ravebro.de bestimmt. Die Liste wird zweimal täglich aktualisiert: um 7:00 Uhr und 19:00 Uhr.
+</div>
 <table>
 <thead><tr><th>Platz</th><th>Datum</th><th>Event</th><th>Location</th></tr></thead>
 <tbody>
