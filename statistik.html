@@ -320,6 +320,17 @@ if (window.self !== window.top && menuIcon) {
   menuIcon.style.pointerEvents = 'none';
   menuIcon.style.opacity = '0.4';
 }
+
+function toggleInfoPopup(event) {
+  event.stopPropagation();
+  const popup = document.getElementById("info-popup");
+  if (popup) popup.style.display = (popup.style.display === "none" || !popup.style.display) ? "block" : "none";
+}
+
+document.addEventListener("click", () => {
+  const popup = document.getElementById("info-popup");
+  if (popup) popup.style.display = "none";
+});
 </script>
 </body>
 </html>
