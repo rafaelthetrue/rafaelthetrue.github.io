@@ -2,8 +2,8 @@ name: update-top-raves
 
 on:
   schedule:
-    - cron: '0 6 * * *'   # Täglich um 06:00 UTC
-    - cron: '0 18 * * *'  # Täglich um 18:00 UTC
+    - cron: '30 5 * * *'   # Täglich um 05:30 UTC
+    - cron: '0 17 * * *'  # Täglich um 17:00 UTC
   workflow_dispatch:
 
 jobs:
