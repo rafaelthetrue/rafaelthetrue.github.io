@@ -1,206 +1,173 @@
 <!DOCTYPE html>
-
 <html lang="de">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="Statistik - ravebro.de" name="description"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Statistik - ravebro.de"/>
 <title>Statistik - ravebro.de</title>
 <style>
-        body {
-            max-width: 800px;
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0 auto;
-            padding: 20px;
-            padding-top: 0px;
-            background-color: #f9f9f9;
-            color: #333;
-            text-align: center;
-        }
-        h1 {
-            text-align: center;
-            color: #444;
-            margin-top: 15px;
-            margin-bottom: 0px;
-            font-size: 24px;
-        }
-        h2 {
-            color: #444;
-            margin-top: 35px;
-            margin-bottom: 10px;
-            font-size: 20px;
-        }
-        
-            table {
-      margin: 0 auto 30px auto;
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 400px;
-      text-align: left;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px 12px;
-      font-size: 14px;
-    }
-    th {
-      background-color: #f0f0f0;
-      font-weight: bold;
-    }
-
-        .menu-icon-container {
-            margin: 15px auto;
-            text-align: center;
-            position: relative;
-        }
-        .menu-icon {
-            font-size: 24px;
-            cursor: pointer;
-            display: inline-block;
-            color: #333;
-        }
-        .menu-icon.disabled {
-            pointer-events: none;
-            opacity: 0.4;
-        }
-        .menu {
-            position: absolute;
-            top: 100%;
-            right: 50%;
-            background-color: white;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: none;
-            flex-direction: column;
-            z-index: 1000;
-        }
-        .menu a {
-            padding: 10px 20px;
-            text-decoration: none;
-            color: #333;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-        .menu a:last-child {
-            border-bottom: none;
-        }
-        .menu a:hover {
-            background-color: #f4f4f4;
-        }
-        .date-cell {
-    text-align: center;
-    white-space: nowrap;
-}
-.date-cell span {
-    font-size: 13px;
-    color: #333;
+  body {
+    max-width: 800px;
     font-family: Arial, sans-serif;
-    display: block;
-    margin-top: 0px;
-}
+    line-height: 1.6;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 0px;
+    background-color: #f9f9f9;
+    color: #333;
+    text-align: center;
+  }
+  h1 {
+    text-align: center;
+    color: #444;
+    margin-top: 15px;
+    margin-bottom: 0px;
+    font-size: 24px;
+  }
+  h2 {
+    color: #444;
+    margin-top: 35px;
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
+  table {
+    margin: 0 auto 30px auto;
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 400px;
+    text-align: left;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+  .menu-icon-container {
+    margin: 15px auto;
+    text-align: center;
+    position: relative;
+  }
+  .menu-icon {
+    font-size: 24px;
+    cursor: pointer;
+    display: inline-block;
+    color: #333;
+  }
+  .menu-icon.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+  }
+  .menu {
+    position: absolute;
+    top: 100%;
+    right: 50%;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+  }
+  .menu a {
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  .menu a:last-child { border-bottom: none; }
+  .menu a:hover { background-color: #f4f4f4; }
 
-.info-icon {
-  display: inline-block;
-  width: 14px;          /* kleiner als vorher */
-  height: 14px;
-  font-size: 10px;      /* Schrift kleiner */
-  line-height: 14px;
-  border: 1px solid #666;
-  border-radius: 50%;
-  text-align: center;
-  color: #666;
-  transform: translateY(-3px); /* leicht nach oben verschieben */
-}
+  .date-cell { text-align: center; white-space: nowrap; }
+  .date-cell span {
+    font-size: 13px; color: #333; font-family: Arial, sans-serif;
+    display: block; margin-top: 0px;
+  }
 
-.info-popup {
-  display: none;
-  font-size: 13px;
-  color: #333;
-  background: #f9f9f9;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin: 0 auto 15px auto;
-  text-align: center;
-  max-width: 400px;
-  width: 100%;
-  box-sizing: border-box;
-}
+  .info-icon {
+    display: inline-block;
+    width: 14px; height: 14px; font-size: 10px; line-height: 14px;
+    border: 1px solid #666; border-radius: 50%; text-align: center;
+    color: #666; transform: translateY(-3px);
+  }
+  .info-popup {
+    display: none; font-size: 13px; color: #333; background: #f9f9f9;
+    padding: 10px; border: 1px solid #ccc; border-radius: 6px;
+    margin: 0 auto 15px auto; text-align: center; max-width: 400px; width: 100%;
+    box-sizing: border-box;
+  }
 
-        @media (max-width: 600px) {
-        body {
-            font-size: 14px; /* Kleinere Schrift für mobile Endgeräte */
-        }
-        h1 {
-            font-size: 22px; /* Kleinere Überschrift */
-        }
-        h2 {
-            font-size: 18px; /* Kleinere Überschrift */
-        }
-  </style>
+  @media (max-width: 600px) {
+    body { font-size: 14px; }
+    h1 { font-size: 22px; }
+    h2 { font-size: 18px; }
+  }
+</style>
 </head>
 <body>
 <h1>Statistik</h1>
+
 <div class="menu-icon-container" id="menuIconContainer">
-<div class="menu-icon" id="menuIcon">☰</div>
-<div class="menu" id="menu">
-<a href="index.html">Startseite</a>
-<a href="statistik.html">Statistik</a>
-<a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
-<a href="impressum.html">Impressum</a>
+  <div class="menu-icon" id="menuIcon">☰</div>
+  <div class="menu" id="menu">
+    <a href="index.html">Startseite</a>
+    <a href="statistik.html">Statistik</a>
+    <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>
+    <a href="impressum.html">Impressum</a>
+  </div>
 </div>
-</div>
+
 <table id="summaryTable">
-<tr><th>Statistik</th><th>Raves</th></tr>
-<tr><td>Raves auf ravebro.de</td><td id="totalRaves">-</td></tr>
-<tr><td>- vergangene</td><td id="pastRaves">-</td></tr>
-<tr><td>- bevorstehende</td><td id="upcomingRaves">-</td></tr>
-<tr><td>Raves pro Woche</td><td id="avgPerWeek">-</td></tr>
-<tr><td>Raves pro Monat</td><td id="avgPerMonth">-</td></tr>
+  <tr><th>Statistik</th><th>Raves</th></tr>
+  <tr><td>Raves auf ravebro.de</td><td id="totalRaves">-</td></tr>
+  <tr><td>- vergangene</td><td id="pastRaves">-</td></tr>
+  <tr><td>- bevorstehende</td><td id="upcomingRaves">-</td></tr>
+  <tr><td>Raves pro Woche</td><td id="avgPerWeek">-</td></tr>
+  <tr><td>Raves pro Monat</td><td id="avgPerMonth">-</td></tr>
 </table>
-
-
-
 
 <h2 style="text-align:center; font-weight:bold;">
   Top 10 Raves
   <span class="info-container" onclick="toggleInfoPopup(event)" style="cursor:pointer; margin-left:8px;">
-<span class="info-icon">i</span>
-</span>
+    <span class="info-icon">i</span>
+  </span>
 </h2>
-<div class="info-popup" id="info-popup" style="display:none; margin-bottom:15px; font-size:13px; color:#333; background:#f9f9f9; padding:10px; border:1px solid #ccc; border-radius:6px;">
+<div class="info-popup" id="info-popup" style="display:none;">
   Die Top 10 Raves werden durch unsere Besucher und ihre Klicks auf ravebro.de bestimmt. Die Liste wird zweimal täglich aktualisiert (7 &amp; 19 Uhr).
 </div>
+
 <table>
-<thead><tr><th>Platz</th><th>Datum</th><th>Event</th><th>Location</th></tr></thead>
-<tbody>
-<tr><td>1.</td><td class="date-cell">05.09<br/><span>Fr.</span></td><td>MANDORA</td><td>Matrix</td></tr>
-<tr><td>2.</td><td class="date-cell">06.09<br/><span>Sa.</span></td><td>DOPAMYN</td><td>Westend</td></tr>
-<tr><td>3.</td><td class="date-cell">05.09<br/><span>Fr.</span></td><td>NEXORA</td><td>Stollen134</td></tr>
-<tr><td>4.</td><td class="date-cell">06.09<br/><span>Sa.</span></td><td>AREA15 x PULSELAB</td><td>AREA 15</td></tr>
-<tr><td>5.</td><td class="date-cell">06.09<br/><span>Sa.</span></td><td>TECHNOBLOCK</td><td>Elektroküche</td></tr>
-<tr><td>6.</td><td class="date-cell">05.09<br/><span>Fr.</span></td><td>CTRL</td><td>SNRS</td></tr>
-<tr><td>7.</td><td class="date-cell">05.09<br/><span>Fr.</span></td><td>MOMMY RAVES</td><td>Favela</td></tr>
-<tr><td>8.</td><td class="date-cell">06.09<br/><span>Sa.</span></td><td>REDROOM w/ ZEUZ</td><td>Rotunde</td></tr>
-<tr><td>9.</td><td class="date-cell">05.09<br/><span>Fr.</span></td><td>KOELN IST TECHNO</td><td>Helios37</td></tr>
-<tr><td>10.</td><td class="date-cell">06.09<br/><span>Sa.</span></td><td>303 PRESENTS</td><td>Schrotty</td></tr>
-</tbody>
+  <thead><tr><th>Platz</th><th>Datum</th><th>Event</th><th>Location</th></tr></thead>
+  <tbody>
+    <tr><td>1.</td><td class="date-cell">05.09<br/><span>Fr.</span></td><td>MANDORA</td><td>Matrix</td></tr>
+    <tr><td>2.</td><td class="date-cell">06.09<br/><span>Sa.</span></td><td>DOPAMYN</td><td>Westend</td></tr>
+    <tr><td>3.</td><td class="date-cell">05.09<br/><span>Fr.</span></td><td>NEXORA</td><td>Stollen134</td></tr>
+    <tr><td>4.</td><td class="date-cell">06.09<br/><span>Sa.</span></td><td>AREA15 x PULSELAB</td><td>AREA 15</td></tr>
+    <tr><td>5.</td><td class="date-cell">06.09<br/><span>Sa.</span></td><td>TECHNOBLOCK</td><td>Elektroküche</td></tr>
+    <tr><td>6.</td><td class="date-cell">05.09<br/><span>Fr.</span></td><td>CTRL</td><td>SNRS</td></tr>
+    <tr><td>7.</td><td class="date-cell">05.09<br/><span>Fr.</span></td><td>MOMMY RAVES</td><td>Favela</td></tr>
+    <tr><td>8.</td><td class="date-cell">06.09<br/><span>Sa.</span></td><td>REDROOM w/ ZEUZ</td><td>Rotunde</td></tr>
+    <tr><td>9.</td><td class="date-cell">05.09<br/><span>Fr.</span></td><td>KOELN IST TECHNO</td><td>Helios37</td></tr>
+    <tr><td>10.</td><td class="date-cell">06.09<br/><span>Sa.</span></td><td>303 PRESENTS</td><td>Schrotty</td></tr>
+  </tbody>
 </table>
+
 <h2><strong>Top 10 Städte</strong></h2>
 <table id="topCities">
-<thead>
-<tr><th>Platz</th><th>Stadt</th><th>Raves</th></tr>
-</thead>
-<tbody></tbody>
+  <thead><tr><th>Platz</th><th>Stadt</th><th>Raves</th></tr></thead>
+  <tbody></tbody>
 </table>
+
 <h2><strong>Top 10 Locations</strong></h2>
 <table id="topLocations">
-<thead>
-<tr><th>Platz</th><th>Location</th><th>Raves</th></tr>
-</thead>
-<tbody></tbody>
+  <thead><tr><th>Platz</th><th>Location</th><th>Raves</th></tr></thead>
+  <tbody></tbody>
 </table>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
   async function loadExcelData() {
@@ -212,64 +179,114 @@
   }
 
   function parseExcelDate(value) {
+    // Excel-Seriennummer
     if (typeof value === "number") {
       const excelEpoch = new Date(Date.UTC(1899, 11, 30));
       return new Date(excelEpoch.getTime() + value * 86400000);
     }
-    return new Date(value);
+    // Deutsche Formate: DD.MM.YYYY oder DD.MM.
+    if (typeof value === "string") {
+      const mFull = value.match(/^(\d{1,2})\.(\d{1,2})\.(\d{2,4})$/);
+      if (mFull) {
+        const d = parseInt(mFull[1], 10);
+        const mo = parseInt(mFull[2], 10) - 1;
+        let y = parseInt(mFull[3], 10);
+        if (y < 100) y += 2000;
+        return new Date(y, mo, d);
+      }
+      const mNoYear = value.match(/^(\d{1,2})\.(\d{1,2})\.?$/);
+      if (mNoYear) {
+        const d = parseInt(mNoYear[1], 10);
+        const mo = parseInt(mNoYear[2], 10) - 1;
+        const y = (new Date()).getFullYear();
+        return new Date(y, mo, d);
+      }
+      // Fallback
+      const dt = new Date(value);
+      if (!isNaN(dt)) return dt;
+    }
+    // Letzter Fallback: Heutiges Datum (verhindert NaN)
+    return new Date();
+  }
+
+  // Flexibler Spaltenzugriff
+  function getField(row, candidates) {
+    for (const key of candidates) {
+      if (key in row && row[key] != null && String(row[key]).trim() !== "") {
+        return row[key];
+      }
+    }
+    return "";
   }
 
   function cleanLocationName(name) {
-    return name
-      .replace(/\bclub\b/gi, "") // „Club“ als eigenes Wort
-      .replace(/club[-+]/gi, "") // „Club-“ oder „Club+“
-      .replace(/[-+]?club$/i, "") // am Ende des Namens
-      .replace(/\s+/g, " ") // doppelte Leerzeichen
+    return String(name)
+      // Klammerinhalte entfernen (z. B. "Club XY (Open Air)")
+      .replace(/\s*\([^)]*\)\s*/g, " ")
+      // "Club" entfernen (diverse Schreibweisen)
+      .replace(/\bclub\b/gi, "")
+      .replace(/club[-+]/gi, "")
+      .replace(/[-+]?club$/i, "")
+      // Sonderzeichen am Rand entfernen
+      .replace(/^[\s,;|/\\@×x&+]+|[\s,;|/\\@×x&+]+$/g, "")
+      // Mehrfache Leerzeichen -> eins
+      .replace(/\s+/g, " ")
       .trim();
   }
 
   function extractLocations(locationStr) {
-    if (!locationStr || /check event link/i.test(locationStr)) return [];
-    return locationStr
-      .split(/\s*(?:,|\+|&| und )\s*/i)
-      .map(loc => cleanLocationName(loc))
+    const s = String(locationStr || "");
+    if (!s || /check\s*event\s*link/i.test(s)) return [];
+    return s
+      .split(/\s*(?:,|\+|&|\bund\b|\/|\||;|@|×|x)\s*/i)
+      .map(cleanLocationName)
       .filter(Boolean);
   }
 
-  function countByField(data, field, limit, isLocation = false) {
+  function countByField(data, fieldCandidates, limit, isLocation = false) {
     const counts = {};
     for (const row of data) {
-      const values = isLocation
-        ? extractLocations(row[field])
-        : [row[field]?.trim()];
+      const raw = getField(row, fieldCandidates);
+      const values = isLocation ? extractLocations(raw)
+                                : [String(raw || "").trim()].filter(Boolean);
       for (const val of values) {
         if (!val) continue;
         counts[val] = (counts[val] || 0) + 1;
       }
     }
+    // Nichts gefunden? -> leeres Array zurück
+    const entries = Object.entries(counts);
+    if (entries.length === 0) return [];
 
+    // Nach Anzahl gruppieren (für Ranggleichheit)
     const grouped = {};
-    for (const [name, count] of Object.entries(counts)) {
+    for (const [name, count] of entries) {
       if (!grouped[count]) grouped[count] = [];
       grouped[count].push(name);
     }
 
     const sorted = Object.entries(grouped)
-      .sort((a, b) => b[0] - a[0]) // nach Anzahl absteigend
-      .flatMap(([count, names]) =>
-        [[names.sort((a, b) => a.localeCompare(b)).join(", "), Number(count)]]
-      );
+      .sort((a, b) => Number(b[0]) - Number(a[0]))
+      .flatMap(([count, names]) => [[names.sort((a, b) => a.localeCompare(b)).join(", "), Number(count)]]);
 
     return sorted.slice(0, limit);
   }
 
   function fillTable(tableId, entries) {
     const tbody = document.querySelector(`#${tableId} tbody`);
+    if (!tbody) return;
     tbody.innerHTML = "";
+    if (!entries || entries.length === 0) {
+      // Optional: kurze Hinweiszeile
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="3">Keine Daten vorhanden</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
+
     let currentRank = 1;
     let lastCount = null;
-
-    entries.forEach(([names, count], index) => {
+    entries.forEach(([names, count]) => {
       const isTie = count === lastCount;
       const rankDisplay = isTie ? "" : `${currentRank}.`;
       const row = document.createElement("tr");
@@ -293,19 +310,19 @@
 
     // Filter: Events dieses Jahr
     const thisYear = data.filter(row => {
-      const date = parseExcelDate(row.Datum);
+      const date = parseExcelDate(getField(row, ["Datum","Date","date"]));
       return date.getFullYear() === currentYear;
     });
 
     // Events vom 01.01. bis Ende dieser Woche
     const periodEvents = thisYear.filter(row => {
-      const date = parseExcelDate(row.Datum);
+      const date = parseExcelDate(getField(row, ["Datum","Date","date"]));
       return date <= endOfWeek;
     });
 
     // Vergangene Events (Stichtag: Folgetag 06:00 Uhr)
     const past = periodEvents.filter(row => {
-      const date = parseExcelDate(row.Datum);
+      const date = parseExcelDate(getField(row, ["Datum","Date","date"]));
       const end = new Date(date);
       end.setDate(end.getDate() + 1);
       end.setHours(6, 0, 0, 0);
@@ -328,16 +345,16 @@
     document.getElementById("avgPerWeek").textContent = avgPerWeek;
     document.getElementById("avgPerMonth").textContent = avgPerMonth;
 
-    // Tabellen füllen
-    fillTable("topCities", countByField(thisYear, "Stadt", 10));
-    fillTable("topLocations", countByField(thisYear, "Location", 10, true));
+    // Tabellen füllen (mit flexiblen Spaltennamen)
+    fillTable("topCities",     countByField(thisYear, ["Stadt","City","Ort"], 10));
+    fillTable("topLocations",  countByField(thisYear, ["Location","Locations","Venue","Ort/Location","Club","Location(s)"], 10, true));
   });
 
   // Menü-Toggle
   const menu = document.getElementById('menu');
   const menuIcon = document.getElementById('menuIcon');
 
-  menuIcon.addEventListener('click', () => {
+  menuIcon && menuIcon.addEventListener('click', () => {
     menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
   });
 
@@ -348,27 +365,26 @@
   });
 
   document.querySelectorAll('.menu a').forEach(link => {
-    link.addEventListener('click', () => {
-      menu.style.display = 'none';
-    });
+    link.addEventListener('click', () => { menu.style.display = 'none'; });
   });
+
   // Deaktivieren im iFrame
-if (window.self !== window.top && menuIcon) {
-  menuIcon.classList.add('disabled');
-  menuIcon.style.pointerEvents = 'none';
-  menuIcon.style.opacity = '0.4';
-}
+  if (window.self !== window.top && menuIcon) {
+    menuIcon.classList.add('disabled');
+    menuIcon.style.pointerEvents = 'none';
+    menuIcon.style.opacity = '0.4';
+  }
 
-function toggleInfoPopup(event) {
-  event.stopPropagation();
-  const popup = document.getElementById("info-popup");
-  if (popup) popup.style.display = (popup.style.display === "none" || !popup.style.display) ? "block" : "none";
-}
+  function toggleInfoPopup(event) {
+    event.stopPropagation();
+    const popup = document.getElementById("info-popup");
+    if (popup) popup.style.display = (popup.style.display === "none" || !popup.style.display) ? "block" : "none";
+  }
 
-document.addEventListener("click", () => {
-  const popup = document.getElementById("info-popup");
-  if (popup) popup.style.display = "none";
-});
+  document.addEventListener("click", () => {
+    const popup = document.getElementById("info-popup");
+    if (popup) popup.style.display = "none";
+  });
 </script>
 </body>
 </html>
