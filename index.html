@@ -515,6 +515,9 @@ function openTopRavesPopup(ev) {
   })();
 }
 
+// Pfeil-Icon aktivieren
+topRavesIcon.addEventListener("click", openTopRavesPopup, { passive: false });
+
       // Klick außerhalb schließt Popups
       window.addEventListener("click", (e) => { if (e.target === topRavesPopup) topRavesPopup.style.display = "none"; });
       window.addEventListener("click", (e) => { if (e.target === statsPopup)   statsPopup.style.display   = "none"; });
