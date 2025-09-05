@@ -441,67 +441,79 @@
       }
 
       // Öffner für "Top Raves" – reagiert auf Tap & Click
-      function openTopRavesPopup(ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
+function openTopRavesPopup(ev) {
+  ev.preventDefault();
+  ev.stopPropagation();
 
-        // Popup sofort zeigen, dann Inhalte nachladen
-        topRavesPopup.style.display = "flex";
-        topRavesPopupContent.innerHTML = "<p>Lade Top-Raves …</p>";
+  (async () => {
+    try {
+      const resp = await fetch("statistik.html");
+      const html = await resp.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
 
-        (async () => {
-          try {
-            const resp = await fetch("statistik.html");
-            const html = await resp.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
+      // Inhalt leeren
+      topRavesPopupContent.innerHTML = "";
 
-            // Abschnitt ab „Top 10 Raves“ sammeln
-            topRavesPopupContent.innerHTML = "";
-            let collect = false;
-            for (const el of doc.body.children) {
-              if ((el.tagName === "H2" || el.tagName === "H3") && el.textContent.includes("Top 10 Raves")) {
-                collect = true;
-              }
-              if (collect) topRavesPopupContent.appendChild(el.cloneNode(true));
-            }
-            if (!topRavesPopupContent.children.length) {
-              topRavesPopupContent.innerHTML = "<p>Abschnitt „Top 10 Raves“ wurde nicht gefunden.</p>";
-            }
-
-            // Excel laden und Städte/Locations im Popup befüllen (falls vorhanden)
-            try {
-              const excelResponse = await fetch("events.xlsx");
-              const arrayBuffer = await excelResponse.arrayBuffer();
-              const workbook = XLSX.read(arrayBuffer, { type: "array" });
-              const sheet = workbook.Sheets[workbook.SheetNames[0]];
-              const data = XLSX.utils.sheet_to_json(sheet);
-
-              const now = new Date();
-              const currentYear = now.getFullYear();
-              const thisYear = data.filter(row => {
-                const d = typeof row.Datum === "number"
-                  ? new Date(Date.UTC(1899, 11, 30) + row.Datum*86400000)
-                  : new Date(row.Datum);
-                return !isNaN(d) && d.getFullYear() === currentYear;
-              });
-
-              const topCities = countByField(thisYear, "Stadt", 10);
-              const topLocations = countByField(thisYear, "Location", 10, true);
-
-              fillTableInPopup("topCities", topCities);
-              fillTableInPopup("topLocations", topLocations);
-            } catch(e) {
-              console.warn("Excel konnte nicht geladen werden:", e);
-            }
-          } catch (err) {
-            console.error("Fehler beim Laden der Top-Raves-Daten:", err);
-            topRavesPopupContent.innerHTML = "<p>Fehler beim Laden. Bitte später erneut versuchen.</p>";
+      // Abschnitt ab „Top 10 Raves“ sammeln (ohne Info-Popup)
+      let collect = false;
+      for (const el of doc.body.children) {
+        if (el.tagName === "H2" || el.tagName === "H3") {
+          if ((el.textContent || "").includes("Top 10 Raves")) {
+            collect = true;
           }
-        })();
+        }
+        if (collect) {
+          if (el.id === "info-popup") continue; // <<< Hinweis-Popup überspringen
+          topRavesPopupContent.appendChild(el.cloneNode(true)); // <<< container -> topRavesPopupContent
+        }
       }
-      topRavesIcon.addEventListener("click", openTopRavesPopup, { passive: false });
-      topRavesIcon.addEventListener("pointerdown", openTopRavesPopup, { passive: false });
+
+      if (!topRavesPopupContent.children.length) {
+        // Falls nix gefunden wurde, kurze Meldung (optional)
+        topRavesPopupContent.innerHTML = "<p>Top 10 Raves konnten nicht geladen werden.</p>";
+      } else {
+        // Optional: sicherstellen, dass kein Element mit id="info-popup" durchgeschlüpft ist
+        const strayInfo = topRavesPopupContent.querySelector("#info-popup");
+        if (strayInfo) strayInfo.remove();
+      }
+
+      // Jetzt erst anzeigen (kein „Lade …“ mehr)
+      topRavesPopup.style.display = "flex";
+
+      // Excel laden und Tabellen im Popup befüllen (falls vorhanden)
+      try {
+        const excelResponse = await fetch("events.xlsx");
+        const arrayBuffer = await excelResponse.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const data = XLSX.utils.sheet_to_json(sheet);
+
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const thisYear = data.filter(row => {
+          const d = typeof row.Datum === "number"
+            ? new Date(Date.UTC(1899, 11, 30) + row.Datum*86400000)
+            : new Date(row.Datum);
+          return !isNaN(d) && d.getFullYear() === currentYear;
+        });
+
+        const topCities = countByField(thisYear, "Stadt", 10);
+        const topLocations = countByField(thisYear, "Location", 10, true);
+
+        fillTableInPopup("topCities", topCities);
+        fillTableInPopup("topLocations", topLocations);
+      } catch (e) {
+        console.warn("Excel konnte nicht geladen werden:", e);
+      }
+    } catch (err) {
+      console.error("Fehler beim Laden der Top-Raves-Daten:", err);
+      // Falls Fehler: Popup dennoch zeigen, aber ohne „Lade …“
+      topRavesPopupContent.innerHTML = "<p>Fehler beim Laden. Bitte später erneut versuchen.</p>";
+      topRavesPopup.style.display = "flex";
+    }
+  })();
+}
 
       // Klick außerhalb schließt Popups
       window.addEventListener("click", (e) => { if (e.target === topRavesPopup) topRavesPopup.style.display = "none"; });
