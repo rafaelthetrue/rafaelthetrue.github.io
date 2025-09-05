@@ -460,14 +460,19 @@
             topRavesPopupContent.innerHTML = "";
             let collect = false;
             for (const el of doc.body.children) {
-              if ((el.tagName === "H2" || el.tagName === "H3") && el.textContent.includes("Top 10 Raves")) {
-                collect = true;
-              }
-              if (collect) topRavesPopupContent.appendChild(el.cloneNode(true));
-            }
-            if (!topRavesPopupContent.children.length) {
-              topRavesPopupContent.innerHTML = "<p>Abschnitt „Top 10 Raves“ wurde nicht gefunden.</p>";
-            }
+  if (el.tagName === "H2" || el.tagName === "H3") {
+    if (el.textContent.includes("Top 10 Raves")) {
+      collect = true;
+    }
+  }
+
+  if (collect) {
+    // ⛔ Info-Popup nicht ins Startseiten-Popup übernehmen
+    if (el.id === "info-popup") continue;
+
+    container.appendChild(el.cloneNode(true));
+  }
+}
 
             // Excel laden und Städte/Locations im Popup befüllen (falls vorhanden)
             try {
