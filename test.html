@@ -25,6 +25,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script defer data-domain="ravebro.de" src="https://plausible.io/js/script.pageview-props.tagged-events.js"></script>
   <style>
+    /* >>> NEU: konsistente Box-Modelle & horizontales Scrollen komplett aus */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { width: 100%; max-width: 100%; overflow-x: hidden; touch-action: pan-y; }
+    /* <<< */
+
     body {
       font-family: Arial, sans-serif;
       line-height: 1.6;
@@ -35,12 +40,13 @@
       display: flex;
       flex-direction: column;
       height: calc(var(--vh, 1vh) * 100);
-      overflow: hidden;
+      overflow: hidden; /* vertikales Scrolling läuft im .table-container */
       user-select: none;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
     }
+
     .header { max-width: 800px; margin: 0 auto; text-align: center; }
     h1 { color: #444; margin-top: 15px; margin-bottom: 0px; font-size: 24px; }
     h2 { color: #444; margin-top: 0px; margin-bottom: 0px; font-size: 10px; }
@@ -61,19 +67,58 @@
     .search-container input { width: 80%; max-width: 400px; padding: 10px; font-size: 16px; }
 
     .table-container {
-      overflow-y: auto; border: 1px solid #ddd; max-width: 100%; margin: 0 auto;
-      border-collapse: collapse; padding: 0; height: 90%; position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;            /* >>> NEU: keine horizontale Scrollbar */
+      -webkit-overflow-scrolling: touch; /* sanftes iOS Scrolling */
+      border: 1px solid #ddd;
+      max-width: 100%;
+      width: 100%;                   /* >>> NEU: volle Breite */
+      margin: 0 auto;
+      border-collapse: collapse;
+      padding: 0;
+      height: 90%;
+      position: relative;
+      touch-action: pan-y;           /* >>> NEU: nur vertikal */
     }
-    table { width: 100%; border-collapse: collapse; table-layout: auto; }
-    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 14px; vertical-align: top; word-wrap: break-word; white-space: normal; }
-    th { background-color: #f4f4f4; position: sticky; top: 0; z-index: 2; margin: 0; }
+
+    table {
+      width: 100%;
+      max-width: 100%;               /* >>> NEU: nie breiter als Viewport */
+      border-collapse: collapse;
+      table-layout: auto;            /* Bewährtes Verhalten beibehalten */
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+      font-size: 14px;
+      vertical-align: top;
+      /* >>> NEU: robustes Umbrechen langer Inhalte */
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+
+    th {
+      background-color: #f4f4f4;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      margin: 0;
+    }
+
     tr:nth-child(even) { background-color: #f9f9f9; }
     tr.past-event td { text-decoration: line-through; color: #888; }
     tr.past-event .date-cell span { color: #888; }
+
     .date-cell { text-align: center; white-space: nowrap; }
     .date-cell span { font-size: 13px; color: #333; font-family: Arial, sans-serif; display: block; margin-top: 0px; }
 
-    table a:link, table a:visited, table a:hover, table a:active { color: black; }
+    table a:link, table a:visited, table a:hover, table a:active { color: black; text-decoration: none; }
+    /* >>> NEU: Links brechen notfalls um, statt X-Scroll zu erzeugen */
+    table a { word-break: break-word; overflow-wrap: anywhere; }
+
     tr.past-event a:link, tr.past-event a:visited { color: #888; }
     tr.past-event a:hover, tr.past-event a:active { color: #666; text-decoration: none; }
 
@@ -81,17 +126,50 @@
       body { font-size: 14px; }
       h1 { font-size: 22px; }
       th, td { font-size: 12px; padding: 8px; }
-      td:nth-child(4) { word-break: break-word; hyphens: auto; overflow-wrap: break-word; white-space: normal; min-width: 70px; max-width: 120px; }
+
+      /* >>> NEU: sichere Breiten auf Mobile, keine seitlichen Überstände */
+      .header,
+      .menu-icon-container,
+      .icon-bar,
+      .search-container {
+        max-width: 100%;
+        width: 100%;
+        padding-left: 12px;
+        padding-right: 12px;
+        margin-left: auto;
+        margin-right: auto;
+        overflow-x: hidden;
+      }
+
+      .table-container {
+        width: 100vw;         /* harte Kante: exakt Viewport-Breite */
+        max-width: 100vw;
+        margin: 0;
+        border-left: 0;
+        border-right: 0;
+      }
+
+      /* ggf. lange Location-Namen sauber umbrechen */
+      td:nth-child(4) {
+        word-break: break-word;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        white-space: normal;
+        min-width: 70px;
+        max-width: 120px;
+      }
     }
 
     .icon-bar {
       display: flex; justify-content: center; align-items: flex-end;
       max-width: 800px; margin: 10px auto; height: 40px; position: relative;
+      overflow-x: hidden; /* >>> NEU: sicherheitshalber */
     }
     .icon-wrapper {
       position: absolute; bottom: 0; height: 100%;
       display: flex; justify-content: center; align-items: flex-end;
       z-index: 1500; /* >>> über Menü (1000) */
+      max-width: 100%;
     }
     .icon-left  { left:  calc(50% - 90px); }
     .icon-right { right: calc(50% - 90px); }
@@ -110,7 +188,7 @@
     .stats-icon .bar1 { height: 6px; } .stats-icon .bar2 { height: 12px; } .stats-icon .bar3 { height: 9px; }
 
     .top-icon { display: flex; justify-content: center; width: 24px; height: 24px; }
-    .trend-arrow { width: 24px; height: 24px; display: block; margin-top: 3px; pointer-events: none; } /* <<< WICHTIG */
+    .trend-arrow { width: 24px; height: 24px; display: block; margin-top: 3px; pointer-events: none; }
 
     /* Popup-Styling */
     #statsPopup, #topRavesPopup {
@@ -445,10 +523,6 @@
         ev.preventDefault();
         ev.stopPropagation();
 
-        // Popup sofort zeigen, dann Inhalte nachladen
-        topRavesPopup.style.display = "flex";
-        topRavesPopupContent.innerHTML = "<p>Lade Top-Raves …</p>";
-
         (async () => {
           try {
             const resp = await fetch("statistik.html");
@@ -456,20 +530,36 @@
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, "text/html");
 
-            // Abschnitt ab „Top 10 Raves“ sammeln
+            // Inhalt leeren
             topRavesPopupContent.innerHTML = "";
+
+            // Abschnitt ab „Top 10 Raves“ sammeln (ohne Info-Popup)
             let collect = false;
             for (const el of doc.body.children) {
-              if ((el.tagName === "H2" || el.tagName === "H3") && el.textContent.includes("Top 10 Raves")) {
-                collect = true;
+              if (el.tagName === "H2" || el.tagName === "H3") {
+                if ((el.textContent || "").includes("Top 10 Raves")) {
+                  collect = true;
+                }
               }
-              if (collect) topRavesPopupContent.appendChild(el.cloneNode(true));
-            }
-            if (!topRavesPopupContent.children.length) {
-              topRavesPopupContent.innerHTML = "<p>Abschnitt „Top 10 Raves“ wurde nicht gefunden.</p>";
+              if (collect) {
+                if (el.id === "info-popup") continue; // <<< Hinweis-Popup überspringen
+                topRavesPopupContent.appendChild(el.cloneNode(true)); // <<< container -> topRavesPopupContent
+              }
             }
 
-            // Excel laden und Städte/Locations im Popup befüllen (falls vorhanden)
+            if (!topRavesPopupContent.children.length) {
+              // Falls nix gefunden wurde, kurze Meldung (optional)
+              topRavesPopupContent.innerHTML = "<p>Top 10 Raves konnten nicht geladen werden.</p>";
+            } else {
+              // Optional: sicherstellen, dass kein Element mit id="info-popup" durchgeschlüpft ist
+              const strayInfo = topRavesPopupContent.querySelector("#info-popup");
+              if (strayInfo) strayInfo.remove();
+            }
+
+            // Jetzt erst anzeigen (kein „Lade …“ mehr)
+            topRavesPopup.style.display = "flex";
+
+            // Excel laden und Tabellen im Popup befüllen (falls vorhanden)
             try {
               const excelResponse = await fetch("events.xlsx");
               const arrayBuffer = await excelResponse.arrayBuffer();
@@ -491,17 +581,20 @@
 
               fillTableInPopup("topCities", topCities);
               fillTableInPopup("topLocations", topLocations);
-            } catch(e) {
+            } catch (e) {
               console.warn("Excel konnte nicht geladen werden:", e);
             }
           } catch (err) {
             console.error("Fehler beim Laden der Top-Raves-Daten:", err);
+            // Falls Fehler: Popup dennoch zeigen, aber ohne „Lade …“
             topRavesPopupContent.innerHTML = "<p>Fehler beim Laden. Bitte später erneut versuchen.</p>";
+            topRavesPopup.style.display = "flex";
           }
         })();
       }
+
+      // Pfeil-Icon aktivieren
       topRavesIcon.addEventListener("click", openTopRavesPopup, { passive: false });
-      topRavesIcon.addEventListener("pointerdown", openTopRavesPopup, { passive: false });
 
       // Klick außerhalb schließt Popups
       window.addEventListener("click", (e) => { if (e.target === topRavesPopup) topRavesPopup.style.display = "none"; });
