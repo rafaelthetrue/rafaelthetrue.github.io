@@ -240,6 +240,42 @@
       border: 1px solid #ccc; border-radius: 6px; margin: 0 auto 15px auto; text-align: center;
       max-width: 400px; width: 100%; box-sizing: border-box;
     }
+    /* --- HOTFIX: Kopfzeile immer einzeilig --- */
+#eventTable thead th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- HOTFIX: Spalte "Stadt" niemals umbrechen (Desktop & Mobile) --- */
+#eventTable th:nth-child(4),
+#eventTable td:nth-child(4) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- HOTFIX: frühere Mobile-Regel für Spalte 4 sauber übersteuern --- */
+@media (max-width: 600px) {
+  #eventTable td:nth-child(4) {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    /* vorherige Vorgaben aufheben */
+    min-width: 0 !important;
+    max-width: none !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: manual !important;
+  }
+}
+
+/* Optional (hilft Platz schaffen, ohne Layout zu zerlegen): Datum etwas schmaler */
+#eventTable th:nth-child(1),
+#eventTable td:nth-child(1) {
+  width: 56px; /* ggf. auf 60–64px anpassen */
+}
   </style>
 </head>
 <body>
