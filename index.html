@@ -269,8 +269,8 @@ td.location-cell .nohyph {
           .replace(/'/g, "&#39;");
       }
 
-      // Bis 12 Zeichen: keine Trennung. Ab 13 Zeichen: Silbentrennung (de).
-      function hyphenateByThreshold(text, thresholdNoHyphen = 12) {
+      // Bis 11 Zeichen: keine Trennung. Ab 12 Zeichen: Silbentrennung (de).
+      function hyphenateByThreshold(text, thresholdNoHyphen = 11) {
         if (text == null) return "";
         return String(text)
           .split(/(\s+)/) // Leerzeichen erhalten
