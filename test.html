@@ -218,29 +218,19 @@
       border: 1px solid #ccc; border-radius: 6px; margin: 0 auto 15px auto; text-align: center;
       max-width: 400px; width: 100%; box-sizing: border-box;
     }
-/* Kopfzeile: keine Zeilenumbrüche */
-#eventTable thead th {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Spalte "Stadt": ebenfalls keine Zeilenumbrüche */
-#eventTable td:nth-child(4),
-#eventTable th:nth-child(4) {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* optional: auf sehr kleinen Screens Kopfzeile etwas kompakter */
-@media (max-width: 600px) {
+  /* >>> NEU: Kopfzeile bleibt einzeilig */
   #eventTable thead th {
-    padding-left: 6px;
-    padding-right: 6px;
-    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-}
+
+  /* >>> NEU: Spalte "Stadt" passt sich automatisch an (Autofit) */
+  #eventTable th:nth-child(4),
+  #eventTable td:nth-child(4) {
+    white-space: nowrap;
+    width: 1%;          /* Browser berechnet Breite nach Inhalt */
+  }
   </style>
 </head>
 <body>
