@@ -218,14 +218,22 @@
       border: 1px solid #ccc; border-radius: 6px; margin: 0 auto 15px auto; text-align: center;
       max-width: 400px; width: 100%; box-sizing: border-box;
     }
-    /* Kopfzeile: keine Zeilenumbrüche, bei Bedarf elegant abkürzen */
+/* Kopfzeile: keine Zeilenumbrüche */
 #eventTable thead th {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* optional: auf sehr kleinen Screens die Kopfzeile minimal kompakter */
+/* Spalte "Stadt": ebenfalls keine Zeilenumbrüche */
+#eventTable td:nth-child(4),
+#eventTable th:nth-child(4) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* optional: auf sehr kleinen Screens Kopfzeile etwas kompakter */
 @media (max-width: 600px) {
   #eventTable thead th {
     padding-left: 6px;
