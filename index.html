@@ -140,6 +140,25 @@
       border: 1px solid #ccc; border-radius: 6px; margin: 0 auto 15px auto; text-align: center;
       max-width: 400px; width: 100%; box-sizing: border-box;
     }
+    /* ——— Location: Silbentrennung erst ab 14 Zeichen ——— */
+td.location-cell {
+  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;
+  -webkit-hyphens: none;
+}
+
+td.location-cell .hyph-de {
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+td.location-cell .nohyph {
+  hyphens: none;
+  -webkit-hyphens: none;
+}
   </style>
 </head>
 <body>
@@ -240,7 +259,31 @@
           return eventA.localeCompare(eventB);
         });
       }
+      // ——— Hilfsfunktionen für Silbentrennung in "Location" ———
+      function escapeHTML(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
 
+      // Bis 13 Zeichen: keine Trennung. Ab 14 Zeichen: Silbentrennung (de).
+      function hyphenateByThreshold(text, thresholdNoHyphen = 13) {
+        if (text == null) return "";
+        return String(text)
+          .split(/(\s+)/) // Leerzeichen erhalten
+          .map(tok => {
+            if (!tok.trim()) return tok; // Leerraum durchreichen
+            const safe = escapeHTML(tok);
+            if (tok.length > thresholdNoHyphen) {
+              return `<span class="hyph-de" lang="de">${safe}</span>`;
+            }
+            return `<span class="nohyph">${safe}</span>`;
+          })
+          .join("");
+      }
       function renderTable(rows) {
         tableBody.innerHTML = "";
         rows.forEach(row => {
@@ -271,7 +314,10 @@
           eventTd.appendChild(eventLink);
           tr.appendChild(eventTd);
 
-          const locationTd = document.createElement("td"); locationTd.textContent = row.Location; tr.appendChild(locationTd);
+          const locationTd = document.createElement("td");
+locationTd.classList.add("location-cell");
+locationTd.innerHTML = hyphenateByThreshold(row.Location, 13); // ≤13 keine Trennung, ab 14 Silbentrennung
+tr.appendChild(locationTd);
           const cityTd = document.createElement("td"); cityTd.textContent = row.Stadt; tr.appendChild(cityTd);
 
           const eventDate = new Date(dateObj); eventDate.setDate(eventDate.getDate()+1); eventDate.setHours(6,0,0,0);
