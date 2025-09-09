@@ -24,200 +24,101 @@
   <title>Techno Raves 2025 (Termine, Events & Locations) - ravebro.de</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script defer data-domain="ravebro.de" src="https://plausible.io/js/script.pageview-props.tagged-events.js"></script>
-  <style>
-    /* >>> NEU: konsistente Box-Modelle & horizontales Scrollen komplett aus */
-    *, *::before, *::after { box-sizing: border-box; }
-    html, body { width: 100%; max-width: 100%; overflow-x: hidden; touch-action: pan-y; }
-    /* <<< */
+<style>
+  /* >>> NEU: konsistente Box-Modelle & horizontales Scrollen komplett aus */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { width: 100%; max-width: 100%; overflow-x: hidden; touch-action: pan-y; }
 
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      padding: 0;
-      margin: 0;
-      background-color: #f9f9f9;
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      height: calc(var(--vh, 1vh) * 100);
-      overflow: hidden; /* vertikales Scrolling läuft im .table-container */
-      user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-    }
+  body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 0;
+    margin: 0;
+    background-color: #f9f9f9;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    height: calc(var(--vh, 1vh) * 100);
+    overflow: hidden; /* vertikales Scrolling läuft im .table-container */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
 
-    .header { max-width: 800px; margin: 0 auto; text-align: center; }
-    h1 { color: #444; margin-top: 15px; margin-bottom: 0px; font-size: 24px; }
-    h2 { color: #444; margin-top: 0px; margin-bottom: 0px; font-size: 10px; }
+  .header { max-width: 800px; margin: 0 auto; text-align: center; }
+  h1 { color: #444; margin-top: 15px; margin-bottom: 0px; font-size: 24px; }
+  h2 { color: #444; margin-top: 0px; margin-bottom: 0px; font-size: 10px; }
 
-    .menu-icon-container { margin: 0 auto; text-align: right; position: relative; max-width: 800px; }
-    .menu-icon { font-size: 24px; display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; }
-    .menu {
-      position: absolute; top: 100%; right: 0; background-color: white;
-      border: 1px solid #ddd; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      display: none; flex-direction: column; z-index: 1000;
-    }
-    .menu.show { display: flex; }
-    .menu a { padding: 10px 20px; text-decoration: none; color: #333; border-bottom: 1px solid #ddd; text-align: left; }
-    .menu a:last-child { border-bottom: none; }
-    .menu a:hover { background-color: #f4f4f4; }
+  .menu-icon-container { margin: 0 auto; text-align: right; position: relative; max-width: 800px; }
+  .menu-icon { font-size: 24px; display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; }
+  .menu {
+    position: absolute; top: 100%; right: 0; background-color: white;
+    border: 1px solid #ddd; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: none; flex-direction: column; z-index: 1000;
+  }
+  .menu.show { display: flex; }
+  .menu a { padding: 10px 20px; text-decoration: none; color: #333; border-bottom: 1px solid #ddd; text-align: left; }
+  .menu a:last-child { border-bottom: none; }
+  .menu a:hover { background-color: #f4f4f4; }
 
-    .search-container { margin: 10px 0; text-align: center; }
-    .search-container input { width: 80%; max-width: 400px; padding: 10px; font-size: 16px; }
+  .search-container { margin: 10px 0; text-align: center; }
+  .search-container input { width: 80%; max-width: 400px; padding: 10px; font-size: 16px; }
 
-    .table-container {
-      overflow-y: auto;
-      overflow-x: hidden;            /* >>> NEU: keine horizontale Scrollbar */
-      -webkit-overflow-scrolling: touch; /* sanftes iOS Scrolling */
-      border: 1px solid #ddd;
-      max-width: 100%;
-      width: 100%;                   /* >>> NEU: volle Breite */
-      margin: 0 auto;
-      border-collapse: collapse;
-      padding: 0;
-      height: 90%;
-      position: relative;
-      touch-action: pan-y;           /* >>> NEU: nur vertikal */
-    }
+  .table-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #ddd;
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    padding: 0;
+    height: 90%;
+    position: relative;
+    touch-action: pan-y;
+  }
 
-    table {
-      width: 100%;
-      max-width: 100%;               /* >>> NEU: nie breiter als Viewport */
-      border-collapse: collapse;
-      table-layout: auto;            /* Bewährtes Verhalten beibehalten */
-    }
+  table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+  }
 
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: left;
-      font-size: 14px;
-      vertical-align: top;
-      /* >>> NEU: robustes Umbrechen langer Inhalte */
-      word-break: break-word;
-      overflow-wrap: anywhere;
-      white-space: normal;
-    }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+    vertical-align: top;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
 
-    th {
-      background-color: #f4f4f4;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      margin: 0;
-    }
+  th {
+    background-color: #f4f4f4;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    margin: 0;
+  }
 
-    tr:nth-child(even) { background-color: #f9f9f9; }
-    tr.past-event td { text-decoration: line-through; color: #888; }
-    tr.past-event .date-cell span { color: #888; }
+  tr:nth-child(even) { background-color: #f9f9f9; }
+  tr.past-event td { text-decoration: line-through; color: #888; }
+  tr.past-event .date-cell span { color: #888; }
 
-    .date-cell { text-align: center; white-space: nowrap; }
-    .date-cell span { font-size: 13px; color: #333; font-family: Arial, sans-serif; display: block; margin-top: 0px; }
+  .date-cell { text-align: center; white-space: nowrap; }
+  .date-cell span { font-size: 13px; color: #333; font-family: Arial, sans-serif; display: block; margin-top: 0px; }
 
-    table a:link, table a:visited, table a:hover, table a:active { color: black; text-decoration: none; }
-    /* >>> NEU: Links brechen notfalls um, statt X-Scroll zu erzeugen */
-    table a { word-break: break-word; overflow-wrap: anywhere; }
+  table a:link, table a:visited, table a:hover, table a:active { color: black; text-decoration: none; }
+  table a { word-break: break-word; overflow-wrap: anywhere; }
 
-    tr.past-event a:link, tr.past-event a:visited { color: #888; }
-    tr.past-event a:hover, tr.past-event a:active { color: #666; text-decoration: none; }
+  tr.past-event a:link, tr.past-event a:visited { color: #888; }
+  tr.past-event a:hover, tr.past-event a:active { color: #666; text-decoration: none; }
 
-    @media (max-width: 600px) {
-      body { font-size: 14px; }
-      h1 { font-size: 22px; }
-      th, td { font-size: 12px; padding: 8px; }
-
-      /* >>> NEU: sichere Breiten auf Mobile, keine seitlichen Überstände */
-      .header,
-      .menu-icon-container,
-      .icon-bar,
-      .search-container {
-        max-width: 100%;
-        width: 100%;
-        padding-left: 12px;
-        padding-right: 12px;
-        margin-left: auto;
-        margin-right: auto;
-        overflow-x: hidden;
-      }
-
-      .table-container {
-        width: 100vw;         /* harte Kante: exakt Viewport-Breite */
-        max-width: 100vw;
-        margin: 0;
-        border-left: 0;
-        border-right: 0;
-      }
-
-      /* ggf. lange Location-Namen sauber umbrechen */
-      td:nth-child(4) {
-        word-break: break-word;
-        hyphens: auto;
-        overflow-wrap: break-word;
-        white-space: normal;
-        min-width: 70px;
-        max-width: 120px;
-      }
-    }
-
-    .icon-bar {
-      display: flex; justify-content: center; align-items: flex-end;
-      max-width: 800px; margin: 10px auto; height: 40px; position: relative;
-      overflow-x: hidden; /* >>> NEU: sicherheitshalber */
-    }
-    .icon-wrapper {
-      position: absolute; bottom: 0; height: 100%;
-      display: flex; justify-content: center; align-items: flex-end;
-      z-index: 1500; /* >>> über Menü (1000) */
-      max-width: 100%;
-    }
-    .icon-left  { left:  calc(50% - 90px); }
-    .icon-right { right: calc(50% - 90px); }
-    .icon-center { position: relative; }
-
-    @media (max-width: 600px) {
-      .icon-left  { left:  calc(50% - 90px); }
-      .icon-right { right: calc(50% - 90px); }
-    }
-
-    .icon { width: 24px; height: 24px; color: #333; cursor: pointer; display: flex; justify-content: center; align-items: center; padding: 0; margin: 0; }
-
-    /* Statistik-Icon (3 vertikale Balken) */
-    .stats-icon { display: flex; flex-direction: row; justify-content: center; align-items: flex-end; width: 24px; height: 24px; gap: 3px; transform: translateY(-4px); }
-    .stats-icon .bar { width: 3px; background-color: #333; border-radius: 1px; }
-    .stats-icon .bar1 { height: 6px; } .stats-icon .bar2 { height: 12px; } .stats-icon .bar3 { height: 9px; }
-
-    .top-icon { display: flex; justify-content: center; width: 24px; height: 24px; }
-    .trend-arrow { width: 24px; height: 24px; display: block; margin-top: 3px; pointer-events: none; }
-
-    /* Popup-Styling */
-    #statsPopup, #topRavesPopup {
-      display: none; position: fixed; inset: 0; background-color: rgba(0,0,0,0.4);
-      z-index: 2000; justify-content: center; align-items: center;
-    }
-    #statsPopupInner, #topRavesPopupInner {
-      position: relative; background-color: white; border: 1px solid #ccc; border-radius: 10px;
-      padding: 30px; max-width: 90vw; max-height: 70vh; overflow-y: auto;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2); font-size: 16px; box-sizing: border-box;
-    }
-    #topRavesPopupInner { padding: 0 30px 30px 30px; }
-    #topRavesPopupInner h2 { text-align: center; font-weight: bold; margin-top: 30px; margin-bottom: 15px; font-size: 16px; }
-
-    #statsPopupClose, #topRavesPopupClose {
-      position: absolute; top: 4px; right: 10px; font-size: 18px; cursor: pointer; color: #666; z-index: 10;
-    }
-
-    #topRavesPopupInner th, #statsPopupInner th { position: static !important; top: auto !important; }
-
-    .info-icon {
-      display: inline-block; width: 14px; height: 14px; font-size: 10px; line-height: 14px;
-      border: 1px solid #666; border-radius: 50%; text-align: center; color: #666; transform: translateY(-3px);
-    }
-    .info-popup {
-      display: none; font-size: 13px; color: #333; background: #f9f9f9; padding: 4px 4px !important;
-      border: 1px solid #ccc; border-radius: 6px; margin: 0 auto 15px auto; text-align: center;
-      max-width: 400px; width: 100%; box-sizing: border-box;
-    }
   /* >>> NEU: Kopfzeile bleibt einzeilig */
   #eventTable thead th {
     white-space: nowrap;
@@ -231,7 +132,91 @@
     white-space: nowrap;
     width: 1%;          /* Browser berechnet Breite nach Inhalt */
   }
-  </style>
+
+  @media (max-width: 600px) {
+    body { font-size: 14px; }
+    h1 { font-size: 22px; }
+    th, td { font-size: 12px; padding: 8px; }
+
+    .header,
+    .menu-icon-container,
+    .icon-bar,
+    .search-container {
+      max-width: 100%;
+      width: 100%;
+      padding-left: 12px;
+      padding-right: 12px;
+      margin-left: auto;
+      margin-right: auto;
+      overflow-x: hidden;
+    }
+
+    .table-container {
+      width: 100vw;
+      max-width: 100vw;
+      margin: 0;
+      border-left: 0;
+      border-right: 0;
+    }
+  }
+
+  .icon-bar {
+    display: flex; justify-content: center; align-items: flex-end;
+    max-width: 800px; margin: 10px auto; height: 40px; position: relative;
+    overflow-x: hidden;
+  }
+  .icon-wrapper {
+    position: absolute; bottom: 0; height: 100%;
+    display: flex; justify-content: center; align-items: flex-end;
+    z-index: 1500;
+    max-width: 100%;
+  }
+  .icon-left  { left:  calc(50% - 90px); }
+  .icon-right { right: calc(50% - 90px); }
+  .icon-center { position: relative; }
+
+  @media (max-width: 600px) {
+    .icon-left  { left:  calc(50% - 90px); }
+    .icon-right { right: calc(50% - 90px); }
+  }
+
+  .icon { width: 24px; height: 24px; color: #333; cursor: pointer; display: flex; justify-content: center; align-items: center; padding: 0; margin: 0; }
+
+  .stats-icon { display: flex; flex-direction: row; justify-content: center; align-items: flex-end; width: 24px; height: 24px; gap: 3px; transform: translateY(-4px); }
+  .stats-icon .bar { width: 3px; background-color: #333; border-radius: 1px; }
+  .stats-icon .bar1 { height: 6px; } .stats-icon .bar2 { height: 12px; } .stats-icon .bar3 { height: 9px; }
+
+  .top-icon { display: flex; justify-content: center; width: 24px; height: 24px; }
+  .trend-arrow { width: 24px; height: 24px; display: block; margin-top: 3px; pointer-events: none; }
+
+  #statsPopup, #topRavesPopup {
+    display: none; position: fixed; inset: 0; background-color: rgba(0,0,0,0.4);
+    z-index: 2000; justify-content: center; align-items: center;
+  }
+  #statsPopupInner, #topRavesPopupInner {
+    position: relative; background-color: white; border: 1px solid #ccc; border-radius: 10px;
+    padding: 30px; max-width: 90vw; max-height: 70vh; overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2); font-size: 16px; box-sizing: border-box;
+  }
+  #topRavesPopupInner { padding: 0 30px 30px 30px; }
+  #topRavesPopupInner h2 { text-align: center; font-weight: bold; margin-top: 30px; margin-bottom: 15px; font-size: 16px; }
+
+  #statsPopupClose, #topRavesPopupClose {
+    position: absolute; top: 4px; right: 10px; font-size: 18px; cursor: pointer; color: #666; z-index: 10;
+  }
+
+  #topRavesPopupInner th, #statsPopupInner th { position: static !important; top: auto !important; }
+
+  .info-icon {
+    display: inline-block; width: 14px; height: 14px; font-size: 10px; line-height: 14px;
+    border: 1px solid #666; border-radius: 50%; text-align: center; color: #666; transform: translateY(-3px);
+  }
+  .info-popup {
+    display: none; font-size: 13px; color: #333; background: #f9f9f9; padding: 4px 4px !important;
+    border: 1px solid #ccc; border-radius: 6px; margin: 0 auto 15px auto; text-align: center;
+    max-width: 400px; width: 100%; box-sizing: border-box;
+  }
+</style>
 </head>
 <body>
   <div class="header">
