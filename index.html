@@ -269,8 +269,8 @@ td.location-cell .nohyph {
           .replace(/'/g, "&#39;");
       }
 
-      // Bis 11 Zeichen: keine Trennung. Ab 12 Zeichen: Silbentrennung (de).
-      function hyphenateByThreshold(text, thresholdNoHyphen = 11) {
+      // Bis 10 Zeichen: keine Trennung. Ab 11 Zeichen: Silbentrennung (de).
+      function hyphenateByThreshold(text, thresholdNoHyphen = 10) {
         if (text == null) return "";
         return String(text)
           .split(/(\s+)/) // Leerzeichen erhalten
@@ -316,7 +316,7 @@ td.location-cell .nohyph {
 
           const locationTd = document.createElement("td");
 locationTd.classList.add("location-cell");
-locationTd.innerHTML = hyphenateByThreshold(row.Location, 11); // ≤11 keine Trennung, ab 14 Silbentrennung
+locationTd.innerHTML = hyphenateByThreshold(row.Location, 10); // ≤10 keine Trennung, ab 14 Silbentrennung
 tr.appendChild(locationTd);
           const cityTd = document.createElement("td"); cityTd.textContent = row.Stadt; tr.appendChild(cityTd);
 
